@@ -8,17 +8,17 @@ This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis per
 
 ## Prerequisites
 
--   Kubernetes 1.9+
--   PersistentVolume support
+- Kubernetes 1.9+
+- PersistentVolume support
 
 ## Required Configuration
 
 In order for Atlantis to start and run successfully, all of the following must be true:
 
 1. At least one of the following sets of credentials must be defined:
-    -  `github`
-    -  `gitlab`
-    -  `bitbucket`
+    -`github`
+    -`gitlab`
+    -`bitbucket`
 
     Refer to [values.yaml](values.yaml) for detailed examples.
 
