@@ -9,3 +9,9 @@ home: https://www.runatlantis.io
 icon: https://www.runatlantis.io/hero.png
 sources:
 - https://github.com/runatlantis/atlantis
+maintainers:
+- name: jkodroff
+- name: callmeradical
+- name: jeff-knurek
+- name: lkysow
+- name: anubhavmishra
