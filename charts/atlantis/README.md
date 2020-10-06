@@ -150,7 +150,8 @@ To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is u
 1. Install the chart.  Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
 
     ```bash
-    helm install -f test-values.yaml --name my-atlantis stable/atlantis --debug
+    helm repo add runatlantis https://runatlantis.github.io/helm-charts
+    helm install -f test-values.yaml --name my-atlantis runatlantis/atlantis --debug
     ```
 
 1. Run the tests:
