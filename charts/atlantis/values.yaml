@@ -116,6 +116,9 @@ allowForkPRs: false
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
 
+# disableApply disables running `atlantis apply` regardless of which flags are sent with it
+disableApply: false
+
 # disableApplyAll disables running `atlantis apply` without any flags
 disableApplyAll: false
 

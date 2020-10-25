@@ -134,6 +134,10 @@ spec:
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
           {{- end }}
+          {{- if .Values.disableApply }}
+          - name: ATLANTIS_DISABLE_APPLY
+            value: {{ .Values.disableApply | quote }}
+          {{- end }}
           {{- if .Values.disableApplyAll }}
           - name: ATLANTIS_DISABLE_APPLY_ALL
             value: {{ .Values.disableApplyAll | quote }}
