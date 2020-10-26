@@ -6,22 +6,22 @@
 This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
 
 ## Prerequisites
--   Kubernetes 1.9+
--   PersistentVolume support
+- Kubernetes 1.9+
+- PersistentVolume support
 
 ## Required Configuration
 In order for Atlantis to start and run successfully:
 1. At least one of the following sets of credentials must be defined:
-    -  `github`
-    -  `gitlab`
-    -  `bitbucket`
+    - `github`
+    - `gitlab`
+    - `bitbucket`
 
     Refer to [values.yaml](values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
 
-## Additional manifests 
+## Additional manifests
 
 It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
 
@@ -102,7 +102,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 
 
 ## Upgrading
-### From 2.* to 3.*
+### From `2.*` to `3.*`
 * The following value names have been removed. They are replaced by [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
   * `requireApproval`
   * `requireMergeable`
@@ -110,7 +110,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 
 To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
 
-```
+```bash
 $ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-whitelist='*'
 WARNING: Flags --require-approval, --require-mergeable and --allow-repo-config have been deprecated.
 Create a --repo-config file with the following config instead:
@@ -127,7 +127,7 @@ or use --repo-config-json='{"repos":[{"id":"/.*/", "apply_requirements":["approv
 
 Then use this YAML in the new repoConfig value:
 
-```
+```yaml
 repoConfig: |
   ---
   repos:
@@ -137,7 +137,7 @@ repoConfig: |
     allow_custom_workflows: true
 ```
 
-### From 1.* to 2.*
+### From `1.*` to `2.*`
 * The following value names have changed:
   * `allow_repo_config` => `allowRepoConfig`
   * `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
