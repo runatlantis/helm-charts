@@ -97,6 +97,7 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `ingress.tls`                               | Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.                                                                                                                                                                            | `[]`     |
 | `test.enabled`                              | Whether to enable the test. | `true` |
 | `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
+| `initContainers`                            | Containers used to initialize context for Atlantis pods                                  | `[]`                              |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 
