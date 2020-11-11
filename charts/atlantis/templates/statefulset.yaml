@@ -35,6 +35,7 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       securityContext:
         fsGroup: 1000
         runAsUser: 100
