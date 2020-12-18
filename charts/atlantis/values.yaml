@@ -113,6 +113,9 @@ image:
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
 
+# allowDraftPRs enables atlantis to run on a draft Pull Requests
+allowDraftPRs: false
+
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
 
