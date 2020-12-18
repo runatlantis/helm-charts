@@ -244,6 +244,15 @@ loadEnvFromSecrets: []
 #   - secret_one
 #   - secret_two
 
+# Optionally specify additional Kubernetes ConfigMaps to load environment variables from.
+# All key-value pairs within these ConfigMaps will be set as environment variables.
+# Note that any variables set here will be ignored if also defined in the env block of the atlantis statefulset.
+# For example, providing ATLANTIS_ALLOW_FORK_PRS here and defining a value for allowForkPRs will result in the allowForkPRs value being used.
+loadEnvFromConfigMaps: []
+# loadEnvFromConfigMaps:
+#   - config_one
+#   - config_two
+
 # Optionally specify google service account credentials as Kubernetes secrets. If you are using the terraform google provider you can specify the credentials as "${file("/var/secrets/some-secret-name/key.json")}".
 googleServiceAccountSecrets: []
 # googleServiceAccountSecrets:

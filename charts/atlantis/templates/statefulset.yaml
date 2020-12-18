@@ -116,10 +116,14 @@ spec:
           ports:
           - name: atlantis
             containerPort: 4141
-          {{- if .Values.loadEnvFromSecrets }}
+          {{- if or .Values.loadEnvFromSecrets .Values.loadEnvFromConfigMaps }}
           envFrom:
           {{- range .Values.loadEnvFromSecrets }}
             - secretRef:
+                name: {{ . }}
+          {{- end }}
+          {{- range .Values.loadEnvFromConfigMaps }}
+            - configMapRef:
                 name: {{ . }}
           {{- end }}
           {{- end }}
