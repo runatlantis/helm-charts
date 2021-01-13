@@ -144,6 +144,10 @@ spec:
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
           {{- end }}
+          {{- if .Values.hidePrevPlanComments }}
+          - name: ATLANTIS_HIDE_PREV_PLAN_COMMENTS
+            value: {{ .Values.hidePrevPlanComments | quote }}
+          {{- end }}
           {{- if .Values.disableApply }}
           - name: ATLANTIS_DISABLE_APPLY
             value: {{ .Values.disableApply | quote }}
