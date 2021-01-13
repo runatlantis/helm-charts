@@ -250,3 +250,9 @@ extraManifests: []
 #    spec:
 #      securityPolicy:
 #        name: "gcp-cloud-armor-policy-test"
+
+initContainers: []
+# initContainers:
+# - name: example
+#   image: alpine:latest
+#   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
