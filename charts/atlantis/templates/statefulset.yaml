@@ -124,6 +124,11 @@ spec:
           {{- end }}
           {{- end }}
           env:
+          {{- if .Values.environmentRaw }}
+          {{- with .Values.environmentRaw }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- end }}
           {{- range $key, $value := .Values.environment }}
           - name: {{ $key }}
             value: {{ $value | quote }}
