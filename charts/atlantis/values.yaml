@@ -82,7 +82,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.14.0
+  tag: v0.16.0
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -116,8 +116,14 @@ allowForkPRs: false
 # allowDraftPRs enables atlantis to run on a draft Pull Requests
 allowDraftPRs: false
 
+# hidePrevPlanComments enables atlantis to hide previous plan comments
+hidePrevPlanComments: false
+
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
+
+# disableApply disables running `atlantis apply` regardless of which flags are sent with it
+disableApply: false
 
 # disableApplyAll disables running `atlantis apply` without any flags
 disableApplyAll: false
@@ -195,6 +201,9 @@ affinity: {}
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
+  # Set the `automountServiceAccountToken` field on the pod template spec
+  # If false, no kubernetes service account token will be mounted to the pod
+  mount: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
@@ -216,6 +225,15 @@ environmentSecrets: []
 #     secretKeyRef:
 #       name: the_k8s_secret_name
 #       key: the_key_of_the_value_in_the_secret
+
+# Optionally specify additional environment variables in raw yaml format
+# Useful to specify variables refering to k8s objects
+# environmentRaw:
+#   - name: POD_IP
+#     valueFrom:
+#       fieldRef:
+#         fieldPath: status.podIP
+environmentRaw: []
 
 # Optionally specify additional Kubernetes secrets to load environment variables from.
 # All key-value pairs within these secrets will be set as environment variables.
@@ -253,3 +271,9 @@ extraManifests: []
 #    spec:
 #      securityPolicy:
 #        name: "gcp-cloud-armor-policy-test"
+
+initContainers: []
+# initContainers:
+# - name: example
+#   image: alpine:latest
+#   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
