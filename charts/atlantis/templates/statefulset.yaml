@@ -35,6 +35,7 @@ spec:
       {{- end }}
     spec:
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       securityContext:
         fsGroup: 1000
         runAsUser: 100
@@ -87,6 +88,10 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
+      {{- if .Values.initContainers }}
+      initContainers:
+{{ toYaml .Values.initContainers | indent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -138,6 +143,10 @@ spec:
           {{- if .Values.allowForkPRs }}
           - name: ATLANTIS_ALLOW_FORK_PRS
             value: {{ .Values.allowForkPRs | quote }}
+          {{- end }}
+          {{- if .Values.disableApply }}
+          - name: ATLANTIS_DISABLE_APPLY
+            value: {{ .Values.disableApply | quote }}
           {{- end }}
           {{- if .Values.disableApplyAll }}
           - name: ATLANTIS_DISABLE_APPLY_ALL
