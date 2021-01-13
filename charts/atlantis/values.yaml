@@ -195,6 +195,9 @@ affinity: {}
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
+  # Set the `automountServiceAccountToken` field on the pod template spec
+  # If false, no kubernetes service account token will be mounted to the pod
+  mount: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
