@@ -82,7 +82,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.14.0
+  tag: v0.16.0
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -115,6 +115,9 @@ allowForkPRs: false
 
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
+
+# disableApply disables running `atlantis apply` regardless of which flags are sent with it
+disableApply: false
 
 # disableApplyAll disables running `atlantis apply` without any flags
 disableApplyAll: false
@@ -253,3 +256,9 @@ extraManifests: []
 #    spec:
 #      securityPolicy:
 #        name: "gcp-cloud-armor-policy-test"
+
+initContainers: []
+# initContainers:
+# - name: example
+#   image: alpine:latest
+#   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
