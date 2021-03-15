@@ -264,10 +264,6 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: azuredevops_webhook_password
-          {{- if .Values.github.hostname }}
-          - name: ATLANTIS_GH_HOSTNAME
-            value: {{ .Values.github.hostname }}
-          {{- end }}
           {{- end}}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
