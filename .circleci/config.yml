@@ -9,8 +9,8 @@ jobs:
     working_directory: /tmp/ci
     steps:
       - checkout
-      - run: yq r charts/atlantis/Chart.yaml version > /tmp/ci/chart-version.txt
-      - run: yq r charts/atlantis/Chart.yaml name > /tmp/ci/chart-name.txt
+      - run: yq r ./charts/atlantis/Chart.yaml version > /tmp/ci/chart-version.txt
+      - run: yq r ./charts/atlantis/Chart.yaml name > /tmp/ci/chart-name.txt
       - persist_to_workspace:
           root: /tmp/ci
           paths:
