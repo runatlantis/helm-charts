@@ -39,7 +39,7 @@ jobs:
       - helm/install-helm-client:
           version: v3.5.2
           stable-repo-url: https://charts.helm.sh/stable
-      - run: helm package charts/atlantis/Chart.yaml
+      - run: helm package ./charts/atlantis/Chart.yaml
       - run: |
           aws s3 cp atlantis-*.tgz s3://procore-helm-charts/
 workflows:
