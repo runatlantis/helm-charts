@@ -11,10 +11,10 @@ orgWhitelist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
-# github:
-#   user: foo
-#   token: bar
-#   secret: baz
+github:
+  user: foo
+  # token: bar
+  # secret: baz
 # GitHub Enterprise only:
 #   hostname: github.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
