@@ -196,13 +196,21 @@ spec:
             value: http://{{ .Values.ingress.host }}
           {{- end }}
           {{- if .Values.github }}
+          {{- if .Values.github.user }}
           - name: ATLANTIS_GH_USER
-            value: {{ required "github.user is required if github configuration is specified." .Values.github.user }}
+            value: {{ .Values.github.user }}
+          {{- end }}
+          {{- if .Values.github.appId }}
+          - name: ATLANTIS_GH_APP_ID
+            value: {{ .Values.github.appId | quote }}
+          {{- end }}
+          {{- if .Values.github.token }}
           - name: ATLANTIS_GH_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_token
+          {{- end }}
           - name: ATLANTIS_GH_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:

@@ -12,9 +12,12 @@ orgWhitelist: <replace-me>
 
 # If using GitHub, specify like the following:
 # github:
+#   secret: baz
+# Authenticating via GitHub user
 #   user: foo
 #   token: bar
-#   secret: baz
+# Authenticating via GitHub app
+#   appId: foo
 # GitHub Enterprise only:
 #   hostname: github.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
