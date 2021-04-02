@@ -69,6 +69,7 @@ spec:
         secret:
           secretName: {{ template "atlantis.awsSecretName" . }}
       {{- end }}
+      {{- if .Values.github_app }}
       {{- if index .Values.github_app "key.pem"}}
       - name: github-app-key-volume
         secret:
@@ -76,6 +77,7 @@ spec:
           items:
           - key: key.pem
             path: /key.pem
+      {{- end }}
       {{- end }}
       {{- if .Values.repoConfig }}
       - name: repo-config
@@ -332,10 +334,12 @@ spec:
             subPath: repos.yaml
             readOnly: true
           {{- end }}
+          {{- if .Values.github_app }}
           {{- if index .Values.github_app "key.pem" }}
           - name: github-app-key-volume
             mountPath: /var/github-app
             readOnly: true
+          {{- end }}
           {{- end }}
           {{- if .Values.config }}
           - name: config
