@@ -69,6 +69,14 @@ spec:
         secret:
           secretName: {{ template "atlantis.awsSecretName" . }}
       {{- end }}
+      {{- if .Values.github_app.key.pem}}
+      - name: github-app-key-volume
+        secret:
+          secretName: {{ template "atlantis.vcsSecretName" . }}
+          items:
+          - key: key.pem
+            path: github_app
+      {{- end }}
       {{- if .Values.repoConfig }}
       - name: repo-config
         configMap:
@@ -213,6 +221,24 @@ spec:
             value: {{ .Values.github.hostname }}
           {{- end }}
           {{- end}}
+          {{- if .Values.github_app }}
+          {{- if .Values.github_app.id }}
+          - name: ATLANTIS_GH_APP_ID
+            value: {{ .Values.github_app.id }}
+          {{- end }}
+          - name: ATLANTIS_WRITE_GIT_CREDS
+            value: "true"
+          {{- if .Values.github_app.github_secret }}
+          - name: ATLANTIS_GH_WEBHOOK_SECRET
+            secretKeyRef:
+              name: {{ template "atlantis.vcsSecretName" . }}
+              key: github_secret
+          {{- end }}
+          {{- if .Values.github_app.key.pem }}
+            - name: ATLANTIS_GH_APP_KEY_FILE
+              value: "/var/github-app/key.pem"
+          {{- end }}
+          {{- end }}
           {{- if .Values.gitlab }}
           - name: ATLANTIS_GITLAB_USER
             value: {{ required "gitlab.user is required if gitlab configuration is specified." .Values.gitlab.user }}
@@ -304,6 +330,11 @@ spec:
           - name: repo-config
             mountPath: /etc/atlantis/repos.yaml
             subPath: repos.yaml
+            readOnly: true
+          {{- end }}
+          {{- if .Values.github_app.key.pem }}
+          - name: github-app-key-volume
+            mountPath: /var/github-app
             readOnly: true
           {{- end }}
           {{- if .Values.config }}
