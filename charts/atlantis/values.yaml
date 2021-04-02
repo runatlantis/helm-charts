@@ -23,8 +23,13 @@ orgWhitelist: <replace-me>
 # github_app:
 #   id: 123456
 #   key: |
-# --- START PRIVATE ---
-# --- END PRIVATE ---
+#     -----BEGIN RSA PRIVATE KEY-----
+#     MIIEpQIBAAKCAQEAqDF83OLj7RL2bBkl772FRV5cAISlW3MuZvbcm3e4qUZKg/2G
+#     ZWEcPWQ6q+k3TAqeYLKPTurgkueX8Fx5nVMfkvBDr11i14omfp4M1vQjBV30aIQ7
+#     ...
+#     Nd1lWbvZWjDoyL3Rz5z2TnUOASZrslJKyUPnPuzq7Tz+GxgKiw6gV/JUVVxKZf+Y
+#     QnDyCCKhOoBSi5VpOCOFikv8y8f1KYOKaEDz7R1HDYLFtmYHvDk0cYY=
+#     -----END RSA PRIVATE KEY-----
 #   secret: baz
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 

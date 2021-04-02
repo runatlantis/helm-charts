@@ -13,6 +13,7 @@ This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis per
 In order for Atlantis to start and run successfully:
 1. At least one of the following sets of credentials must be defined:
     - `github`
+    - `github_app`
     - `gitlab`
     - `bitbucket`
 
