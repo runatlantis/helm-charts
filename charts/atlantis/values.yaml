@@ -7,7 +7,9 @@
 # atlantisUrl: http://10.0.0.0
 
 # Replace this with your own repo whitelist:
-orgWhitelist: <replace-me>
+# For multiple repos use comma separated values:
+# github.com/myorg/repo1,github.com/myorg/repo2
+orgWhitelist: github.com/procore/terraform-infra
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
@@ -38,7 +40,7 @@ github:
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If managing secrets outside the chart for the webhook, use this variable to reference the secret name
-vcsSecretName: 'atlantis-webhook'
+vcsSecretName: 'atlantis-secret'
 
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
