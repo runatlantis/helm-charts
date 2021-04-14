@@ -1,0 +1,5 @@
+istio:
+  enabled: true
+  hostNames:
+    - atlantis.application.procoretech-qa.com
+  ingressGatewayName: istio-public-ingressgateway

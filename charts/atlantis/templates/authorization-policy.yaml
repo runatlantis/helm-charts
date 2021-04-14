@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: policy
+ namespace: {{ .Chart.Name }} 
+spec:
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        ipBlocks: [ # webhook IP addresses retrieved from https://api.github.com/meta "hooks"
+        "192.30.252.0/22",
+        "185.199.108.0/22",
+        "140.82.112.0/20"
+        ]
