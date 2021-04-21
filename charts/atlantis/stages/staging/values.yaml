@@ -10,6 +10,7 @@ ingress:
 
 service:
   type: LoadBalancer
+  annotations: {"external-dns.alpha.kubernetes.io/hostname": "atlantis.application.procoretech-qa.com"}
   loadBalancerSourceRanges:
     - "192.30.252.0/22"
     - "185.199.108.0/22"
