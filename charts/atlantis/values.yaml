@@ -291,3 +291,8 @@ initContainers: []
 # - name: example
 #   image: alpine:latest
 #   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
+
+extraArgs: []
+# extraArgs:
+# - --disable-autoplan
+# - --disable-repo-locking
