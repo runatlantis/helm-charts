@@ -40,7 +40,7 @@ github:
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If managing secrets outside the chart for the webhook, use this variable to reference the secret name
-vcsSecretName: 'atlantis-webhook'
+vcsSecretName: 'atlantis-secret'
 
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
