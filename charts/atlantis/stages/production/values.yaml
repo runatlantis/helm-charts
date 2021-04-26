@@ -1,0 +1,14 @@
+  istio:
+    enabled: false
+
+  ingress:
+    enabled: false
+    annotations: {}
+
+  service:
+    type: LoadBalancer
+    loadBalancerSourceRanges:
+    ┆ - "192.30.252.0/22"
+    ┆ - "185.199.108.0/22"
+    ┆ - "140.82.112.0/20"
+    ┆ - "34.103.73.76/32"
