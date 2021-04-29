@@ -42,11 +42,22 @@ jobs:
       - run: helm package ./charts/atlantis
       - run: |
           aws s3 cp atlantis-*.tgz s3://procore-helm-charts/
+
+# default filters for jobs so we only run on tags
+defaults: &defaults
+  filters:
+    branches:
+      ignore: /.*/
+    tags:
+      only: /^\d+\.\d+\.\d+(?:-.+)?$/
+
 workflows:
   build:
     jobs:
-      - chart_version
+      - chart_version:
+          <<: *defaults
       - chart_to_s3:
+          <<: *defaults
           context: helm-package-release
           requires:
             - chart_version
