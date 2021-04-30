@@ -167,6 +167,10 @@ spec:
           - name: ATLANTIS_DISABLE_APPLY_ALL
             value: {{ .Values.disableApplyAll | quote }}
           {{- end }}
+          {{- if .Values.disableRepoLocking }}
+          - name: ATLANTIS_DISABLE_REPO_LOCKING
+            value: {{ .Values.disableRepoLocking | quote }}
+          {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
             value: {{ .Values.defaultTFVersion }}
