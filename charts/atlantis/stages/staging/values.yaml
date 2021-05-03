@@ -9,6 +9,11 @@ service:
     - "140.82.112.0/20"
     - "34.103.73.76/32"
 
+serviceAccount:
+  name: atlantis
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::220696059325:role/atlantis-ops-role
+
 environmentSecrets:
   - name: ATLANTIS_WRITE_GIT_CREDS
     secretKeyRef:
