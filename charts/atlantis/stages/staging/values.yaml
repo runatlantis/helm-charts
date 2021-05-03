@@ -10,20 +10,7 @@ service:
     - "34.103.73.76/32"
 
 serviceAccount:
-  # Specifies whether a ServiceAccount should be created
-  create: true
-  # Set the `automountServiceAccountToken` field on the pod template spec
-  # If false, no kubernetes service account token will be mounted to the pod
-  mount: true
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: atlantis
-  # Annotations for the Service Account
-  # Example:
-  #
-  # annotations:
-  #   annotation1: value
-  #   annotation2: value
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::220696059325:role/atlantis-ops-role
 
