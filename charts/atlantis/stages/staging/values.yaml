@@ -28,6 +28,7 @@ environment:
   ATLANTIS_GH_APP_ID: 113650
   ATLANTIS_GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
   ATLANTIS_WRITE_GIT_CREDS: true
+  ATLANTIS_GH_ORG: procore
 
 github: null
 
