@@ -26,3 +26,10 @@ serviceAccount:
   #   annotation2: value
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::749942219478:role/atlantis-ops-role
+
+environmentSecrets:
+  - name: ATLANTIS_WRITE_GIT_CREDS
+    secretKeyRef:
+      name: atlantis-secret
+      key: atlantis_write_git_creds
+

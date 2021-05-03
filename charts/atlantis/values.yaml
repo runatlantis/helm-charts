@@ -14,7 +14,7 @@ orgWhitelist: github.com/procore/terraform-infra
 
 # If using GitHub, specify like the following:
 github:
-  user: foo
+  user: procore-atlantis
   # token: bar
   # secret: baz
 # GitHub Enterprise only:

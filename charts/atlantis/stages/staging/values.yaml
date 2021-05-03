@@ -25,5 +25,11 @@ serviceAccount:
   #   annotation1: value
   #   annotation2: value
   annotations:
-    #TBD - what the role name will be for the Atlantis service account in the staging AWS account
     eks.amazonaws.com/role-arn: arn:aws:iam::220696059325:role/atlantis-ops-role
+
+environmentSecrets:
+  - name: ATLANTIS_WRITE_GIT_CREDS
+    secretKeyRef:
+      name: atlantis-secret
+      key: atlantis_write_git_creds
+
