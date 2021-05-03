@@ -25,6 +25,6 @@ environmentSecrets:
       key: github_token
 
 environment:
-  ATLANTIS_GH_APP_ID: 113650
+  GH_APP_ID: 113650
 
 github: null
