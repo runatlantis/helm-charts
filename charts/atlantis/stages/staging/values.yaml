@@ -31,7 +31,7 @@ environment:
 github: null
 
 extraVolumes:
-  - name: gh_app_key_file
+  - name: gh-app-key-file
     secret:
       secretName: atlantis-secret
       items:
@@ -40,4 +40,4 @@ extraVolumes:
 
 extraVolumeMounts:
   - mountPath: /atlantis_keys/
-    name: gh_app_key_file
+    name: gh-app-key-file
