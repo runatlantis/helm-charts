@@ -15,14 +15,16 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::220696059325:role/atlantis-ops-role
 
 environmentSecrets:
-  - name: ATLANTIS_WRITE_GIT_CREDS
-    secretKeyRef:
-      name: atlantis-secret
-      key: atlantis_write_git_creds
   - name: GH_APP_KEY_FILE
     secretKeyRef:
       name: atlantis-secret
       key: github_app_key_file
+  - name: GH_WEBHOOK_SECRET
+    secretKeyRef:
+      name: atlantis-secret
+      key: github_token
 
 environment:
   ATLANTIS_GH_APP_ID: 113650
+
+github: null
