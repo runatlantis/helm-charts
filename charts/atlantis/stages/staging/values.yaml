@@ -19,14 +19,15 @@ environmentSecrets:
   #   secretKeyRef:
   #     name: atlantis-secret
   #     key: github_app_key_file
-  - name: GH_WEBHOOK_SECRET
+  - name: ATLANTIS_GH_WEBHOOK_SECRET
     secretKeyRef:
       name: atlantis-secret
       key: github_token
 
 environment:
-  GH_APP_ID: 113650
-  GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
+  ATLANTIS_GH_APP_ID: 113650
+  ATLANTIS_GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
+  ATLANTIS_WRITE_GIT_CREDS:
 
 github: null
 
