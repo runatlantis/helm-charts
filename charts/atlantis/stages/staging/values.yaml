@@ -19,4 +19,10 @@ environmentSecrets:
     secretKeyRef:
       name: atlantis-secret
       key: atlantis_write_git_creds
+  - name: GH_APP_KEY_FILE
+    secretKeyRef:
+      name: atlantis-secret
+      key: github_app_key_file
 
+environment:
+  ATLANTIS_GH_APP_ID: 113650
