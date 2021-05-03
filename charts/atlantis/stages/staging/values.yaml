@@ -15,10 +15,10 @@ serviceAccount:
     eks.amazonaws.com/role-arn: arn:aws:iam::220696059325:role/atlantis-ops-role
 
 environmentSecrets:
-  - name: GH_APP_KEY_FILE
-    secretKeyRef:
-      name: atlantis-secret
-      key: github_app_key_file
+  # - name: GH_APP_KEY_FILE
+  #   secretKeyRef:
+  #     name: atlantis-secret
+  #     key: github_app_key_file
   - name: GH_WEBHOOK_SECRET
     secretKeyRef:
       name: atlantis-secret
@@ -26,5 +26,18 @@ environmentSecrets:
 
 environment:
   GH_APP_ID: 113650
+  GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
 
 github: null
+
+extraVolumes:
+  - name: gh_app_key_file
+    secret:
+      secretName: atlantis-secret
+      items:
+        - key: github_app_key_file
+          path: gh_app_key_file.pem
+
+extraVolumeMounts:
+  - mountPath: /atlantis_keys/
+    name: gh_app_key_file
