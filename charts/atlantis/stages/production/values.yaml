@@ -8,3 +8,9 @@ service:
     - "185.199.108.0/22"
     - "140.82.112.0/20"
     - "34.103.73.76/32"
+environmentSecrets:
+  - name: ATLANTIS_WRITE_GIT_CREDS
+    secretKeyRef:
+      name: atlantis-secret
+      key: atlantis_write_git_creds
+
