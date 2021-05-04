@@ -14,6 +14,10 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::220696059325:role/atlantis-ops-role
 
+image:
+  repository: quay.io/procoredevops/atlantis-helm-chart
+  tag: procore-atlantis-v0.17.0-rc1
+  pullPolicy: IfNotPresent
 
 ## ---- BEGIN TEMPORARY SETUP CREDS SECTION ----
 ## Uncomment the following section for initial setup of the GitHub App.
