@@ -19,13 +19,13 @@ serviceAccount:
 ## Uncomment the following section for initial setup of the GitHub App.
 ## https://www.runatlantis.io/docs/access-credentials.html#generating-an-access-token
 ## Comment it again after you've registered the app with GitHub and are ready to install the secrets.
-github:
-  user: fake
-  token: fake
+# github:
+#   user: fake
+#   token: fake
 
-environment:
-  ATLANTIS_GH_ORG: procore
-  ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
+# environment:
+#   ATLANTIS_GH_ORG: procore
+#   ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
 ## ---- END TEMPORARY SETUP CREDS SECTION ----
 
 
@@ -34,31 +34,31 @@ environment:
 ## Configure the secrets you got when installing the app.
 ## Set the app-id below.
 
-# environmentSecrets:
-#   - name: ATLANTIS_GH_WEBHOOK_SECRET
-#     secretKeyRef:
-#       name: atlantis-secret
-#       key: github_token
+environmentSecrets:
+  - name: ATLANTIS_GH_WEBHOOK_SECRET
+    secretKeyRef:
+      name: atlantis-secret
+      key: github_secret
 
-# environment:
-#   ATLANTIS_GH_APP_ID: 113650
-#   ATLANTIS_GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
-#   ATLANTIS_WRITE_GIT_CREDS: true
-#   ATLANTIS_GH_ORG: procore
-#  ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
+environment:
+  ATLANTIS_GH_APP_ID: 113770
+  ATLANTIS_GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
+  ATLANTIS_WRITE_GIT_CREDS: true
+  ATLANTIS_GH_ORG: procore
+ ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
 
-# github: null
+github: null
 
-# extraVolumes:
-#   - name: gh-app-key-file
-#     secret:
-#       secretName: atlantis-secret
-#       items:
-#         - key: github_app_key_file
-#           path: gh_app_key_file.pem
+extraVolumes:
+  - name: gh-app-key-file
+    secret:
+      secretName: atlantis-secret
+      items:
+        - key: github_key_file
+          path: gh_app_key_file.pem
 
-# extraVolumeMounts:
-#   - mountPath: /atlantis_keys/
-#     name: gh-app-key-file
+extraVolumeMounts:
+  - mountPath: /atlantis_keys/
+    name: gh-app-key-file
 
 ## ---- END PERMANENT SETUP CREDS SECTION ----
