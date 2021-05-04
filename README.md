@@ -13,7 +13,7 @@ This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis per
 In order for Atlantis to start and run successfully:
 1. At least one of the following sets of credentials must be defined:
     - `github`
-    - `github_app`
+    - `githubApp`
     - `gitlab`
     - `bitbucket`
 
@@ -65,6 +65,9 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `github.token`                              | Personal access token for the Atlantis GitHub user.                                                                                                                                                                                                                                                       | n/a     |
 | `github.secret`                             | Repository or organization-wide webhook secret for the Atlantis GitHub integration. All repositories in GitHub that are to be integrated with Atlantis must share the same value.                                                                                                                         | n/a     |
 | `github.hostname`                           | Hostname of your GitHub Enterprise installation.                                                                                                                                                                                                                                                          | n/a     |
+| `githubApp.id`                              | GitHub app ID. If set, GitHub authentication will be performed as an [installation](https://developer.github.com/v3/apps/installations/). | n/a |
+| `githubApp.key`                             | A GitHub App PEM encoded private key file. If set, GitHub authentication will be performed as an [installation]((https://developer.github.com/v3/apps/installations/)). | n/a |
+| `githubApp.secret`                          | Secret used to validate GitHub webhooks (see https://developer.github.com/webhooks/securing/). | n/a     |
 | `gitlab.user`                               | Repository or organization-wide secret for the Atlantis GitLab,integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                 | n/a     |
 | `gitlab.token`                              | Personal access token for the Atlantis GitLab user.                                                                                                                                                                                                                                                       | n/a     |
 | `gitlab.secret`                             | Webhook secret for the Atlantis GitLab integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                                         | n/a     |

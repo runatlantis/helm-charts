@@ -20,7 +20,7 @@ orgWhitelist: <replace-me>
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If using a GitHub App, please enter your values as follows:
-# github_app:
+# githubApp:
 #   id: 123456
 #   key: |
 #     -----BEGIN RSA PRIVATE KEY-----
