@@ -45,7 +45,7 @@ environment:
   ATLANTIS_GH_APP_KEY_FILE: /atlantis_keys/gh_app_key_file.pem
   ATLANTIS_WRITE_GIT_CREDS: true
   ATLANTIS_GH_ORG: procore
- ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
+  ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
 
 github: null
 
