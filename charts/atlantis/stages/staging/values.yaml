@@ -25,6 +25,7 @@ github:
 
 environment:
   ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
+  ATLANTIS_GH_ORG: procore
 ## ---- END TEMPORARY SETUP CREDS SECTION ----
 
 
@@ -45,6 +46,7 @@ environment:
 #   ATLANTIS_WRITE_GIT_CREDS: true
 #   ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
 #   ATLANTIS_LOG_LEVEL: debug
+#   ATLANTIS_GH_ORG: procore
 
 # github: null
 
