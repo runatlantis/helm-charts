@@ -16,7 +16,7 @@ serviceAccount:
 
 image:
   repository: quay.io/procoredevops/atlantis-helm-chart
-  tag: procore-atlantis-v0.17.0-rc1
+  tag: procore-atlantis-v0.17.0-0.0.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
