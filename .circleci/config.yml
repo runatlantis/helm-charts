@@ -86,7 +86,7 @@ workflows:
             - chart_version
   build_docker:
     jobs:
-      - build_and_push:
+      - build_docker:
           filters:
             branches:
               ignore: /.*/
