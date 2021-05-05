@@ -19,7 +19,6 @@ image:
   tag: procore-atlantis-v0.17.0-rc1
   pullPolicy: IfNotPresent
 
-# temporary. use a permanent secret.
 imagePullSecrets:
   - procoredevops-procore-sherpa-pull-secret
 
