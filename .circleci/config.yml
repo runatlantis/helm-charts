@@ -48,6 +48,7 @@ jobs:
     working_directory: ~/atlantis-helm-chart
     steps:
       - setup_remote_docker
+      - checkout
       - run:
           name: Build Image
           command: |
