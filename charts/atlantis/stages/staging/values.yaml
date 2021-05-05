@@ -19,6 +19,10 @@ image:
   tag: procore-atlantis-v0.17.0-rc1
   pullPolicy: IfNotPresent
 
+# temporary. use a permanent secret.
+imagePullSecrets:
+  - procoredevops-procore-sherpa-pull-secret
+
 ## ---- BEGIN TEMPORARY SETUP CREDS SECTION ----
 ## Uncomment the following section for initial setup of the GitHub App.
 ## https://www.runatlantis.io/docs/access-credentials.html#generating-an-access-token
