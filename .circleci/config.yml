@@ -42,6 +42,30 @@ jobs:
       - run: helm package ./charts/atlantis
       - run: |
           aws s3 cp atlantis-*.tgz s3://procore-helm-charts/
+  build_docker:
+    docker:
+      - image: docker:latest
+    working_directory: ~/atlantis-helm-chart
+    steps:
+      - setup_remote_docker
+      - checkout
+      - run:
+          name: Build Image
+          command: |
+            docker build \
+              --pull \
+              -t quay.io/procoredevops/atlantis-helm-chart:$CIRCLE_TAG ~/atlantis-helm-chart/procore-atlantis/
+      - run:
+          name: Docker Login
+          command: |
+            echo $QUAY_PASSWORD |
+              docker login \
+              --username $QUAY_USERNAME \
+              --password-stdin \
+              quay.io
+      - run:
+          name: Push Image
+          command: docker push --all-tags quay.io/procoredevops/atlantis-helm-chart
 
 # default filters for jobs so we only run on tags
 defaults: &defaults
@@ -61,3 +85,12 @@ workflows:
           context: helm-package-release
           requires:
             - chart_version
+  build_docker:
+    jobs:
+      - build_docker:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              # only run the docker build on tags starting with procore-atlantis-
+              only: /^procore-atlantis-v\d+\.\d+\.\d+(?:-.+)?$/
