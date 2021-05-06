@@ -54,6 +54,7 @@ environment:
   ATLANTIS_ATLANTIS_URL: http://atlantis.procoretech-qa.com/
   ATLANTIS_LOG_LEVEL: debug
   ATLANTIS_GH_ORG: procore
+  ATLANTIS_SILENCE_ALLOWLIST_ERRORS: true
 
 github: null
 
