@@ -16,7 +16,7 @@ In order for Atlantis to start and run successfully:
     - `gitlab`
     - `bitbucket`
 
-    Refer to [values.yaml](values.yaml) for detailed examples.
+    Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
@@ -37,7 +37,7 @@ extraManifests:
 ```
 
 ## Customization
-The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
+The following options are supported.  See [values.yaml](/charts/atlantis/values.yaml) for more detailed documentation and examples:
 
 | Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
 |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
