@@ -117,6 +117,7 @@ repoConfig: |
  ---
  repos:
  - id: /.*/
+   workflow: workflow
    apply_requirements: [mergeable]
  workflows:
    workflow:
