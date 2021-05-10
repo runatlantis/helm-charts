@@ -118,7 +118,11 @@ repoConfig: |
  repos:
  - id: /.*/
    apply_requirements: [mergeable]
-
+ steps:
+   plan:
+     extra_args: [| tfmask]
+   apply:
+     extra_args: [| tfmask]
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
 

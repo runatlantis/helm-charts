@@ -8,3 +8,6 @@ RUN apk add --no-cache \
     && pip3 install \
         awscli \
     && rm -rf /var/cache/apk/*
+
+ADD https://github.com/cloudposse/tfmask/releases/download/0.7.0/tfmask_linux_amd64 /usr/bin/tfmask
+RUN chmod +x /usr/bin/tfmask
