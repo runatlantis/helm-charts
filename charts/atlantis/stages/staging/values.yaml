@@ -54,6 +54,7 @@ environment:
   ATLANTIS_LOG_LEVEL: debug
   ATLANTIS_GH_ORG: procore
   ATLANTIS_SILENCE_ALLOWLIST_ERRORS: true
+  AWS_DEFAULT_REGION: us-east-1
 
 github: null
 
