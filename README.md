@@ -16,7 +16,7 @@ In order for Atlantis to start and run successfully:
     - `gitlab`
     - `bitbucket`
 
-    Refer to [values.yaml](values.yaml) for detailed examples.
+    Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
 1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
@@ -37,7 +37,7 @@ extraManifests:
 ```
 
 ## Customization
-The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
+The following options are supported.  See [values.yaml](/charts/atlantis/values.yaml) for more detailed documentation and examples:
 
 | Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
 |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
@@ -99,7 +99,9 @@ The following options are supported.  See [values.yaml](values.yaml) for more de
 | `ingress.annotations`                       | Additional annotations to use for the Ingress. | `{}` |
 | `ingress.labels`                            | Additional labels to use for the Ingress. | `{}` |
 | `ingress.path`                              | Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.                                                                                                                                                                                                                 | `/`     |
-| `ingress.host`                              | Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.                                                                                                                                                                                                           | `chart-example.local`     |
+| `ingress.host`                              | Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.                                                                                                                                                                                                           |     |                                                                                                                                                                                                   | `/`     |
+| `ingress.hosts`                              | List of domain names Kubernetes Ingress rule looks for. Set it to the domains in which Atlantis will be hosted on.                                                                                                                                                                                                           | `chart-example.local`     |
+| `ingress.hosts[0].paths`                     | List of paths to use in Kubernetes Ingress rules.  Should be set to `/*` if using gce-ingress in Google                                                                                                                                                                                                        | `[/]`     |
 | `ingress.tls`                               | Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.                                                                                                                                                                            | `[]`     |
 | `test.enabled`                              | Whether to enable the test. | `true` |
 | `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
