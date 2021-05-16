@@ -121,6 +121,9 @@ spec:
             {{- if .Values.config }}
             - --config=/etc/atlantis/atlantis.yaml
             {{- end }}
+            {{- if .Values.extraArgs }}
+            {{ toYaml .Values.extraArgs | indent 12 | trim }}
+            {{- end }}
           ports:
           - name: atlantis
             containerPort: 4141
