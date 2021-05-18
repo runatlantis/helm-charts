@@ -82,17 +82,18 @@ serviceAccountSecrets:
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
 
+# use the Procore custom Atlantis docker image
 image:
-  repository: runatlantis/atlantis
-  tag: v0.16.1
+  repository: quay.io/procoredevops/atlantis-helm-chart
+  tag: procore-atlantis-v0.17.0-0.0.2
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 ##
-# imagePullSecrets:
-# - myRegistryKeySecretName
+imagePullSecrets:
+  - procoredevops-procore-sherpa-pull-secret
 
 ## Use Server Side Repo Config,
 ## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
@@ -118,19 +119,16 @@ repoConfig: |
  repos:
  - id: /.*/
    workflow: workflow
-   apply_requirements: [mergeable]
+   apply_requirements: [approved]
  workflows:
    workflow:
      plan:
        steps:
-         - init:
-             extra_args: ["| tfmask"]
-         - plan:
-             extra_args: ["| tfmask"]
+       - run: terraform${"${ATLANTIS_TERRAFORM_VERSION}"} init -input=false -no-color
+       - run: terraform${"${ATLANTIS_TERRAFORM_VERSION}"} plan -input=false -refresh -no-color -out $PLANFILE | tfmask
      apply:
        steps:
-       - apply:
-           extra_args: ["| tfmask"]
+       - run: terraform${"${ATLANTIS_TERRAFORM_VERSION}"} apply -no-color $PLANFILE | tfmask
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
 
@@ -167,9 +165,13 @@ readinessProbe:
   failureThreshold: 5
   scheme: HTTP
 
+# use LoadBalancer for service and allow GitHub webhook IPs through.
 service:
-  type: NodePort
-  port: 80
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+    - "192.30.252.0/22"
+    - "185.199.108.0/22"
+    - "140.82.112.0/20"
 
 podTemplate:
   annotations: {}
@@ -201,11 +203,11 @@ ingress:
 
 resources:
   requests:
-    memory: 1Gi
-    cpu: 100m
+    memory: 2Gi
+    cpu: 1
   limits:
-    memory: 1Gi
-    cpu: 100m
+    memory: 2Gi
+    cpu: 1
 
 # Disk space for Atlantis to check out repositories
 dataStorage: 5Gi
@@ -312,3 +314,8 @@ initContainers: []
 # - name: example
 #   image: alpine:latest
 #   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
+
+# environment variables to set
+environment:
+  ATLANTIS_GH_ORG: procore
+  AWS_DEFAULT_REGION: us-east-1

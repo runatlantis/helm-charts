@@ -1,0 +1,9 @@
+# Use this values file when perfoming the initial registration of the GitHub App.
+# https://www.runatlantis.io/docs/access-credentials.html#generating-an-access-token
+# Use the values.yaml file after you've completed initial setup.
+github:
+  user: fake
+  token: fake
+
+environment:
+  ATLANTIS_ATLANTIS_URL: http://atlantis.production.procoretech.com/
