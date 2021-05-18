@@ -113,7 +113,7 @@ imagePullSecrets:
 #      apply:
 #        steps: [apply]
 
-# We are handling approvals in Github. Only verify the PR is mergeable on all repos.
+# We are handling approvals in Github. Only verify the PR is approved due to Atlantis bug https://github.com/runatlantis/atlantis/issues/523
 repoConfig: |
  ---
  repos:
@@ -124,11 +124,12 @@ repoConfig: |
    workflow:
      plan:
        steps:
-       - run: terraform${"${ATLANTIS_TERRAFORM_VERSION}"} init -input=false -no-color
-       - run: terraform${"${ATLANTIS_TERRAFORM_VERSION}"} plan -input=false -refresh -no-color -out $PLANFILE | tfmask
+       - run: 'terraform$ATLANTIS_TERRAFORM_VERSION init -input=false -no-color'
+       - run: 'terraform$ATLANTIS_TERRAFORM_VERSION plan -input=false -refresh -no-color -out $PLANFILE | tfmask'
      apply:
        steps:
-       - run: terraform${"${ATLANTIS_TERRAFORM_VERSION}"} apply -no-color $PLANFILE | tfmask
+       - run: 'terraform$ATLANTIS_TERRAFORM_VERSION apply -no-color $PLANFILE | tfmask'
+
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
 
@@ -168,6 +169,7 @@ readinessProbe:
 # use LoadBalancer for service and allow GitHub webhook IPs through.
 service:
   type: LoadBalancer
+  port: 80
   loadBalancerSourceRanges:
     - "192.30.252.0/22"
     - "185.199.108.0/22"
