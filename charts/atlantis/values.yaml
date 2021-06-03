@@ -296,3 +296,19 @@ extraArgs: []
 # extraArgs:
 # - --disable-autoplan
 # - --disable-repo-locking
+
+extraContainers: []
+# containers:
+#  - name: <container name>
+#    args:
+#      - ...
+#    image: <docker images>
+#    imagePullPolicy: IfNotPresent
+#    resources:
+#      limits:
+#        memory: 128Mi
+#      requests:
+#        cpu: 100m
+#        memory: 128Mi
+#    volumeMounts:
+#      - ...
