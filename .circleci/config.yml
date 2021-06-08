@@ -54,7 +54,7 @@ jobs:
           command: |
             docker build \
               --pull \
-              -t quay.io/procoredevops/atlantis-helm-chart:$CIRCLE_TAG ~/atlantis-helm-chart/procore-atlantis/
+              -t quay.io/procoredevops/atlantis-helm-chart:$CIRCLE_TAG ~/atlantis-helm-chart/
       - run:
           name: Docker Login
           command: |

@@ -1,169 +1,136 @@
-# Atlantis
+# atlantis-helm-chart
 
-[Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
+Procore customizations to the upstream Atlantis Helm Chart repo.
 
-## Introduction
-This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
+# Docker Image
+We have our own custom Dockerfile which adds some utilities on top of the upstream Atlantis image.
+* The AWS CLI to the Atlantis image.
+* The procore_terraform_wrapper.py script from this repo.
 
-## Prerequisites
-- Kubernetes 1.9+
-- PersistentVolume support
+The image is built by CI and pushed to quay.io/procoredevops/atlantis-helm-chart/ using `procore-atlantis-vx.x.x-x.x.x` tags.
 
-## Required Configuration
-In order for Atlantis to start and run successfully:
-1. At least one of the following sets of credentials must be defined:
-    - `github`
-    - `gitlab`
-    - `bitbucket`
+## Important Note on AWS CLI
+The AWS CLI v2 is not currently (5/4/2021) compatible with Alpine based images. V2 requires glibc, and Alpine images do not have it. They use musl instead, and the AWS CLI v2 is not compatible with musl.
 
-    Refer to [values.yaml](values.yaml) for detailed examples.
-    They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
+There's a workaround in this thread, but it's complicated.
+https://github.com/aws/aws-cli/issues/4685
 
-1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
+We could also investigate adding a second container to the atlantis pod that has the AWS CLI installed. We'd then just need to add a wrapper inside the atlantis container which redirects calls to `aws` to run in the other container.
 
-## Additional manifests
+# procore_terraform_wrapper
 
-It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+This script wraps calls to Terraform with the following goals:
+1. Ensure any sensitive output is masked using `tfmask`, as the output is posted to GitHub by Atlantis.
+2. Preserve the return code of `terraform` commands. Piping them to `tfmask` directly caused the loss of the original return code.
+3. Reduce the amount of output from `terraform init` and `terraform plan` when the commands run without errors.
 
-```yaml
-extraManifests:
-  - apiVersion: cloud.google.com/v1beta1
-    kind: BackendConfig
-    metadata:
-      name: "{{ .Release.Name }}-test"
-    spec:
-      securityPolicy:
-        name: "gcp-cloud-armor-policy-test"
+The last goal is acheived by:
+1. Removing the messages when downloading external modules during `terraform init`
+2. Removing the messages for the state refresh during `terraform plan`.
+
+If the terraform commands return any errors or if the regular expressions used for reducing the output do not match, the full-length output will be printed. All output will still go through tfmask, regardless of errors.
+
+## Usage
+This script is intended to be used by Atlantis. You can run it locally for testing too.
+
+```
+usage: procore_terraform_wrapper.py [-h] --action {init,plan,apply} [--tf-version TF_VERSION] [--planfile PLANFILE] [--comment-args COMMENT_ARGS] [--debug]
+
+Wraps calls to terraform and tfmask. For use with Atlantis.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --action {init,plan,apply}
+                        The Terraform command to perform.
+  --tf-version TF_VERSION
+                        Optional. The terraform version to use. Pass $ATLANTIS_TERRAFORM_VERSION to this.
+  --planfile PLANFILE   Optional. Path to the planfile to use. Pass $PLANFILE to this.
+  --comment-args COMMENT_ARGS
+                        Optional. Extra args for terraform command. Pass $COMMENT_ARGS to this.
+  --debug               Optional. Increase log level to debug.
 ```
 
-## Customization
-The following options are supported.  See [values.yaml](values.yaml) for more detailed documentation and examples:
+For Atlantis usage, we will call this script as part of a custom workflow. See the `repoConfig` setting in the `values.yaml` file for the chart in this repo.
 
-| Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
-|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `dataStorage`                               | Amount of storage available for Atlantis' data directory (mostly used to check out git repositories).                                                                                                                                                                                                     | `5Gi`   |
-| `aws.config`                                | Contents of a file to be mounted to `~/.aws/config`.                                                                                                                                                                                                                                                      | n/a     |
-| `aws.credentials`                           | Contents of a file to be mounted to `~/.aws/credentials`.                                                                                                                                                                                                                                                 | n/a     |
-| `awsSecretName`                           | Secret name containing AWS credentials - will override aws.credentials and aws.config. Will be used a volume mount on `$HOME/.aws`, so it needs a `credentials` key. The key `config` is optional. See the file `templates/secret-aws.yml` for more info on the Secret contents.                                                                                                                                     | n/a     |
-| `bitbucket.user`                            | Name of the Atlantis Bitbucket user.                                                                                                                                                                                                                                                                      | n/a     |
-| `bitbucket.token`                           | Personal access token for the Atlantis Bitbucket user.                                                                                                                                                                                                                                                    | n/a     |
-| `bitbucket.secret`                          | Webhook secret for Bitbucket repositories (Bitbucket Server only).                                                                                                                                                                                                                                        | n/a     |
-| `bitbucket.baseURL`                         | Base URL of Bitbucket Server installation.                                                                                                                                                                                                                                                                | n/a     |
-| `environment`                               | Map of environment variables for the container.                                                                                                                                                                                                                                                           | `{}`    |
-| `environmentSecrets`                        | Array of Kubernetes secrets that can be used to set environment variables. See `values.yaml` for example.                                                                                                                                                                                                 | `{}`    |
-| `environmentRaw`                            | Array environment variables in plain Kubernetes yaml format. See `values.yaml` for example.                                                                                                                                                                                                               | `[]`    |
-| `loadEnvFromSecrets`                        | Array of Kubernetes secrets to set all key-value pairs as environment variables. See `values.yaml` for example.                                                                                                                                                                                           | `[]`    |
-| `loadEnvFromConfigMaps`                     | Array of Kubernetes `ConfigMap`s to set all key-value pairs as environment variables. See `values.yaml` for example.                                                                                                                                                                                      | `[]`    |
-| `extraVolumes`                              | List of additional volumes available to the pod.                                                                                                                                                                                                                                                          | `[]`    |
-| `extraVolumeMounts`                         | List of additional volumes mounted to the container.                                                                                                                                                                                                                                                      | `[]`    |
-| `imagePullSecrets`                          | List of secrets for pulling images from private registries.                                                                                                                                                                                                                                               | `[]`    |
-| `gitconfig`                                 | Contents of a file to be mounted to `~/.gitconfig`.  Use to allow redirection for Terraform modules in private git repositories.                                                                                                                                                                          | n/a     |
-| `gitconfigSecretName`                       | Name of a pre-existing Kubernetes `Secret` containing a `gitconfig` key. Use this instead of `gitconfig` (optional)                                                                                                                                                                           | n/a     |
-| `command`                                   | Optionally override the [`command` field](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#container-v1-core) of the Atlantis Docker container. If not set, the default Atlantis `ENTRYPOINT` is used. Must be an array.                                                                                                                                  | n/a     |
-| `github.user`                               | Name of the Atlantis GitHub user.                                                                                                                                                                                                                                                                         | n/a     |
-| `github.token`                              | Personal access token for the Atlantis GitHub user.                                                                                                                                                                                                                                                       | n/a     |
-| `github.secret`                             | Repository or organization-wide webhook secret for the Atlantis GitHub integration. All repositories in GitHub that are to be integrated with Atlantis must share the same value.                                                                                                                         | n/a     |
-| `github.hostname`                           | Hostname of your GitHub Enterprise installation.                                                                                                                                                                                                                                                          | n/a     |
-| `gitlab.user`                               | Repository or organization-wide secret for the Atlantis GitLab,integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                 | n/a     |
-| `gitlab.token`                              | Personal access token for the Atlantis GitLab user.                                                                                                                                                                                                                                                       | n/a     |
-| `gitlab.secret`                             | Webhook secret for the Atlantis GitLab integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                                         | n/a     |
-| `gitlab.hostname`                           | Hostname of your GitLab Enterprise installation.                                                                                                                                                                                                                                                          | n/a     |
-| `vcsSecretName` | Name of a pre-existing Kubernetes `Secret` containing `token` and `secret` keys set to your VCS provider's API token and webhook secret, respectively. Use this instead of `github.token`/`github.secret`, etc. (optional) | n/a |
-| `podTemplate.annotations`                   | Additional annotations to use for the StatefulSet.                                                                                                                                                                                                                                                        | n/a     |
-| `podTemplate.annotations`                   | Additional annotations to use for pods. | `{}` |
-| `podTemplate.labels`                        | Additional labels to use for pods. | `{}` |
-| `statefulSet.annotations`                   | Additional annotations to use for StatefulSet. | `{}` |
-| `statefulSet.labels`                        | Additional labels to use for StatefulSet. | `{}` |
-| `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
-| `orgWhitelist`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
-| `config`                                | Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications.                                                                                                                                                                                | n/a     |
-| `repoConfig`                                | [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
-| `defaultTFVersion`                          | Default Terraform version to be used by atlantis server                                                                                                                                                                                                                                                   | n/a     |
-| `allowForkPRs`                              | Allow atlantis to run on fork Pull Requests                                                                                                                                                                                                                                                               | `false` |
-| `allowDraftPRs`                             | Allow atlantis to run on draft Pull Requests                                                                                                                                                                                                                                                              | `false` |
-| `hidePrevPlanComments`                      | Allow atlantis to hide previous plan comments                                                                                                                                                                                                                                                             | `false` |
-| `disableApply`                              | Disables running `atlantis apply` regardless of what options are specified                                                                                                                                                                                                                                 | `false` |
-| `disableApplyAll`                           | Disables running `atlantis apply` without any flags                                                                                                                                                                                                                                                       | `false` |
-| `serviceAccount.create`                     | Whether to create a Kubernetes ServiceAccount if no account matching `serviceAccount.name` exists.                                                                                                                                                                                                        | `true`  |
-| `serviceAccount.mount`                      | Whether to mount the Kubernetes ServiceAccount into the pod                                                                                                                                                                                                                                               | `true`  |
-| `serviceAccount.name`                       | Name of the Kubernetes ServiceAccount under which Atlantis should run. If no value is specified and `serviceAccount.create` is `true`, Atlantis will be run under a ServiceAccount whose name is the FullName of the Helm chart's instance, else Atlantis will be run under the `default` ServiceAccount. | n/a     |
-| `serviceAccount.annotations`                | Additional Service Account annotations                                                                           | n/a     |
-| `serviceAccountSecrets.credentials`         | Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform production service account. Only applicable if hosting Atlantis on GKE.                                                                                                                                                                      | n/a     |
-| `serviceAccountSecrets.credentials-staging` | Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform staging service account. Only applicable if hosting Atlantis on GKE.                                                                                                                                                                         | n/a     |
-| `googleServiceAccountSecrets`               | An array of Kubernetes secrets containing Google Service Account credentials. See `values.yaml` for examples and additional documentation.                                                                                                                                                                | n/a     |
-| `service.port`                              | Port of the `Service`.                                                                                                                                                                                                                                                                                    | `80`    |
-| `service.loadBalancerSourceRanges`          | Array of whitelisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
-| `storageClassName`                          | Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                                      | n/a     |
-| `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
-| `ingress.enabled`                           | Whether to create a Kubernetes Ingress.                                                                                                                                                                                                                                                                   | `true`     |
-| `ingress.annotations`                       | Additional annotations to use for the Ingress. | `{}` |
-| `ingress.labels`                            | Additional labels to use for the Ingress. | `{}` |
-| `ingress.path`                              | Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.                                                                                                                                                                                                                 | `/`     |
-| `ingress.host`                              | Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.                                                                                                                                                                                                           |     |                                                                                                                                                                                                   | `/`     |
-| `ingress.hosts`                              | List of domain names Kubernetes Ingress rule looks for. Set it to the domains in which Atlantis will be hosted on.                                                                                                                                                                                                           | `chart-example.local`     |
-| `ingress.hosts[0].paths`                     | List of paths to use in Kubernetes Ingress rules.  Should be set to `/*` if using gce-ingress in Google                                                                                                                                                                                                        | `[/]`     |
-| `ingress.tls`                               | Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.                                                                                                                                                                            | `[]`     |
-| `test.enabled`                              | Whether to enable the test. | `true` |
-| `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
-| `initContainers`                            | Containers used to initialize context for Atlantis pods                                  | `[]`                              |
+When running the script locally, just use it in place of the terraform command. You will need to install `tfmask` and have that available on your path before the script will work. See the `Dockerfile` in this repo for how to install `tfmask`.
 
-**NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
-
-
-## Upgrading
-### From `2.*` to `3.*`
-* The following value names have been removed. They are replaced by [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
-  * `requireApproval`
-  * `requireMergeable`
-  * `allowRepoConfig`
-
-To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
-
-```bash
-$ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-whitelist='*'
-WARNING: Flags --require-approval, --require-mergeable and --allow-repo-config have been deprecated.
-Create a --repo-config file with the following config instead:
-
----
-repos:
-- id: /.*/
-  apply_requirements: [approved, mergeable]
-  allowed_overrides: [apply_requirements, workflow]
-  allow_custom_workflows: true
-
-or use --repo-config-json='{"repos":[{"id":"/.*/", "apply_requirements":["approved", "mergeable"], "allowed_overrides":["apply_requirements","workflow"], "allow_custom_workflows":true}]}'
+For example, you might run this series of commands from within a terraform project directory (e.g. terraform-infra/us00/staging/security_kubernetes_cluster/):
+```
+aws-okta exec prnd_staging -- procore_terraform_wrapper.py --action init
+aws-okta exec prnd_staging -- procore_terraform_wrapper.py --action plan
+aws-okta exec prnd_staging -- procore_terraform_wrapper.py --action apply
 ```
 
-Then use this YAML in the new repoConfig value:
+Here's some example output from local usage with a development cluster in terraform-infra:
+```
+tommckay@MACLAP-4ZYMD6R kubernetes_cluster % pwd
+/Users/tommckay/Source/procore/terraform-infra/us00/staging/dev/kubernetes_cluster
+tommckay@MACLAP-4ZYMD6R kubernetes_cluster % aws-okta exec prnd_staging -- procore_terraform_wrapper.py --action init
+2021-06-03 11:58:22,038:INFO:Running terraform init...
+2021-06-03 11:58:22,038:INFO:Running command: terraform init -input=false -no-color
+2021-06-03 11:59:45,960:INFO:Command completed. returncode=0
+2021-06-03 11:59:45,961:INFO:Running command: tfmask
+2021-06-03 11:59:46,030:INFO:Command completed. returncode=0
+Initializing modules...
+ Module downloads removed for brevity
+Initializing the backend...
 
-```yaml
-repoConfig: |
-  ---
-  repos:
-  - id: /.*/
-    apply_requirements: [approved, mergeable]
-    allowed_overrides: [apply_requirements, workflow]
-    allow_custom_workflows: true
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+- Finding hashicorp/random versions matching ">= 2.1.*"...
+(...snip other provider plugins...)
+
+(...snip lots of output from terraform)
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+
+tommckay@MACLAP-4ZYMD6R kubernetes_cluster % aws-okta exec prnd_staging -- procore_terraform_wrapper.py --action plan
+2021-06-03 12:00:15,943:INFO:Running terraform plan...
+2021-06-03 12:00:15,943:INFO:Running command: terraform plan -input=false -refresh -no-color -out plan.tfplan
+2021-06-03 12:01:10,991:INFO:Command completed. returncode=0
+2021-06-03 12:01:10,992:INFO:Running command: tfmask
+2021-06-03 12:01:10,997:INFO:Command completed. returncode=0
+Refreshing Terraform state in-memory prior to plan...
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+ State refresh removed for brevity
+------------------------------------------------------------------------
+
+No changes. Infrastructure is up-to-date.
+
+This means that Terraform did not detect any differences between your
+configuration and real physical resources that exist. As a result, no
+actions need to be performed.
+
+
+tommckay@MACLAP-4ZYMD6R kubernetes_cluster % aws-okta exec prnd_staging -- procore_terraform_wrapper.py --action apply
+2021-06-03 12:01:55,915:INFO:Running terraform apply...
+2021-06-03 12:01:55,915:INFO:Running command: terraform apply -no-color plan.tfplan
+2021-06-03 12:02:08,397:INFO:Command completed. returncode=0
+2021-06-03 12:02:08,397:INFO:Running command: tfmask
+2021-06-03 12:02:08,403:INFO:Command completed. returncode=0
+
+(...snip lots of output from terraform apply...)
+
+
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
 ```
 
-### From `1.*` to `2.*`
-* The following value names have changed:
-  * `allow_repo_config` => `allowRepoConfig`
-  * `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
-  * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
-  * `bitbucket.base_url` => `bitbucket.baseURL`
+## Running tests
+Run the tests after any changes to the python code.
 
-## Testing the Deployment
-To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
-
-1. Install the chart.  Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
-
-    ```bash
-    helm repo add runatlantis https://runatlantis.github.io/helm-charts
-    helm install -f test-values.yaml --name my-atlantis runatlantis/atlantis --debug
-    ```
-
-1. Run the tests:
-    ```bash
-    helm test my-atlantis
-    ```
+```
+cd procore_terraform_wrapper
+pip3 install -r requirements.txt
+pytest ./test/ -vvv
+```

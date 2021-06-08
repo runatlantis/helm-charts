@@ -1,0 +1,10 @@
+{
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.pythonPath": "/usr/local/bin/python3",
+    "python.testing.pytestEnabled": true,
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/procore_terraform_wrapper"
+    ]
+}

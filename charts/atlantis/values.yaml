@@ -85,7 +85,7 @@ serviceAccountSecrets:
 # use the Procore custom Atlantis docker image
 image:
   repository: quay.io/procoredevops/atlantis-helm-chart
-  tag: procore-atlantis-v0.17.0-0.0.2
+  tag: procore-atlantis-v0.17.0-0.0.4
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -124,11 +124,11 @@ repoConfig: |
    workflow:
      plan:
        steps:
-       - run: 'terraform$ATLANTIS_TERRAFORM_VERSION init -input=false -no-color'
-       - run: 'terraform$ATLANTIS_TERRAFORM_VERSION plan -input=false -refresh -no-color -out $PLANFILE | tfmask'
+       - run: 'procore_terraform_wrapper.py --action init --tf-version=$ATLANTIS_TERRAFORM_VERSION'
+       - run: 'procore_terraform_wrapper.py --action plan --tf-version=$ATLANTIS_TERRAFORM_VERSION --planfile=$PLANFILE --comment-args=$COMMENT_ARGS'
      apply:
        steps:
-       - run: 'terraform$ATLANTIS_TERRAFORM_VERSION apply -no-color $PLANFILE | tfmask'
+       - run: 'procore_terraform_wrapper.py --action apply --tf-version=$ATLANTIS_TERRAFORM_VERSION --planfile=$PLANFILE --comment-args=$COMMENT_ARGS'
 
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
