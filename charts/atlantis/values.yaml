@@ -7,6 +7,7 @@
 # atlantisUrl: http://10.0.0.0
 
 # Replace this with your own repo whitelist:
+test: true
 orgWhitelist: <replace-me>
 # logLevel: "debug"
 
