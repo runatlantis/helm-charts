@@ -34,6 +34,14 @@ spec:
 {{ toYaml . | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.hostAliases }}
+      hostAliases:
+      {{- range .Values.hostAliases }}
+        - hostnames: {{- range .hostnames }}
+          - {{ . }}{{- end}}
+          ip: {{ .ip }}
+      {{- end }}
+      {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       securityContext:
@@ -167,6 +175,10 @@ spec:
           - name: ATLANTIS_DISABLE_APPLY_ALL
             value: {{ .Values.disableApplyAll | quote }}
           {{- end }}
+          {{- if .Values.disableRepoLocking }}
+          - name: ATLANTIS_DISABLE_REPO_LOCKING
+            value: {{ .Values.disableRepoLocking | quote }}
+          {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
             value: {{ .Values.defaultTFVersion }}
@@ -252,6 +264,22 @@ spec:
                 key: bitbucket_secret
           {{- end }}
           {{- end }}
+          {{- if .Values.azuredevops }}
+          - name: ATLANTIS_AZUREDEVOPS_USER
+            value: {{ required "azuredevops.user is required if azuredevops configuration is specified." .Values.azuredevops.user }}
+          - name: ATLANTIS_AZUREDEVOPS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: azuredevops_token
+          - name: ATLANTIS_AZUREDEVOPS_WEBHOOK_USER
+            value: {{ required "azuredevops.webhookUser is required if azuredevops configuration is specified." .Values.azuredevops.webhookUser }}
+          - name: ATLANTIS_AZUREDEVOPS_WEBHOOK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: azuredevops_webhook_password
+          {{- end}}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:

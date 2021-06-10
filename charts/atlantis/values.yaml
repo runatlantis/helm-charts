@@ -37,6 +37,14 @@ orgWhitelist: <replace-me>
 #   baseURL: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If using Azure DevOps, specify like the following:
+# azuredevops:
+#   user: foo
+#   token: bar
+#   webhookUser: foo
+#   webhookPassword: baz
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
 # If managing secrets outside the chart for the webhook, use this variable to reference the secret name
 # vcsSecretName: 'mysecret'
 
@@ -82,7 +90,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.16.1
+  tag: v0.17.0
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -127,6 +135,9 @@ disableApply: false
 
 # disableApplyAll disables running `atlantis apply` without any flags
 disableApplyAll: false
+
+# disableRepoLocking stops atlantis locking projects and or workspaces when running terraform
+disableRepoLocking: false 
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
@@ -291,6 +302,15 @@ initContainers: []
 # - name: example
 #   image: alpine:latest
 #   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
+
+# hostAliases:
+#   - hostnames:
+#     - aaa.com
+#     - test.ccc.com
+#     ip: 10.0.0.0
+#   - hostnames:
+#     - bbb.com
+#     ip: 10.0.0.2
 
 extraArgs: []
 # extraArgs:
