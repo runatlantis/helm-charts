@@ -15,6 +15,7 @@ In order for Atlantis to start and run successfully:
     - `github`
     - `gitlab`
     - `bitbucket`
+    - `azuredevops`
 
     Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
@@ -68,6 +69,10 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `gitlab.token`                              | Personal access token for the Atlantis GitLab user.                                                                                                                                                                                                                                                       | n/a     |
 | `gitlab.secret`                             | Webhook secret for the Atlantis GitLab integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                                         | n/a     |
 | `gitlab.hostname`                           | Hostname of your GitLab Enterprise installation.                                                                                                                                                                                                                                                          | n/a     |
+| `azuredevops.user`                          | Repository or organization-wide secret for the Atlantis Azure DevOps,integration. All repositories in Azure DevOps that are to be integrated with Atlantis must share the same value.                                                                                                                                 | n/a     |
+| `azuredevops.token`                         | Personal access token for the Atlantis Azure DevOps user.                                                                                                                                                                                                                                                       | n/a     |
+| `azuredevops.webhookUser`                   | Webhook user for the Atlantis Azure DevOps integration.                                                                                                                                                                                                                                                          | n/a     |
+| `azuredevops.webhookPassword`               | Webhook password for the Atlantis Azure DevOps integration. All repositories in Azure DevOps that are to be integrated with Atlantis must share the same value.                                                                                                                                                         | n/a     |
 | `vcsSecretName` | Name of a pre-existing Kubernetes `Secret` containing `token` and `secret` keys set to your VCS provider's API token and webhook secret, respectively. Use this instead of `github.token`/`github.secret`, etc. (optional) | n/a |
 | `podTemplate.annotations`                   | Additional annotations to use for the StatefulSet.                                                                                                                                                                                                                                                        | n/a     |
 | `podTemplate.annotations`                   | Additional annotations to use for pods. | `{}` |
