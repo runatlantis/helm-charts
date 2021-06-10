@@ -260,6 +260,22 @@ spec:
                 key: bitbucket_secret
           {{- end }}
           {{- end }}
+          {{- if .Values.azuredevops }}
+          - name: ATLANTIS_AZUREDEVOPS_USER
+            value: {{ required "azuredevops.user is required if azuredevops configuration is specified." .Values.azuredevops.user }}
+          - name: ATLANTIS_AZUREDEVOPS_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: azuredevops_token
+          - name: ATLANTIS_AZUREDEVOPS_WEBHOOK_USER
+            value: {{ required "azuredevops.webhookUser is required if azuredevops configuration is specified." .Values.azuredevops.webhookUser }}
+          - name: ATLANTIS_AZUREDEVOPS_WEBHOOK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: azuredevops_webhook_password
+          {{- end}}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:

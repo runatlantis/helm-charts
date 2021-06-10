@@ -37,6 +37,14 @@ orgWhitelist: <replace-me>
 #   baseURL: https://bitbucket.yourorganization.com
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If using Azure DevOps, specify like the following:
+# azuredevops:
+#   user: foo
+#   token: bar
+#   webhookUser: foo
+#   webhookPassword: baz
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
 # If managing secrets outside the chart for the webhook, use this variable to reference the secret name
 # vcsSecretName: 'mysecret'
 
