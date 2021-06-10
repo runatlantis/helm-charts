@@ -106,6 +106,8 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `test.enabled`                              | Whether to enable the test. | `true` |
 | `extraManifests`                         | add additional manifests to deploy                      | `[]`                      |
 | `initContainers`                            | Containers used to initialize context for Atlantis pods                                  | `[]`                              |
+| `hostAliases[].hostnames`                            | Hostnames for host alias entry                                  | n/a                              |
+| `hostAliases[].ip`                            | IP for host alias entry                                  | `n/a                              |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 
