@@ -160,6 +160,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  loadBalacerIP:
 
 podTemplate:
   annotations: {}
