@@ -22,6 +22,10 @@ spec:
       targetPort: 4141
       protocol: TCP
       name: atlantis
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+
   selector:
     app: {{ template "atlantis.name" . }}
     release: {{ .Release.Name }}
