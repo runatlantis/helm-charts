@@ -16,6 +16,9 @@ spec:
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
