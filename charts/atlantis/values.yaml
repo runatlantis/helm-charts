@@ -161,6 +161,7 @@ service:
   type: NodePort
   port: 80
   nodePort: null
+  loadBalancerIP: null
 
 podTemplate:
   annotations: {}
