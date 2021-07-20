@@ -160,7 +160,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
-  nodePort: 
+  nodePort: null
 
 podTemplate:
   annotations: {}
