@@ -232,9 +232,10 @@ spec:
             value: "true"
           {{- if .Values.githubApp.github_secret }}
           - name: ATLANTIS_GH_WEBHOOK_SECRET
-            secretKeyRef:
-              name: {{ template "atlantis.vcsSecretName" . }}
-              key: github_secret
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: github_secret
           {{- end }}
           {{- if index .Values.githubApp "key.pem" }}
           - name: ATLANTIS_GH_APP_KEY_FILE
