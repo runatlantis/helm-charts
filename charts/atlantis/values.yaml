@@ -171,6 +171,9 @@ podTemplate:
 statefulSet:
   annotations: {}
   labels: {}
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 100
 
 ingress:
   enabled: true
