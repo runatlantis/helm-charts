@@ -172,6 +172,9 @@ statefulSet:
   annotations: {}
   labels: {}
 
+## Optionally customize the terminationGracePeriodSeconds
+# terminationGracePeriodSeconds: 60
+
 ingress:
   enabled: true
   annotations: {}

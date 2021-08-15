@@ -44,6 +44,9 @@ spec:
       {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       securityContext:
         fsGroup: 1000
         runAsUser: 100
