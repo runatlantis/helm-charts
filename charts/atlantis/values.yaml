@@ -9,7 +9,7 @@
 # Replace this with your own repo whitelist:
 # For multiple repos use comma separated values:
 # github.com/myorg/repo1,github.com/myorg/repo2
-orgWhitelist: github.com/procore/terraform-infra
+orgWhitelist: github.com/procore/terraform-ml,github.com/procore/terraform-infra
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
