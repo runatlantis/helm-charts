@@ -79,6 +79,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `podTemplate.labels`                        | Additional labels to use for pods. | `{}` |
 | `statefulSet.annotations`                   | Additional annotations to use for StatefulSet. | `{}` |
 | `statefulSet.labels`                        | Additional labels to use for StatefulSet. | `{}` |
+| `statefulSet.securityContext`               | Allow customizing fsGroup/runAsUser. | `{}` |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
 | `orgWhitelist`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
 | `config`                                    | Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications.                                                                                                                                                                                | n/a     |
