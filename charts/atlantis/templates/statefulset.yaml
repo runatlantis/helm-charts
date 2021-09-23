@@ -44,9 +44,7 @@ spec:
       {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
-      securityContext:
-        fsGroup: 1000
-        runAsUser: 100
+      securityContext: {{ .Values.statefulSet.securityContext | toYaml | nindent 8 }}
       volumes:
       {{- if .Values.tlsSecretName }}
       - name: tls
