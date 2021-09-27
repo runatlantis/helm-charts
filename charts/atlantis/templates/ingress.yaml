@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "atlantis.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
+{{- $pathType := .Values.ingress.pathType -}}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
 apiVersion: networking.k8s.io/v1
 {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta" -}}
@@ -35,9 +36,33 @@ spec:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
+            {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ .Values.service.port }}
+            pathType: {{ .Values.ingress.pathType }}
+            {{- else -}}
               serviceName: {{ $fullName }}
               servicePort: {{ .Values.service.port }}
+            {{- end }}
     {{ else }}
+    {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+            pathType: {{ $pathType }}
+        {{- end }}
+    {{- end }}
+    {{- else -}}
     {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
@@ -48,6 +73,7 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcPort }}
         {{- end }}
+    {{- end }}
     {{- end }}
     {{- end }}
 {{- end }}
