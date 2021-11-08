@@ -177,6 +177,10 @@ spec:
           - name: ATLANTIS_DISABLE_REPO_LOCKING
             value: {{ .Values.disableRepoLocking | quote }}
           {{- end }}
+          {{- if .Values.enableDiffMarkdownFormat }}
+          - name: ATLANTIS_ENABLE_DIFF_MARKDOWN_FORMAT
+            value: {{ .Values.enableDiffMarkdownFormat | quote }}
+          {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
             value: {{ .Values.defaultTFVersion }}
