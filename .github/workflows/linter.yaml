@@ -22,3 +22,4 @@ jobs:
           VALIDATE_KUBERNETES_KUBEVAL: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_GITLEAKS: false
