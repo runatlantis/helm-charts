@@ -19,6 +19,20 @@ orgWhitelist: <replace-me>
 #   hostname: github.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If using a GitHub App, please enter your values as follows:
+# githubApp:
+#   id: 123456
+#   key: |
+#     -----BEGIN RSA PRIVATE KEY-----
+#     MIIEpQIBAAKCAQEAqDF83OLj7RL2bBkl772FRV5cAISlW3MuZvbcm3e4qUZKg/2G
+#     ZWEcPWQ6q+k3TAqeYLKPTurgkueX8Fx5nVMfkvBDr11i14omfp4M1vQjBV30aIQ7
+#     ...
+#     Nd1lWbvZWjDoyL3Rz5z2TnUOASZrslJKyUPnPuzq7Tz+GxgKiw6gV/JUVVxKZf+Y
+#     QnDyCCKhOoBSi5VpOCOFikv8y8f1KYOKaEDz7R1HDYLFtmYHvDk0cYY=
+#     -----END RSA PRIVATE KEY-----
+#   secret: baz
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
 # If using GitLab, specify like the following:
 # gitlab:
 #   user: foo
@@ -139,6 +153,9 @@ disableApplyAll: false
 # disableRepoLocking stops atlantis locking projects and or workspaces when running terraform
 disableRepoLocking: false 
 
+# Use Diff Markdown Format for color coding diffs
+enableDiffMarkdownFormat: false
+
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
   enabled: true
@@ -172,13 +189,18 @@ podTemplate:
 statefulSet:
   annotations: {}
   labels: {}
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 100
 
 ingress:
   enabled: true
+  ingressClassName:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path:
+  pathType: Prefix
   host:
   hosts:
     - host: chart-example.local
