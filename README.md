@@ -119,7 +119,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `initContainers`                            | Containers used to initialize context for Atlantis pods                                  | `[]`                              |
 | `extraContainers`                           | Additionnal containers to use and depends of use cases. | `[]` |
 | `hostAliases[].hostnames`                   | Hostnames for host alias entry                                  | n/a                              |
-| `hostAliases[].ip`                          | IP for host alias entry                                  | `n/a                              |
+| `hostAliases[].ip`                          | IP for host alias entry                                  | n/a                               |
 | `basicAuth.username`                        | Username for basic authentication                        | n/a                               |
 | `basicAuth.password`                        | Password for basic authentication                        | n/a                               |
 

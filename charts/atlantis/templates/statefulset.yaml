@@ -331,11 +331,6 @@ spec:
               path: /healthz
               port: 4141
               scheme: {{ .Values.livenessProbe.scheme }}
-              {{- if .Values.basicAuth }}
-              httpHeaders:
-              - name: Authorization
-                value: "Basic {{ printf "%s:%s" .Values.basicAuth.username .Values.basicAuth.password | b64enc }}"
-              {{- end}}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -348,11 +343,6 @@ spec:
               path: /healthz
               port: 4141
               scheme: {{ .Values.readinessProbe.scheme }}
-              {{- if .Values.basicAuth }}
-              httpHeaders:
-              - name: Authorization
-                value: "Basic {{ printf "%s:%s" .Values.basicAuth.username .Values.basicAuth.password | b64enc }}"
-              {{- end}}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
