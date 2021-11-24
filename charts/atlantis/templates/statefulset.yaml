@@ -311,6 +311,20 @@ spec:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: azuredevops_webhook_password
           {{- end}}
+          {{- if .Values.basicAuth }}
+          - name: ATLANTIS_WEB_BASIC_AUTH
+            value: "true"
+          - name: ATLANTIS_WEB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.basicAuthSecretName" . }}
+                key: username
+          - name: ATLANTIS_WEB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.basicAuthSecretName" . }}
+                key: password
+          {{- end}}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:

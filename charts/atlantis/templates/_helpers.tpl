@@ -81,3 +81,14 @@ Generates AWS Secret name
     {{ template "atlantis.fullname" . }}-aws
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generates Basic Auth name
+*/}}
+{{- define "atlantis.basicAuthSecretName" -}}
+{{- if .Values.basicAuthSecretName -}}
+    {{ .Values.basicAuthSecretName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-basic-auth
+{{- end -}}
+{{- end -}}
