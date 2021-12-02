@@ -82,7 +82,7 @@ spec:
           secretName: {{ template "atlantis.vcsSecretName" . }}
           items:
           - key: key.pem
-            path: /key.pem
+            path: key.pem
       {{- end }}
       {{- end }}
       {{- if .Values.repoConfig }}
