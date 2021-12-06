@@ -100,7 +100,7 @@ serviceAccountSecrets:
 
 image:
   repository: runatlantis/atlantis
-  tag: v0.17.0
+  tag: v0.17.5
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -147,12 +147,12 @@ disableApply: false
 disableApplyAll: false
 
 # disableRepoLocking stops atlantis locking projects and or workspaces when running terraform
-disableRepoLocking: false 
+disableRepoLocking: false
 
 # Use Diff Markdown Format for color coding diffs
 enableDiffMarkdownFormat: false
 
-# Optionally specify an username and a password for basic authentication 
+# Optionally specify an username and a password for basic authentication
 basicAuth:
   username: "atlantis"
   password: "atlantis"
