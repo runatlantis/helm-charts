@@ -247,7 +247,7 @@ spec:
           {{- end }}
           - name: ATLANTIS_WRITE_GIT_CREDS
             value: "true"
-          {{- if .Values.githubApp.github_secret }}
+          {{- if .Values.githubApp.secret }}
           - name: ATLANTIS_GH_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
