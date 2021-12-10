@@ -153,9 +153,9 @@ disableRepoLocking: false
 enableDiffMarkdownFormat: false
 
 # Optionally specify an username and a password for basic authentication
-basicAuth:
-  username: "atlantis"
-  password: "atlantis"
+# basicAuth:
+#   username: "atlantis"
+#   password: "atlantis"
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
