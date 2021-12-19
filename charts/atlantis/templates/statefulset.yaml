@@ -76,13 +76,13 @@ spec:
           secretName: {{ template "atlantis.awsSecretName" . }}
       {{- end }}
       {{- if .Values.githubApp }}
-      {{- if index .Values.githubApp "key.pem"}}
+      {{- if .Values.githubApp.key }}
       - name: github-app-key-volume
         secret:
           secretName: {{ template "atlantis.vcsSecretName" . }}
           items:
           - key: key.pem
-            path: /key.pem
+            path: key.pem
       {{- end }}
       {{- end }}
       {{- if .Values.repoConfig }}
@@ -247,14 +247,14 @@ spec:
           {{- end }}
           - name: ATLANTIS_WRITE_GIT_CREDS
             value: "true"
-          {{- if .Values.githubApp.github_secret }}
+          {{- if .Values.githubApp.secret }}
           - name: ATLANTIS_GH_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_secret
           {{- end }}
-          {{- if index .Values.githubApp "key.pem" }}
+          {{- if .Values.githubApp.key }}
           - name: ATLANTIS_GH_APP_KEY_FILE
             value: "/var/github-app/key.pem"
           {{- end }}
@@ -383,7 +383,7 @@ spec:
             readOnly: true
           {{- end }}
           {{- if .Values.githubApp }}
-          {{- if index .Values.githubApp "key.pem" }}
+          {{- if .Values.githubApp.key }}
           - name: github-app-key-volume
             mountPath: /var/github-app
             readOnly: true
