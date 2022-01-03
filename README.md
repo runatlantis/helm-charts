@@ -1,5 +1,10 @@
 # Atlantis <!-- omit in toc -->
 
+[![Lint Code Base](https://github.com/runatlantis/helm-charts/actions/workflows/linter.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/linter.yaml)
+[![Lint and Test Charts](https://github.com/runatlantis/helm-charts/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/lint-test.yaml)
+[![Release Charts](https://github.com/runatlantis/helm-charts/actions/workflows/release.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/release.yaml)
+[![pages-build-deployment](https://github.com/runatlantis/helm-charts/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/pages/pages-build-deployment)
+
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
 
 - [Introduction](#introduction)
