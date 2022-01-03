@@ -383,7 +383,7 @@ spec:
             readOnly: true
           {{- end }}
           {{- if .Values.githubApp }}
-          {{- if .Values.githubApp.key }}
+          {{- if or .Values.githubApp.key .Values.vcsSecretName}}
           - name: github-app-key-volume
             mountPath: /var/github-app
             readOnly: true
