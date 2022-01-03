@@ -1,6 +1,16 @@
-# Atlantis
+# Atlantis <!-- omit in toc -->
 
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
+
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Required Configuration](#required-configuration)
+- [Additional manifests](#additional-manifests)
+- [Customization](#customization)
+- [Upgrading](#upgrading)
+  - [From `2.*` to `3.*`](#from-2-to-3)
+  - [From `1.*` to `2.*`](#from-1-to-2)
+- [Testing the Deployment](#testing-the-deployment)
 
 ## Introduction
 This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
