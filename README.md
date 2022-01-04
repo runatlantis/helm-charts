@@ -18,7 +18,7 @@
 - [Testing the Deployment](#testing-the-deployment)
 
 ## Introduction
-This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
+This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lockfiles](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
 
 ## Prerequisites
 - Kubernetes 1.9+
@@ -101,7 +101,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
 | `orgWhitelist`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
 | `config`                                    | Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications.                                                                                                                                                                                | n/a     |
-| `repoConfig`                                | [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
+| `repoConfig`                                | [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
 | `defaultTFVersion`                          | Default Terraform version to be used by atlantis server                                                                                                                                                                                                                                                   | n/a     |
 | `allowForkPRs`                              | Allow atlantis to run on fork Pull Requests                                                                                                                                                                                                                                                               | `false` |
 | `allowDraftPRs`                             | Allow atlantis to run on draft Pull Requests                                                                                                                                                                                                                                                              | `false` |
@@ -143,7 +143,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 
 ## Upgrading
 ### From `2.*` to `3.*`
-* The following value names have been removed. They are replaced by [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
+* The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
   * `requireApproval`
   * `requireMergeable`
   * `allowRepoConfig`
