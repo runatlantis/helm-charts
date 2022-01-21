@@ -95,6 +95,12 @@ spec:
         configMap:
           name:  {{ template "atlantis.fullname" . }}
       {{- end }}
+      {{- if .Values.containerSecurityContext.readOnlyRootFilesystem }}
+      - name: atlantis-home-dir
+        emptyDir: {}
+      - name: tmp-dir
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.extraVolumes }}
 {{ toYaml .Values.extraVolumes | indent 6 }}
       {{- end }}
@@ -118,6 +124,9 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
           {{- end}}
+          {{- if .Values.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
           {{- if .Values.command }}
           command:
           {{- range .Values.command }}
@@ -394,6 +403,12 @@ spec:
             mountPath: /etc/atlantis/atlantis.yaml
             subPath: atlantis.yaml
             readOnly: true
+          {{- end }}
+          {{- if .Values.containerSecurityContext.readOnlyRootFilesystem }}
+          - name: atlantis-home-dir
+            mountPath: /home/atlantis
+          - name: tmp-dir
+            mountPath: /tmp
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
 {{ toYaml .Values.extraVolumeMounts | indent 10 }}
