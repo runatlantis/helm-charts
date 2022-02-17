@@ -178,6 +178,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  targetPort: 4141
   loadBalancerIP: null
 
 podTemplate:
