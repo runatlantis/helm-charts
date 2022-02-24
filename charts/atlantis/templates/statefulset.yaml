@@ -220,7 +220,11 @@ spec:
             value: {{ .Values.atlantisUrl }}
           {{- else if .Values.ingress.enabled }}
           - name: ATLANTIS_ATLANTIS_URL
+            {{- if .Values.ingress.tls }}
+            value: https://{{ .Values.ingress.host }}
+            {{- else }}
             value: http://{{ .Values.ingress.host }}
+            {{- end }}
           {{- end }}
           {{- if .Values.github }}
           - name: ATLANTIS_GH_USER
