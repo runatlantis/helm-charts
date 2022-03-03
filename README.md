@@ -138,6 +138,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `hostAliases[].ip`                          | IP for host alias entry                                  | n/a                               |
 | `basicAuth.username`                        | Username for basic authentication                        | n/a                               |
 | `basicAuth.password`                        | Password for basic authentication                        | n/a                               |
+| `commonLabels`                        | Add Common Labels to all resources | `{}` |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 

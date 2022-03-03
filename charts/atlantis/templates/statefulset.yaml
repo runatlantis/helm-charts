@@ -3,10 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
-    app: {{ template "atlantis.name" . }}
-    chart: {{ template "atlantis.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{- include "atlantis.labels" . | nindent 4 }}
 {{- if .Values.statefulSet.labels }}
 {{ toYaml .Values.statefulSet.labels | indent 4 }}
 {{- end }}
