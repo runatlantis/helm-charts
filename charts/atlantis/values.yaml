@@ -99,7 +99,7 @@ serviceAccountSecrets:
 ## -------------------------- ##
 
 image:
-  repository: runatlantis/atlantis
+  repository: ghcr.io/runatlantis/atlantis
   tag: v0.18.5
   pullPolicy: IfNotPresent
 
