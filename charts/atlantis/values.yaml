@@ -157,6 +157,9 @@ enableDiffMarkdownFormat: false
 #   username: "atlantis"
 #   password: "atlantis"
 
+# Common Labels for all resources created by this chart.
+commonLabels: {}
+
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
   enabled: true
