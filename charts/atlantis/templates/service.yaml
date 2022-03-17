@@ -19,7 +19,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      {{- if .Values.service.targetPort }}
+      targetPort: {{ .Values.service.targetPort }}
+      {{- else }}
       targetPort: 4141
+      {{- end }}
       protocol: TCP
       name: atlantis
   selector:
