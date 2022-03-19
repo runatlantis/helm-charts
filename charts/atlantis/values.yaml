@@ -99,8 +99,8 @@ serviceAccountSecrets:
 ## -------------------------- ##
 
 image:
-  repository: runatlantis/atlantis
-  tag: v0.18.0
+  repository: ghcr.io/runatlantis/atlantis
+  tag: v0.19.2
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -157,6 +157,9 @@ enableDiffMarkdownFormat: false
 #   username: "atlantis"
 #   password: "atlantis"
 
+# Common Labels for all resources created by this chart.
+commonLabels: {}
+
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
   enabled: true
@@ -178,6 +181,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  targetPort: 4141
   loadBalancerIP: null
 
 podTemplate:
