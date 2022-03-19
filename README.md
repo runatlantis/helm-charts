@@ -1,9 +1,24 @@
-# Atlantis
+# Atlantis <!-- omit in toc -->
+
+[![Lint Code Base](https://github.com/runatlantis/helm-charts/actions/workflows/linter.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/linter.yaml)
+[![Lint and Test Charts](https://github.com/runatlantis/helm-charts/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/lint-test.yaml)
+[![Release Charts](https://github.com/runatlantis/helm-charts/actions/workflows/release.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/release.yaml)
+[![pages-build-deployment](https://github.com/runatlantis/helm-charts/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/pages/pages-build-deployment)
 
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
 
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Required Configuration](#required-configuration)
+- [Additional manifests](#additional-manifests)
+- [Customization](#customization)
+- [Upgrading](#upgrading)
+  - [From `2.*` to `3.*`](#from-2-to-3)
+  - [From `1.*` to `2.*`](#from-1-to-2)
+- [Testing the Deployment](#testing-the-deployment)
+
 ## Introduction
-This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lock files](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
+This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lockfiles](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
 
 ## Prerequisites
 - Kubernetes 1.9+
@@ -20,7 +35,7 @@ In order for Atlantis to start and run successfully:
     Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
-1. Supply a value for `orgWhitelist`, e.g. `github.org/myorg/*`.
+1. Supply a value for `orgWhitelist`, e.g. `github.com/myorg/*`.
 
 ## Additional manifests
 
@@ -43,6 +58,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
 |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `dataStorage`                               | Amount of storage available for Atlantis' data directory (mostly used to check out git repositories).                                                                                                                                                                                                     | `5Gi`   |
+| `atlantisUrl`                               | Base URL of atlantis server. This URL also reflects in pull-requests CI hooks where terraform changes are displayed.                                                                                                                                                                                                     | n/a |
 | `aws.config`                                | Contents of a file to be mounted to `~/.aws/config`.                                                                                                                                                                                                                                                      | n/a     |
 | `aws.credentials`                           | Contents of a file to be mounted to `~/.aws/credentials`.                                                                                                                                                                                                                                                 | n/a     |
 | `awsSecretName`                             | Secret name containing AWS credentials - will override aws.credentials and aws.config. Will be used a volume mount on `$HOME/.aws`, so it needs a `credentials` key. The key `config` is optional. See the file `templates/secret-aws.yml` for more info on the Secret contents.                                                                                                                                     | n/a     |
@@ -65,6 +81,9 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `github.token`                              | Personal access token for the Atlantis GitHub user.                                                                                                                                                                                                                                                       | n/a     |
 | `github.secret`                             | Repository or organization-wide webhook secret for the Atlantis GitHub integration. All repositories in GitHub that are to be integrated with Atlantis must share the same value.                                                                                                                         | n/a     |
 | `github.hostname`                           | Hostname of your GitHub Enterprise installation.                                                                                                                                                                                                                                                          | n/a     |
+| `githubApp.id`                              | GitHub app ID. If set, GitHub authentication will be performed as an [installation](https://developer.github.com/v3/apps/installations/).                                                                                                                                                                 | n/a     |
+| `githubApp.key`                             | A GitHub App PEM encoded private key file. If set, GitHub authentication will be performed as an [installation]((https://developer.github.com/v3/apps/installations/)).                                                                                                                                   | n/a     |
+| `githubApp.secret`                          | Secret used to validate GitHub webhooks (see [Securing your webhooks](https://developer.github.com/webhooks/securing/)).                                                                                                                                                                                                            | n/a     |
 | `gitlab.user`                               | Repository or organization-wide secret for the Atlantis GitLab,integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                 | n/a     |
 | `gitlab.token`                              | Personal access token for the Atlantis GitLab user.                                                                                                                                                                                                                                                       | n/a     |
 | `gitlab.secret`                             | Webhook secret for the Atlantis GitLab integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value.                                                                                                                                                         | n/a     |
@@ -80,10 +99,11 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `statefulSet.annotations`                   | Additional annotations to use for StatefulSet. | `{}` |
 | `statefulSet.labels`                        | Additional labels to use for StatefulSet. | `{}` |
 | `terminationGracePeriodSeconds`             | Set terminationGracePeriodSeconds for the StatefulSet. | `{}` |
+| `statefulSet.securityContext`               | Allow customizing fsGroup/runAsUser. | `{}` |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
 | `orgWhitelist`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
 | `config`                                    | Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications.                                                                                                                                                                                | n/a     |
-| `repoConfig`                                | [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
+| `repoConfig`                                | [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
 | `defaultTFVersion`                          | Default Terraform version to be used by atlantis server                                                                                                                                                                                                                                                   | n/a     |
 | `allowForkPRs`                              | Allow atlantis to run on fork Pull Requests                                                                                                                                                                                                                                                               | `false` |
 | `allowDraftPRs`                             | Allow atlantis to run on draft Pull Requests                                                                                                                                                                                                                                                              | `false` |
@@ -99,6 +119,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `serviceAccountSecrets.credentials-staging` | Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform staging service account. Only applicable if hosting Atlantis on GKE.                                                                                                                                                                         | n/a     |
 | `googleServiceAccountSecrets`               | An array of Kubernetes secrets containing Google Service Account credentials. See `values.yaml` for examples and additional documentation.                                                                                                                                                                | n/a     |
 | `service.port`                              | Port of the `Service`.                                                                                                                                                                                                                                                                                    | `80`    |
+| `service.targetPort`                        | Target Port of the `Service`.                                                                                                                                                                                                                                                                             | `4141`  |
 | `service.loadBalancerSourceRanges`          | Array of whitelisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
 | `service.loadBalancerIP`                    | Expose this service on the given ip if service.type = `LoadBalancerIP`                                                                                                                           | n/a     |
 | `storageClassName`                          | Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                                      | n/a     |
@@ -116,14 +137,19 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `initContainers`                            | Containers used to initialize context for Atlantis pods                                  | `[]`                              |
 | `extraContainers`                           | Additionnal containers to use and depends of use cases. | `[]` |
 | `hostAliases[].hostnames`                   | Hostnames for host alias entry                                  | n/a                              |
-| `hostAliases[].ip`                          | IP for host alias entry                                  | `n/a                              |
+| `hostAliases[].ip`                          | IP for host alias entry                                  | n/a                               |
+| `basicAuth.username`                        | Username for basic authentication                        | n/a                               |
+| `basicAuth.password`                        | Password for basic authentication                        | n/a                               |
+| `commonLabels`                        | Add Common Labels to all resources | `{}` |
+| `containerSecurityContext.allowPrivilegeEscalation` | Whether to enable privilege escalation           | n/a                               |
+| `containerSecurityContext.readOnlyRootFilesystem`   | Whether the root file system should be read-only | n/a                               |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 
 
 ## Upgrading
 ### From `2.*` to `3.*`
-* The following value names have been removed. They are replaced by [Server Side Repo Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
+* The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
   * `requireApproval`
   * `requireMergeable`
   * `allowRepoConfig`

@@ -19,6 +19,16 @@ orgWhitelist: <replace-me>
 #   hostname: github.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
+# If using a GitHub App, please enter your values as follows:
+# githubApp:
+#   id: 123456
+#   key: |
+#     -----BEGIN PRIVATE KEY-----
+#     ...
+#     -----END PRIVATE KEY-----
+#   secret: baz
+# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
+
 # If using GitLab, specify like the following:
 # gitlab:
 #   user: foo
@@ -89,8 +99,8 @@ serviceAccountSecrets:
 ## -------------------------- ##
 
 image:
-  repository: runatlantis/atlantis
-  tag: v0.17.0
+  repository: ghcr.io/runatlantis/atlantis
+  tag: v0.19.2
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -137,7 +147,18 @@ disableApply: false
 disableApplyAll: false
 
 # disableRepoLocking stops atlantis locking projects and or workspaces when running terraform
-disableRepoLocking: false 
+disableRepoLocking: false
+
+# Use Diff Markdown Format for color coding diffs
+enableDiffMarkdownFormat: false
+
+# Optionally specify an username and a password for basic authentication
+# basicAuth:
+#   username: "atlantis"
+#   password: "atlantis"
+
+# Common Labels for all resources created by this chart.
+commonLabels: {}
 
 # We only need to check every 60s since Atlantis is not a high-throughput service.
 livenessProbe:
@@ -160,6 +181,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  targetPort: 4141
   loadBalancerIP: null
 
 podTemplate:
@@ -171,16 +193,21 @@ podTemplate:
 statefulSet:
   annotations: {}
   labels: {}
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 100
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
 
 ingress:
   enabled: true
+  ingressClassName:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path:
+  path: /
+  pathType: Prefix
   host:
   hosts:
     - host: chart-example.local
@@ -336,3 +363,8 @@ extraContainers: []
 #        memory: 128Mi
 #    volumeMounts:
 #      - ...
+
+containerSecurityContext: {}
+# containerSecurityContext:
+#   allowPrivilegeEscalation: false
+#   readOnlyRootFilesystem: true
