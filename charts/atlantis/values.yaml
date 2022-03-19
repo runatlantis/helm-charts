@@ -197,6 +197,9 @@ statefulSet:
     fsGroup: 1000
     runAsUser: 100
 
+## Optionally customize the terminationGracePeriodSeconds
+# terminationGracePeriodSeconds: 60
+
 ingress:
   enabled: true
   ingressClassName:

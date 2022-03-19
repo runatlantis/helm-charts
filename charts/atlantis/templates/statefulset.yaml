@@ -41,6 +41,9 @@ spec:
       {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
+      {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- end }}
       securityContext: {{ .Values.statefulSet.securityContext | toYaml | nindent 8 }}
       volumes:
       {{- if .Values.tlsSecretName }}
