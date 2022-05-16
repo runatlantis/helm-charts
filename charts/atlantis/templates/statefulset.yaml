@@ -26,9 +26,11 @@ spec:
 {{- if .Values.podTemplate.labels }}
 {{ toYaml .Values.podTemplate.labels | indent 8 }}
 {{- end }}
-      {{- with .Values.podTemplate.annotations }}
       annotations:
-{{ toYaml . | indent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
+        checksum/repo-config: {{ include (print $.Template.BasePath "/configmap-repo-config.yaml") . | sha256sum }}
+      {{- if .Values.podTemplate.annotations }}
+{{ toYaml .Values.podTemplate.annotations | indent 8 }}
       {{- end }}
     spec:
       {{- if .Values.hostAliases }}
