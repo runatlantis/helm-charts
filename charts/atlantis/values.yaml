@@ -193,9 +193,7 @@ podTemplate:
 statefulSet:
   annotations: {}
   labels: {}
-  securityContext:
-    fsGroup: 1000
-    runAsUser: 100
+  securityContext: {}
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
