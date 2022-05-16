@@ -3,10 +3,7 @@ kind: Service
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
-    app: {{ template "atlantis.name" . }}
-    chart: {{ template "atlantis.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+{{- include "atlantis.labels" . | nindent 4 }}
   {{- with .Values.service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
@@ -16,10 +13,13 @@ spec:
   loadBalancerSourceRanges:
 {{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 4141
+      targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
       name: atlantis
   selector:

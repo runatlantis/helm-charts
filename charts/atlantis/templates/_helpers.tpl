@@ -81,3 +81,27 @@ Generates AWS Secret name
     {{ template "atlantis.fullname" . }}-aws
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generates Basic Auth name
+*/}}
+{{- define "atlantis.basicAuthSecretName" -}}
+{{- if .Values.basicAuthSecretName -}}
+    {{ .Values.basicAuthSecretName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-basic-auth
+{{- end -}}
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "atlantis.labels" -}}
+app: {{ template "atlantis.name" . }}
+chart: {{ template "atlantis.chart" . }}
+release: {{ .Release.Name }}
+heritage: {{ .Release.Service }}
+{{- if .Values.commonLabels}}
+{{ toYaml .Values.commonLabels }}
+{{- end }}
+{{- end -}}
