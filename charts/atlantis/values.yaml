@@ -347,7 +347,7 @@ extraArgs: []
 # - --disable-repo-locking
 
 extraContainers: []
-# containers:
+# extraContainers:
 #  - name: <container name>
 #    args:
 #      - ...
