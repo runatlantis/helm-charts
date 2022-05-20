@@ -29,6 +29,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
         checksum/repo-config: {{ include (print $.Template.BasePath "/configmap-repo-config.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/extra-manifests.yaml") . | sha256sum }}
       {{- if .Values.podTemplate.annotations }}
 {{ toYaml .Values.podTemplate.annotations | indent 8 }}
       {{- end }}
