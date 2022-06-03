@@ -6,8 +6,8 @@
 ##   if not using an ingress, set it to the external IP.
 # atlantisUrl: http://10.0.0.0
 
-# Replace this with your own repo whitelist:
-orgWhitelist: <replace-me>
+# Replace this with your own repo allowlist:
+orgAllowlist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
