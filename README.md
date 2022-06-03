@@ -35,7 +35,7 @@ In order for Atlantis to start and run successfully:
     Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
-1. Supply a value for `orgWhitelist`, e.g. `github.com/myorg/*`.
+1. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
 
 ## Additional manifests
 
@@ -101,7 +101,8 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `terminationGracePeriodSeconds`             | Set terminationGracePeriodSeconds for the StatefulSet. | `{}` |
 | `statefulSet.securityContext`               | Allow customizing fsGroup/runAsUser. | `{}` |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
-| `orgWhitelist`                              | Whitelist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
+| `orgAllowlist`                              | Allowlist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
+| `orgWhitelist`                              | Deprecated (see orgAllowlist) List of repositories from which Atlantis will accept webhooks. Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                                                                   | none    |
 | `config`                                    | Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications.                                                                                                                                                                                | n/a     |
 | `repoConfig`                                | [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                                | n/a     |
 | `defaultTFVersion`                          | Default Terraform version to be used by atlantis server                                                                                                                                                                                                                                                   | n/a     |
@@ -120,7 +121,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `googleServiceAccountSecrets`               | An array of Kubernetes secrets containing Google Service Account credentials. See `values.yaml` for examples and additional documentation.                                                                                                                                                                | n/a     |
 | `service.port`                              | Port of the `Service`.                                                                                                                                                                                                                                                                                    | `80`    |
 | `service.targetPort`                        | Target Port of the `Service`.                                                                                                                                                                                                                                                                             | `4141`  |
-| `service.loadBalancerSourceRanges`          | Array of whitelisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
+| `service.loadBalancerSourceRanges`          | Array of allowlisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
 | `service.loadBalancerIP`                    | Expose this service on the given ip if service.type = `LoadBalancerIP`                                                                                                                           | n/a     |
 | `storageClassName`                          | Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                                      | n/a     |
 | `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
@@ -157,7 +158,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
 
 ```bash
-$ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-whitelist='*'
+$ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-allowlist='*'
 WARNING: Flags --require-approval, --require-mergeable and --allow-repo-config have been deprecated.
 Create a --repo-config file with the following config instead:
 
