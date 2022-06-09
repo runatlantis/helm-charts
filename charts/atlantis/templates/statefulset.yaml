@@ -47,6 +47,9 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
       securityContext: {{ .Values.statefulSet.securityContext | toYaml | nindent 8 }}
+      {{- if .Values.statefulSet.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       volumes:
       {{- if .Values.tlsSecretName }}
       - name: tls

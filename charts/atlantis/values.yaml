@@ -194,6 +194,7 @@ statefulSet:
   annotations: {}
   labels: {}
   securityContext: {}
+  priorityClassName: {}
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
