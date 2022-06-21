@@ -190,10 +190,13 @@ podTemplate:
     # iam.amazonaws.com/role: role-arn
   labels: {}
 
+# It is not recommended to run atlantis as root
 statefulSet:
   annotations: {}
   labels: {}
-  securityContext: {}
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 100
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
