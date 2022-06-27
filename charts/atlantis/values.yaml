@@ -197,6 +197,7 @@ statefulSet:
   securityContext:
     fsGroup: 1000
     runAsUser: 100
+    fsGroupChangePolicy: "OnRootMismatch"
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
