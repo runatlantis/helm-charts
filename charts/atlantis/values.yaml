@@ -222,6 +222,10 @@ ingress:
   #      - chart-example.local
   labels: {}
 
+## Allow to override the /etc/ssl/certs/ca-certificates.cer with your custom one
+# You have to create a secret `my-ca-certificates`
+# customPem: my-ca-certificates
+
 resources:
   requests:
     memory: 1Gi
