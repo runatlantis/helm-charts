@@ -34,6 +34,22 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
+        {{- if .Values.ingress.paths }}
+          {{- range .Values.ingress.paths }}
+          - path: {{ .path }}
+            backend:
+            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+              service:
+                name: {{ .service }}
+                port:
+                  number: {{ .port }}
+            pathType: {{ $.Values.ingress.pathType }}
+            {{- else }}
+              serviceName: {{ .service }}
+              servicePort: {{ .port }}
+            {{- end }}
+          {{- end }}
+        {{ else }}
           - path: {{ .Values.ingress.path }}
             backend:
             {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
@@ -46,9 +62,10 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ .Values.service.port }}
             {{- end }}
+        {{- end }}
     {{ else }}
     {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
-    {{- range .Values.ingress.hosts }}
+    {{- range $k := .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -56,21 +73,29 @@ spec:
           - path: {{ . }}
             backend:
               service:
+              {{- if $k.service }}
+                name: {{ $k.service }}
+              {{- else }}
                 name: {{ $fullName }}
+              {{- end }}
                 port:
                   number: {{ $svcPort }}
             pathType: {{ $pathType }}
         {{- end }}
     {{- end }}
     {{- else -}}
-    {{- range .Values.ingress.hosts }}
+    {{- range $k := .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
         {{- range .paths }}
           - path: {{ . }}
             backend:
+            {{- if $k.service }}
+              serviceName: {{ $k.service }}
+            {{- else }}
               serviceName: {{ $fullName }}
+            {{- end }}
               servicePort: {{ $svcPort }}
         {{- end }}
     {{- end }}
