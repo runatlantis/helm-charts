@@ -48,7 +48,7 @@ spec:
       {{- end }}
       securityContext: {{ .Values.statefulSet.securityContext | toYaml | nindent 8 }}
       {{- if .Values.statefulSet.priorityClassName }}
-      priorityClassName: {{ . }}
+      priorityClassName: {{ .Values.statefulSet.priorityClassName }}
       {{- end }}
       volumes:
       {{- if .Values.tlsSecretName }}
