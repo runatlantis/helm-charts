@@ -145,12 +145,14 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `commonLabels`                        | Add Common Labels to all resources | `{}` |
 | `containerSecurityContext.allowPrivilegeEscalation` | Whether to enable privilege escalation           | n/a                               |
 | `containerSecurityContext.readOnlyRootFilesystem`   | Whether the root file system should be read-only | n/a                               |
+| `customPem`   | SecretName of the custom `ca-certificates.cert` to override the `/etc/ssl/certs/ca-certificates.crt` with your custom one (self-signed certificates)<br>Secret has to be created manually and shal contain `ca-certificates.crt: PEM` | n/a                               |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 
-
 ## Upgrading
+
 ### From `2.*` to `3.*`
+
 * The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
   * `requireApproval`
   * `requireMergeable`
