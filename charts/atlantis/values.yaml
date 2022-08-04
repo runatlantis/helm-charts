@@ -1,92 +1,13 @@
-## -------------------------- ##
-# Values to override for your instance.
-## -------------------------- ##
 
-## An option to override the atlantis url,
-##   if not using an ingress, set it to the external IP.
-# atlantisUrl: http://10.0.0.0
+orgAllowlist: github.com/8x8/auto_gitops_infra8-workflow-test-tree
+orgWhitelist: github.com/8x8/*
+logLevel: info
 
-# Replace this with your own repo allowlist:
-orgAllowlist: <replace-me>
-# logLevel: "debug"
+github:
+  user: vinitkapoor
+  token: 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
+  secret: hwipinobzbfipvsmroxhdpetxjcpirhdevqjjzsuwdcwoogcuujmyiiufuhaeltjxfeltbwwyhlforoomswbnwvrzvqkjstkcsjigarnrsnyswxfmdbhlklgweywklai
 
-# If using GitHub, specify like the following:
-# github:
-#   user: foo
-#   token: bar
-#   secret: baz
-# GitHub Enterprise only:
-#   hostname: github.your.org
-# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
-
-# If using a GitHub App, please enter your values as follows:
-# githubApp:
-#   id: 123456
-#   key: |
-#     -----BEGIN PRIVATE KEY-----
-#     ...
-#     -----END PRIVATE KEY-----
-#   secret: baz
-# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
-
-# If using GitLab, specify like the following:
-# gitlab:
-#   user: foo
-#   token: bar
-#   secret: baz
-# GitLab Enterprise only:
-#   hostname: gitlab.your.org
-# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
-
-# If using Bitbucket, specify like the following:
-# bitbucket:
-#   user: foo
-#   token: bar
-# Bitbucket Server only:
-#   secret: baz
-#   baseURL: https://bitbucket.yourorganization.com
-# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
-
-# If using Azure DevOps, specify like the following:
-# azuredevops:
-#   user: foo
-#   token: bar
-#   webhookUser: foo
-#   webhookPassword: baz
-# (The chart will perform the base64 encoding for you for values that are stored in secrets.)
-
-# If managing secrets outside the chart for the webhook, use this variable to reference the secret name
-# vcsSecretName: 'mysecret'
-
-# When referencing Terraform modules in private repositories, it may be helpful
-# (necessary?) to use redirection in a .gitconfig like so:
-# gitconfig: |
-  # [url "https://YOUR_GH_TOKEN@github.com"]
-  #   insteadOf = https://github.com
-  # [url "https://YOUR_GH_TOKEN@github.com"]
-  #   insteadOf = ssh://git@github.com
-  # [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
-  #   insteadOf = https://gitlab.com
-  # [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
-  #   insteadOf = ssh://git@gitlab.com
-# Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
-
-# If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
- # gitconfigSecretName: 'mygitconfigsecret'
-
-# To specify AWS credentials to be mapped to ~/.aws:
-# aws:
-#   credentials: |
-#     [default]
-#     aws_access_key_id=YOUR_ACCESS_KEY_ID
-#     aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
-#     region=us-east-1
-#   config: |
-#     [profile a_role_to_assume]
-#     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
-#     source_profile = default
-# To reference an already existing Secret object with AWS credentials
-# awsSecretName: 'mysecretwithawscreds'
 
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
@@ -107,26 +28,65 @@ image:
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 ##
-# imagePullSecrets:
-# - myRegistryKeySecretName
+imagePullSecrets:
+- ocirsecret
 
 ## Use Server Side Repo Config,
 ## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
 ## Example default configuration
-# repoConfig: |
-#  ---
-#  repos:
-#  - id: /.*/
-#    apply_requirements: []
-#    workflow: default
-#    allowed_overrides: []
-#    allow_custom_workflows: false
-#  workflows:
-#    default:
-#      plan:
-#        steps: [init, plan]
-#      apply:
-#        steps: [apply]
+repoConfig: |
+ ---
+ repos:
+   # Applies only to 'auto_gitops_infra8-workflow-test-tree' repository
+ - id: github.com/8x8/auto_gitops_infra8-workflow-test-tree
+   branch: master
+   apply_requirements: [approved, mergeable]
+   delete_source_branch_on_merge: false
+   allow_custom_workflows: true
+   allowed_overrides: [delete_source_branch_on_merge, workflow]
+ #  pre_workflow_hooks:
+ #    - run: /home/atlantis/hooks/default.pre-hook.sh >> default.pre-hook.output
+ #  post_workflow_hooks:
+ #    - run: /home/atlantis/hooks/default.post-hook.sh >> default.post-hook.output
+   workflow: default_terragrunt
+ 
+ workflows:
+   default_terragrunt:
+     plan:
+       steps:
+       - env: # Will create env var TERRAGRUNT_TFPATH with terraform value, since our version of terraform is loaded in the PATH so any 'terraform' commands issued by Terragrunt will use the global terraform binary
+           name: TERRAGRUNT_TFPATH
+           command: 'echo "terraform"'
+       - env: # get github token to checkout workflow repo
+           name: GITHUB_TOKEN
+           command: 'echo $ATLANTIS_GH_TOKEN'
+       - env: # set HOME location where to checkout policy repo
+           name: HOME_PATH
+           command: echo '/home/atlantis'
+       - env: # set policy repo path
+           name: POLICY_REPO_PATH
+           command: echo $HOME_PATH/policy_repo
+       - env: # opa binary path
+           name: OPA_PATH
+           command: echo '/usr/local/bin'
+       - run: echo '==== This first message is from the plan step | before plan action ===='
+       - run: rm -rf $POLICY_REPO_PATH || true
+       - run: mkdir -p $POLICY_REPO_PATH
+       # get the workflows repo to execute opa policy script
+       - run: git -C $POLICY_REPO_PATH clone https://$GITHUB_TOKEN@github.com/8x8/auto_gitops_oci_opa_policies.git
+       # commenting out requirements.txt as there is no need at present for any special packages to installed
+       # - run: pip3 install -r $POLICY_REPO_PATH/auto_gitops_oci_opa_policies/scripts/requirements.txt
+       - run: terragrunt plan -no-color -input=false -out=$PLANFILE
+       - run: terragrunt show -no-color -json $PLANFILE > $SHOWFILE
+       - run: python3 $POLICY_REPO_PATH/auto_gitops_oci_opa_policies/scripts/opa_policy_check.py
+       - run: echo '==== This second message is from the plan step | after plan action ===='
+     apply:
+       steps:
+       - env:
+           name: TERRAGRUNT_TFPATH
+           command: 'echo "terraform"'
+       - run: terragrunt apply -no-color -input=false $PLANFILE
+
 
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
@@ -135,7 +95,7 @@ allowForkPRs: false
 allowDraftPRs: false
 
 # hidePrevPlanComments enables atlantis to hide previous plan comments
-hidePrevPlanComments: false
+hidePrevPlanComments: true
 
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
@@ -179,10 +139,13 @@ readinessProbe:
   scheme: HTTP
 
 service:
-  type: NodePort
+  type: LoadBalancer
   port: 80
   targetPort: 4141
-  loadBalancerIP: null
+  annotations:
+    serviceAnnotation1: value1
+    serviceAnnotation2: value2
+
 
 podTemplate:
   annotations: {}
@@ -254,7 +217,7 @@ replicaCount: 1
 
 ## test container details
 test:
-  enabled: true
+  enabled: false
   image: lachlanevenson/k8s-kubectl
   imageTag: v1.4.8-bash
 
@@ -266,10 +229,10 @@ affinity: {}
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
-  create: true
+  create: false
   # Set the `automountServiceAccountToken` field on the pod template spec
   # If false, no kubernetes service account token will be mounted to the pod
-  mount: true
+  mount: false
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
@@ -347,11 +310,26 @@ extraManifests: []
 #      securityPolicy:
 #        name: "gcp-cloud-armor-policy-test"
 
-initContainers: []
-# initContainers:
-# - name: example
-#   image: alpine:latest
-#   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
+initContainers:
+- name: fetch-git-creds
+  image: phx.ocir.io/idxixi5bmstw/utility-images/utility-container:latest
+  securityContext:
+    runAsUser: 0
+  command: ["/bin/sh","-c"]
+  args:
+    - compartment_id=`oci iam compartment list --compartment-id-in-subtree true --compartment-id ocid1.tenancy.oc1..aaaaaaaax7tm7jtfarexna447cmubjxwou6lug42jss2ddyis63wqo3lrpda --auth instance_principal | jq '.data[] | select(.["name"] == "tenantadmin-production") | .["id"]'|tr -d '"'`;
+      token_secret_id=`oci vault secret list -c $compartment_id --auth instance_principal | jq '.data[] | select(.["secret-name"] == "github_token_cpe_provisioning") | .["id"]'|tr -d '"'`;
+      github_token=`oci secrets secret-bundle get --secret-id $token_secret_id --auth instance_principal | jq -r '.data["secret-bundle-content"]["content"]' | base64 -d - |tr -d '"'`;
+      webhook_secret_id=`oci vault secret list -c $compartment_id --auth instance_principal | jq '.data[] | select(.["secret-name"] == "tree_main_webhook_secret") | .["id"]'|tr -d '"'`;
+      github_secret=`oci secrets secret-bundle get --secret-id $webhook_secret_id --auth instance_principal | jq -r '.data["secret-bundle-content"]["content"]' | base64 -d - |tr -d '"'`;
+      oke_kube_config_secret_id=`oci vault secret list -c $compartment_id --auth instance_principal | jq '.data[] | select(.["secret-name"] == "kubeconfig-ops-dev01-phx") | .["id"]'|tr -d '"'`;
+      oci secrets secret-bundle get --secret-id $oke_kube_config_secret_id --auth instance_principal | jq -r '.data["secret-bundle-content"]["content"]' | base64 -d - |tr -d '"' >> kube_config.cfg;
+      path=`pwd`;
+      export KUBECONFIG=$path/kube_config.cfg;
+      echo "github_secret=$github_token,github_secret=$github_secret";
+      kubectl create secret generic git-secret --from-literal=github_token=$github_token --from-literal=github_secret=$github_secret;
+
+
 
 # hostAliases:
 #   - hostnames:

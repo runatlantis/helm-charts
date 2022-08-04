@@ -13,13 +13,12 @@ github:
   user: 
   token: 
   secret: 
-
 #Default Terraform version to be used by atlantis server
 #defaultTFVersion: 1.1.4
 
 initContainers:
 - name: fetch-git-creds
-  image: phx.ocir.io/idxixi5bmstw/utility-images/utility-container:v0.0.1
+  image: phx.ocir.io/idxixi5bmstw/utility-images/utility-container:latest
   command: ["/bin/sh","-c"]
   args:
     - compartment_id=`oci iam compartment list --compartment-id-in-subtree true --compartment-id ocid1.tenancy.oc1..aaaaaaaax7tm7jtfarexna447cmubjxwou6lug42jss2ddyis63wqo3lrpda --auth instance_principal | jq '.data[] | select(.["name"] == "tenantadmin-production") | .["id"]'|tr -d '"'`;
@@ -28,8 +27,9 @@ initContainers:
       webhook_secret_id=`oci vault secret list -c $compartment_id --auth instance_principal | jq '.data[] | select(.["secret-name"] == "tree_main_webhook_secret") | .["id"]'|tr -d '"'`;
       webhook_secret=`oci secrets secret-bundle get --secret-id $webhook_secret_id --auth instance_principal | jq -r '.data["secret-bundle-content"]["content"]' | base64 -d - |tr -d '"'`;
       oke_kube_config_secret_id=`oci vault secret list -c $compartment_id --auth instance_principal | jq '.data[] | select(.["secret-name"] == "kubeconfig-ops-dev01-phx") | .["id"]'|tr -d '"'`;
-      oke_kube_config=`oci secrets secret-bundle get --secret-id $oke_kube_config_secret_id --auth instance_principal | jq -r '.data["secret-bundle-content"]["content"]' | base64 -d - |tr -d '"'`;
-      echo "git_token=$git_token,webhook_secret=$webhook_secret,oke_kube_config=$oke_kube_config";
+      oci secrets secret-bundle get --secret-id $oke_kube_config_secret_id --auth instance_principal | jq -r '.data["secret-bundle-content"]["content"]' | base64 -d - |tr -d '"' >> $HOME/.kube/config;
+      echo "git_token=$git_token,webhook_secret=$webhook_secret";
+      kubectl get pods;
 
       
 
