@@ -5,6 +5,7 @@ image:
 imagePullSecrets:
 - ocirsecret
 
+
 orgAllowlist: github.com/8x8/auto_gitops_infra8-workflow-test-tree
 orgWhitelist: github.com/8x8/*
 
