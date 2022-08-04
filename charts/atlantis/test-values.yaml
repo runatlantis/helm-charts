@@ -9,9 +9,9 @@ orgAllowlist: github.com/8x8/auto_gitops_infra8-workflow-test-tree
 orgWhitelist: github.com/8x8/*
 
 github:
-  user: vinitkapoor
-  token: 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
-  secret: hwipinobzbfipvsmroxhdpetxjcpirhdevqjjzsuwdcwoogcuujmyiiufuhaeltjxfeltbwwyhlforoomswbnwvrzvqkjstkcsjigarnrsnyswxfmdbhlklgweywklai
+  user: 
+  token: 
+  secret: 
 
 #Default Terraform version to be used by atlantis server
 #defaultTFVersion: 1.1.4
