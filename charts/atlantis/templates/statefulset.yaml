@@ -373,8 +373,10 @@ spec:
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
           volumeMounts:
+          {{- if .Values.volumeClaim.enabled }}
           - name: atlantis-data
             mountPath: /atlantis-data
+          {{- end }}
           {{- range $name, $_ := .Values.serviceAccountSecrets }}
           - name: {{ $name }}-volume
             readOnly: true
@@ -449,16 +451,18 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+  {{- if .Values.volumeClaim.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: atlantis-data
     spec:
       accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.storageClassName }}
-      storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
+      {{- if .Values.volumeClaim.storageClassName }}
+      storageClassName: {{ .Values.volumeClaim.storageClassName }} # Storage class of the volume
       {{- end }}
       resources:
         requests:
           # The biggest thing Atlantis stores is the Git repo when it checks it out.
           # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.dataStorage }}
+          storage: {{ .Values.volumeClaim.dataStorage }}
+  {{- end }}
