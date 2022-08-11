@@ -387,3 +387,6 @@ containerSecurityContext: {}
 # containerSecurityContext:
 #   allowPrivilegeEscalation: false
 #   readOnlyRootFilesystem: true
+
+servicemonitor:
+  enabled: false

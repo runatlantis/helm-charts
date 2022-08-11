@@ -1,0 +1,21 @@
+{{- if .Values.servicemonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "atlantis.fullname" . }}
+  labels:
+{{- include "atlantis.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}  
+spec:
+  selector:
+    matchLabels:
+{{- include "atlantis.labels" . | nindent 4 }}
+  namespaceSelector:
+    matchNames:
+     - {{ .Release.Namespace }}
+  endpoints:
+  - port: atlantis
+{{- end -}}
