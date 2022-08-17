@@ -161,6 +161,9 @@ enableDiffMarkdownFormat: false
 # api:
 #   secret: "s3cr3t"
 
+# If managing secrets outside the chart for the API secret, use this variable to reference the secret name
+# apiSecretName: "myapisecret"
+
 # Common Labels for all resources created by this chart.
 commonLabels: {}
 
