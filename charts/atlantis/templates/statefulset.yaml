@@ -348,6 +348,13 @@ spec:
                 name: {{ template "atlantis.basicAuthSecretName" . }}
                 key: password
           {{- end}}
+          {{- if .Values.api }}
+          - name: ATLANTIS_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.apiSecretName" . }}
+                key: api_secret
+          {{- end}}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:

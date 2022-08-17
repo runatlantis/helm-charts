@@ -94,6 +94,17 @@ Generates Basic Auth name
 {{- end -}}
 
 {{/*
+Generates API Secret name
+*/}}
+{{- define "atlantis.apiSecretName" -}}
+{{- if .Values.apiSecretName -}}
+    {{ .Values.apiSecretName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-api
+{{- end -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "atlantis.labels" -}}

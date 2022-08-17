@@ -157,6 +157,10 @@ enableDiffMarkdownFormat: false
 #   username: "atlantis"
 #   password: "atlantis"
 
+# Optionally specify an API secret to enable the API
+# api:
+#   secret: "s3cr3t"
+
 # Common Labels for all resources created by this chart.
 commonLabels: {}
 
