@@ -390,3 +390,6 @@ containerSecurityContext: {}
 
 servicemonitor:
   enabled: false
+
+podMonitor:
+  enabled: false
