@@ -397,3 +397,8 @@ containerSecurityContext: {}
 
 servicemonitor:
   enabled: false
+
+# Enable this if you're using Google Managed Prometheus
+podMonitor:
+  enabled: false
+  interval: "30s"
