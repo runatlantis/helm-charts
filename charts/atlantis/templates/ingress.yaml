@@ -1,14 +1,16 @@
 {{- if .Values.ingress.enabled -}}
+{{- $apiVersion := "extensions/v1beta1" -}}
+{{- if .Values.ingress.apiVersion -}}
+{{- $apiVersion = .Values.ingress.apiVersion -}}
+{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
+{{- $apiVersion = "networking.k8s.io/v1" -}}
+{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta/Ingress" -}}
+{{- $apiVersion = "networking.k8s.io/v1beta" -}}
+{{- end -}}
 {{- $fullName := include "atlantis.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $pathType := .Values.ingress.pathType -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
-apiVersion: networking.k8s.io/v1
-{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta/Ingress" -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -38,7 +40,7 @@ spec:
           {{- range .Values.ingress.paths }}
           - path: {{ .path }}
             backend:
-            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            {{- if eq $apiVersion "networking.k8s.io/v1" }}
               service:
                 name: {{ .service }}
                 port:
@@ -52,7 +54,7 @@ spec:
         {{ else }}
           - path: {{ .Values.ingress.path }}
             backend:
-            {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            {{- if eq $apiVersion "networking.k8s.io/v1" }}
               service:
                 name: {{ $fullName }}
                 port:
@@ -64,7 +66,7 @@ spec:
             {{- end }}
         {{- end }}
     {{ else }}
-    {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
+    {{- if eq $apiVersion "networking.k8s.io/v1" -}}
     {{- range $k := .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
