@@ -225,7 +225,7 @@ ingress:
 #    - path: "/path2"
 #      service: test2
 #      port:
-  pathType: Prefix
+  pathType: ImplementationSpecific
   host:
 
 ## in case we need several hosts:
