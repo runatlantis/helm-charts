@@ -12,10 +12,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-{{- include "atlantis.labels" . | nindent 4 }}
-  namespaceSelector:
-    matchNames:
-     - {{ .Release.Namespace }}
+{{- include "atlantis.labels" . | nindent 6 }}
   endpoints:
   - port: atlantis
     interval: {{ .Values.podMonitor.interval }}
