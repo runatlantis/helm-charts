@@ -12,7 +12,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-{{- include "atlantis.labels" . | nindent 6 }}
+      app: {{ template "atlantis.name" . }}
+      release: {{ .Release.Name }}
+{{- if .Values.podTemplate.labels }}
+{{ toYaml .Values.podTemplate.labels | indent 6 }}
+{{- end }}
   endpoints:
   - port: atlantis
     interval: {{ .Values.podMonitor.interval }}
