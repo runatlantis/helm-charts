@@ -197,6 +197,16 @@ repoConfig: |
   * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
   * `bitbucket.base_url` => `bitbucket.baseURL`
 
+## Enabling Prometheus Metrics
+* The following config set in `repoConfig:` helps enabling atlantis's metrics endpoint for Prometheus scraping. These metrics can be used for self hosted Prometheus or Google Managed Prometheus.
+```yaml
+repoConfig: |
+  ---
+  metrics:
+    prometheus:
+      endpoint: /metrics
+```
+
 ## Testing the Deployment
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
 
