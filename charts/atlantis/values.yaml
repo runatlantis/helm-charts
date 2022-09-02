@@ -152,10 +152,14 @@ disableRepoLocking: false
 # Use Diff Markdown Format for color coding diffs
 enableDiffMarkdownFormat: false
 
-# Optionally specify an username and a password for basic authentication
+# If enableBasicAuth true, uncomment basicAuth and specify an username and a password for basic authentication
+enableBasicAuth: false
 # basicAuth:
 #   username: "atlantis"
 #   password: "atlantis"
+
+# If managing secrets outside the chart for the API secret, use this variable to reference the secret name and set enableBasicAuth true
+# basicAuthSecretName: 'mybasicauthsecret'
 
 # Optionally specify an API secret to enable the API
 # api:

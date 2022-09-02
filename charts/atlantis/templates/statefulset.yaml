@@ -334,9 +334,9 @@ spec:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: azuredevops_webhook_password
           {{- end}}
-          {{- if .Values.basicAuth }}
+          {{- if .Values.enableBasicAuth }}
           - name: ATLANTIS_WEB_BASIC_AUTH
-            value: "true"
+            value: {{ .Values.enableBasicAuth }}
           - name: ATLANTIS_WEB_USERNAME
             valueFrom:
               secretKeyRef:
