@@ -131,6 +131,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
 | `ingress.enabled`                           | Whether to create a Kubernetes Ingress.                                                                                                                                                                                                                                                                   | `true`     |
 | `ingress.annotations`                       | Additional annotations to use for the Ingress. | `{}` |
+| `ingress.apiVersion`                        | Override ingress apiVersion. Useful in scenarios in which helm can't determine the capabilities of the Kubernetes cluster. | n/a |
 | `ingress.labels`                            | Additional labels to use for the Ingress. | `{}` |
 | `ingress.path`                              | Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.                                                                                                                                                                                                                 | `/`     |
 | `ingress.host`                              | Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.                                                                                                                                                                                                           |     |                                                                                                                                                                                                   | `/`     |
@@ -149,6 +150,8 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `containerSecurityContext.allowPrivilegeEscalation` | Whether to enable privilege escalation           | n/a                               |
 | `containerSecurityContext.readOnlyRootFilesystem`   | Whether the root file system should be read-only | n/a                               |
 | `customPem`   | SecretName of the custom `ca-certificates.cert` to override the `/etc/ssl/certs/ca-certificates.crt` with your custom one (self-signed certificates)<br>Secret has to be created manually and shal contain `ca-certificates.crt: PEM` | n/a                               |
+| `api.secret`    | API secret to enable API endpoints                                                                        | n/a        |
+| `apiSecretName` | Name of a pre-existing Kubernetes `Secret` containing a `apisecret` key. Use this instead of `api.secret` | n/a        |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 

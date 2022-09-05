@@ -1,0 +1,23 @@
+{{- if .Values.podMonitor.enabled }}
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+  name: {{ template "atlantis.fullname" . }}
+  labels:
+{{- include "atlantis.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+  {{- end }}  
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "atlantis.name" . }}
+      release: {{ .Release.Name }}
+{{- if .Values.podTemplate.labels }}
+{{ toYaml .Values.podTemplate.labels | indent 6 }}
+{{- end }}
+  endpoints:
+  - port: atlantis
+    interval: {{ .Values.podMonitor.interval }}
+{{- end -}}

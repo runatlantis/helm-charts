@@ -100,7 +100,7 @@ serviceAccountSecrets:
 
 image:
   repository: ghcr.io/runatlantis/atlantis
-  tag: v0.19.7
+  tag: v0.19.8
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -157,6 +157,13 @@ enableDiffMarkdownFormat: false
 #   username: "atlantis"
 #   password: "atlantis"
 
+# Optionally specify an API secret to enable the API
+# api:
+#   secret: "s3cr3t"
+
+# If managing secrets outside the chart for the API secret, use this variable to reference the secret name
+# apiSecretName: "myapisecret"
+
 # Common Labels for all resources created by this chart.
 commonLabels: {}
 
@@ -209,7 +216,7 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /
+  path: /*
 ## this is in case we want several paths under the same host, with different backend services
 #  paths:
 #    - path: "/path1"
@@ -218,7 +225,7 @@ ingress:
 #    - path: "/path2"
 #      service: test2
 #      port:
-  pathType: Prefix
+  pathType: ImplementationSpecific
   host:
 
 ## in case we need several hosts:
@@ -398,3 +405,11 @@ containerSecurityContext: {}
 # containerSecurityContext:
 #   allowPrivilegeEscalation: false
 #   readOnlyRootFilesystem: true
+
+servicemonitor:
+  enabled: false
+
+# Enable this if you're using Google Managed Prometheus
+podMonitor:
+  enabled: false
+  interval: "30s"
