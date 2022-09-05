@@ -247,13 +247,19 @@ resources:
     memory: 1Gi
     cpu: 100m
 
-# Embedded data volume & volumeMount
+## Embedded data volume & volumeMount (default working)
 volumeClaim:
   enabled: true
-  # Disk space for to check out repositories
+  ## Disk space for to check out repositories
   dataStorage: 5Gi
-  # Storage class name (if possible, use a resizable one)
+  ## Storage class name (if possible, use a resizable one)
   # storageClassName: value
+
+## To keep backwards compatibility
+## DEPRECATED - Disk space for Atlantis to check out repositories
+# dataStorage: 5Gi
+## DEPRECATED - Storage class name for Atlantis disk
+# storageClassName: value
 
 replicaCount: 1
 
