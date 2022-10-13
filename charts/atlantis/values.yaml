@@ -152,6 +152,9 @@ disableRepoLocking: false
 # Use Diff Markdown Format for color coding diffs
 enableDiffMarkdownFormat: false
 
+# mergeableBypassApply allows the mergeable check to skip checking the status of `atlantis/apply`
+mergeableBypassApply: true
+
 # Optionally specify an username and a password for basic authentication
 # basicAuth:
 #   username: "atlantis"

@@ -245,6 +245,10 @@ spec:
             value: http://{{ .Values.ingress.host }}
             {{- end }}
           {{- end }}
+          {{- if .Values.mergeableBypassApply }}
+          - name: ATLANTIS_GH_MERGEABLE_BYPASS_APPLY
+            value: {{ .Values.mergeableBypassApply | quote }}
+          {{- end }}             
           {{- if .Values.github }}
           - name: ATLANTIS_GH_USER
             value: {{ required "github.user is required if github configuration is specified." .Values.github.user }}
