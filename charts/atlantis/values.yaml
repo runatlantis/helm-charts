@@ -262,12 +262,6 @@ volumeClaim:
   ## Storage class name (if possible, use a resizable one)
   # storageClassName: value
 
-## To keep backwards compatibility
-## DEPRECATED - Disk space for Atlantis to check out repositories
-# dataStorage: 5Gi
-## DEPRECATED - Storage class name for Atlantis disk
-# storageClassName: value
-
 replicaCount: 1
 
 ## test container details

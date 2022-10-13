@@ -15,6 +15,8 @@
 - [Upgrading](#upgrading)
   - [From `2.*` to `3.*`](#from-2-to-3)
   - [From `1.*` to `2.*`](#from-1-to-2)
+  - [From `4.0.*` to `4.1.*`](#from-40-to-41)
+  - [From `4.1.*` to `5.0.*`](#from-41-to-50)
 - [Testing the Deployment](#testing-the-deployment)
 
 ## Introduction
@@ -57,7 +59,6 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 
 | Parameter                                   | Description                                                                                                                                                                                                                                                                                               | Default |
 |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| `dataStorage`                               | DEPRECATED - Amount of storage available for Atlantis' data directory (mostly used to check out git repositories).                                                                                                                                                                                        | `5Gi`   |
 | `volumeClaim.enabled`                       | Activate embedded volume claim for Atlantis' data directory (mostly used to check out git repositories).                                                                                                                                                                                                  | `true`  |
 | `volumeClaim.dataStorage`                   | Amount of storage available for embedded Atlantis' data directory                                                                                                                                                                                                                                         | `5Gi`   |
 | `volumeClaim.storageClassName`              | Storage class of the embedded volume mounted for the Atlantis data directory.                                                                                                                                                                                                                             | n/a     |
@@ -127,7 +128,6 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `service.targetPort`                        | Target Port of the `Service`.                                                                                                                                                                                                                                                                             | `4141`  |
 | `service.loadBalancerSourceRanges`          | Array of allowlisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a     |
 | `service.loadBalancerIP`                    | Expose this service on the given ip if service.type = `LoadBalancerIP`                                                                                                                           | n/a     |
-| `storageClassName`                          | DEPRECATED - Storage class of the volume mounted for the Atlantis data directory.                                                                                                                                                                                                                         | n/a     |
 | `tlsSecretName`                             | Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key.                                                                                                                                            | n/a     |
 | `ingress.enabled`                           | Whether to create a Kubernetes Ingress.                                                                                                                                                                                                                                                                   | `true`     |
 | `ingress.annotations`                       | Additional annotations to use for the Ingress. | `{}` |
@@ -209,6 +209,11 @@ repoConfig: |
   * `volumeClaim.dataStorage`
   * `volumeClaim.storageClassName`
 
+### From `4.1.*` to `5.0.*`
+* The following value are removed:
+  * `dataStorage`
+  * `storageClassName`
+  
 ## Testing the Deployment
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
 
