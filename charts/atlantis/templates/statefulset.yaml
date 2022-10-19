@@ -258,6 +258,10 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_secret
+          {{- if .Values.github.org }}
+          - name: ATLANTIS_GH_ORG
+            value: {{ .Values.github.org }}
+          {{- end }}
           {{- if .Values.github.hostname }}
           - name: ATLANTIS_GH_HOSTNAME
             value: {{ .Values.github.hostname }}
