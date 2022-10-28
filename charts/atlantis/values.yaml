@@ -74,6 +74,15 @@ orgAllowlist: <replace-me>
 # If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
  # gitconfigSecretName: 'mygitconfigsecret'
 
+# When referencing Terraform modules in private repositories or registries (such as Artfactory)
+# configuing a .netrc file for authentication may be required:
+# netrc: |
+  # machine artifactory.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+  # machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+
+# If managing secrets outside the chart for the netrc file, use this variable to reference the secret name
+# netrcSecretName: 'mynetrcsecret'
+
 # To specify AWS credentials to be mapped to ~/.aws:
 # aws:
 #   credentials: |
