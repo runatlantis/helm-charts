@@ -152,6 +152,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `customPem`   | SecretName of the custom `ca-certificates.cert` to override the `/etc/ssl/certs/ca-certificates.crt` with your custom one (self-signed certificates)<br>Secret has to be created manually and shal contain `ca-certificates.crt: PEM` | n/a                               |
 | `api.secret`    | API secret to enable API endpoints                                                                        | n/a        |
 | `apiSecretName` | Name of a pre-existing Kubernetes `Secret` containing a `apisecret` key. Use this instead of `api.secret` | n/a        |
+| `enableKubernetesBackend`                   | Deploy rbac to allow for the serviceAccount to manage terraform state via a kubernetes backend | false |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 

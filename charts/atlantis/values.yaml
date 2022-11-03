@@ -299,6 +299,9 @@ serviceAccount:
   #   annotation2: value
   annotations: {}
 
+# Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend
+enableKubernetesBackend: false
+
 # tlsSecretName: tls
 
 # Optionally specify additional environment variables to be populated from Kubernetes secrets.
