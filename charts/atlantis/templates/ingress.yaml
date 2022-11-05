@@ -32,8 +32,11 @@ spec:
 {{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}
   rules:
-    {{- if .Values.ingress.host }}
-    - host: {{ .Values.ingress.host }}
+    {{- if not .Values.ingress.hosts }}
+    -
+      {{- if .Values.ingress.host }}
+      host: {{ .Values.ingress.host }}
+      {{- end }}
       http:
         paths:
         {{- if .Values.ingress.paths }}
@@ -68,7 +71,10 @@ spec:
     {{ else }}
     {{- if eq $apiVersion "networking.k8s.io/v1" -}}
     {{- range $k := .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    -
+      {{- if .host }}
+      host: {{ .host }}
+      {{- end }}
       http:
         paths:
         {{- range .paths }}
@@ -87,7 +93,10 @@ spec:
     {{- end }}
     {{- else -}}
     {{- range $k := .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    -
+      {{- if .host }}
+      host: {{ .host }}
+      {{- end }}
       http:
         paths:
         {{- range .paths }}
