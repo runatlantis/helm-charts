@@ -80,6 +80,7 @@ spec:
           - path: {{ . }}
             backend:
               {{- if eq $apiVersion "networking.k8s.io/v1" -}}
+              pathType: {{ $pathType }}
               service:
                 {{- if $k.service }}
                 name: {{ $k.service }}
@@ -96,7 +97,6 @@ spec:
                 {{- end }}
               servicePort: {{ $svcPort }}
               {{- end }}
-            pathType: {{ $pathType }}
         {{- end }}
     {{- end }}
     {{- end }}
