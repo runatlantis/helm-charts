@@ -35,7 +35,7 @@ spec:
     {{- if not .Values.ingress.hosts }}
     -
       {{- if .Values.ingress.host }}
-      host: {{ .Values.ingress.host }}
+      host: {{ .Values.ingress.host | quote }}
       {{- end }}
       http:
         paths:
@@ -73,7 +73,7 @@ spec:
     {{- range $k := .Values.ingress.hosts }}
     -
       {{- if .host }}
-      host: {{ .host }}
+      host: {{ .host | quote }}
       {{- end }}
       http:
         paths:
@@ -95,7 +95,7 @@ spec:
     {{- range $k := .Values.ingress.hosts }}
     -
       {{- if .host }}
-      host: {{ .host }}
+      host: {{ .host | quote }}
       {{- end }}
       http:
         paths:
