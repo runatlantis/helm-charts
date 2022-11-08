@@ -88,6 +88,9 @@ orgAllowlist: <replace-me>
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
+# option to share process namespace with atlantis container
+shareProcessNamespace: false
+
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
   # credentials: <json file as base64 encoded string>
