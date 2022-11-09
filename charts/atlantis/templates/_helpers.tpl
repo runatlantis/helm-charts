@@ -105,6 +105,17 @@ Generates API Secret name
 {{- end -}}
 
 {{/*
+Generates Redis Secret name
+*/}}
+{{- define "atlantis.redisSecretName" -}}
+{{- if .Values.redisSecretName -}}
+    {{ .Values.redisSecretName }}
+{{- else -}}
+    {{ template "atlantis.fullname" . }}-redis
+{{- end -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "atlantis.labels" -}}

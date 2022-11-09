@@ -355,6 +355,37 @@ spec:
                 name: {{ template "atlantis.apiSecretName" . }}
                 key: apisecret
           {{- end}}
+          {{- if .Values.lockingDbType }}
+          - name: ATLANTIS_LOCKING_DB_TYPE
+            value: {{ .Values.lockingDbType }}
+          {{- end }}
+          {{- if .Values.redis.host }}
+          - name: ATLANTIS_REDIS_HOST
+            value: {{ .Values.redis.host }}
+          {{- end }}
+          {{ - if .Values.redis.password }}
+          - name: ATLANTIS_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.redisSecretName" . }}
+                key: password
+          {{ - end }}
+          {{ - if .Values.redis.port }}
+          - name: ATLANTIS_REDIS_PORT
+            value: {{ .Values.redis.port }}
+          {{- end }}
+          {{- if .Values.redis.db }}
+          - name: ATLANTIS_REDIS_DB
+            value: {{ .Values.redis.db }}
+          {{- end }}
+          {{- if .Values.redis.tlsEnabled }}
+          - name: ATLANTIS_REDIS_TLS_ENABLED
+            value: {{ .Values.redis.tlsEnabled }}
+          {{- end }}
+          {{- if .Values.redis.insecureSkipVerify }}
+          - name: ATLANTIS_REDIS_INSECURE_SKIP_VERIFY
+            value: {{ .Values.redis.insecureSkipVerify }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
