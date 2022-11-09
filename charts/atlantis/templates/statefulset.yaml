@@ -363,7 +363,7 @@ spec:
           - name: ATLANTIS_REDIS_HOST
             value: {{ .Values.redis.host }}
           {{- end }}
-          {{ - if .Values.redis.password }}
+          {{ - if or .Values.redis.password .Values.redisSecretName }}
           - name: ATLANTIS_REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
