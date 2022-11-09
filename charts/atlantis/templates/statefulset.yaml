@@ -42,9 +42,7 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
-      {{- if .Values.shareProcessNamespace }}
       shareProcessNamespace: {{ .Values.shareProcessNamespace }}
-      {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
