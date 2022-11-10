@@ -100,6 +100,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `podTemplate.annotations`                   | Additional annotations to use for pods. | `{}` |
 | `podTemplate.labels`                        | Additional labels to use for pods. | `{}` |
 | `statefulSet.annotations`                   | Additional annotations to use for StatefulSet. | `{}` |
+| `statefulSet.shareProcessNamespace`         | Share the process namespace between all containers in a pod. | `false` |
 | `statefulSet.labels`                        | Additional labels to use for StatefulSet. | `{}` |
 | `terminationGracePeriodSeconds`             | Set terminationGracePeriodSeconds for the StatefulSet. | `{}` |
 | `statefulSet.securityContext`               | Allow customizing fsGroup/runAsUser. | `{}` |
