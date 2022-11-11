@@ -357,11 +357,11 @@ spec:
           {{- end}}
           {{- if .Values.lockingDbType }}
           - name: ATLANTIS_LOCKING_DB_TYPE
-            value: {{ .Values.lockingDbType }}
+            value: {{ .Values.lockingDbType | quote }}
           {{- end }}
           {{- if .Values.redis.host }}
           - name: ATLANTIS_REDIS_HOST
-            value: {{ .Values.redis.host }}
+            value: {{ .Values.redis.host | quote }}
           {{- end }}
           {{- if or .Values.redis.password .Values.redisSecretName }}
           - name: ATLANTIS_REDIS_PASSWORD
@@ -372,19 +372,19 @@ spec:
           {{- end }}
           {{- if .Values.redis.port }}
           - name: ATLANTIS_REDIS_PORT
-            value: {{ .Values.redis.port }}
+            value: {{ .Values.redis.port | quote }}
           {{- end }}
           {{- if .Values.redis.db }}
           - name: ATLANTIS_REDIS_DB
-            value: {{ .Values.redis.db }}
+            value: {{ .Values.redis.db | quote }}
           {{- end }}
           {{- if .Values.redis.tlsEnabled }}
           - name: ATLANTIS_REDIS_TLS_ENABLED
-            value: {{ .Values.redis.tlsEnabled }}
+            value: {{ .Values.redis.tlsEnabled | quote }}
           {{- end }}
           {{- if .Values.redis.insecureSkipVerify }}
           - name: ATLANTIS_REDIS_INSECURE_SKIP_VERIFY
-            value: {{ .Values.redis.insecureSkipVerify }}
+            value: {{ .Values.redis.insecureSkipVerify | quote }}
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
