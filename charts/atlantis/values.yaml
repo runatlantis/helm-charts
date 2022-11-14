@@ -233,12 +233,12 @@ ingress:
 
 ## in case we need several hosts:
   hosts:
-    - host: chart-example.local
-      paths: ["/"]
-#      service: chart-example1
-    - host: chart-example.local2
-#      service: chart-example1
-      paths: ["/lala"]
+  #   - host: chart-example.local
+  #     paths: ["/"]
+  #     service: chart-example1
+  #   - host: chart-example.local2
+  #     service: chart-example1
+  #     paths: ["/lala"]
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -416,3 +416,20 @@ servicemonitor:
 podMonitor:
   enabled: false
   interval: "30s"
+
+# Set the desired Locking DB type
+# lockingDbType: <boltdb|redis>
+
+# Configure Redis Locking DB
+# lockingDbType value must be redis for the config to take effect
+redis: {}
+#  host: redis.host.name
+#  password: myRedisPassword
+#  port: 6379
+#  db: 0
+#  tlsEnabled: false
+#  insecureSkipVerify: false
+
+# If managing secrets outside the chart for the Redis secret, use this variable to reference the secret name
+# redisSecretName: "myRedisSecret"
+
