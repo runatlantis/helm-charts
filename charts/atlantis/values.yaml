@@ -74,6 +74,15 @@ orgAllowlist: <replace-me>
 # If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
  # gitconfigSecretName: 'mygitconfigsecret'
 
+# When referencing Terraform modules in private repositories or registries (such as Artfactory)
+# configuing a .netrc file for authentication may be required:
+# netrc: |
+  # machine artifactory.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+  # machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+
+# If managing secrets outside the chart for the netrc file, use this variable to reference the secret name
+# netrcSecretName: 'mynetrcsecret'
+
 # To specify AWS credentials to be mapped to ~/.aws:
 # aws:
 #   credentials: |
@@ -87,6 +96,9 @@ orgAllowlist: <replace-me>
 #     source_profile = default
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
+
+# option to share process namespace with atlantis container
+shareProcessNamespace: false
 
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
@@ -299,6 +311,9 @@ serviceAccount:
   #   annotation1: value
   #   annotation2: value
   annotations: {}
+
+# Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend
+enableKubernetesBackend: false
 
 # tlsSecretName: tls
 
