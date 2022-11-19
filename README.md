@@ -169,6 +169,15 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 
 ## Upgrading
 
+### From `4.0.*` to `4.1.*`
+* The following value are deprecated:
+  * `dataStorage`
+  * `storageClassName`
+* In favor of the new working way:
+  * `volumeClaim.enabled`
+  * `volumeClaim.dataStorage`
+  * `volumeClaim.storageClassName`
+
 ### From `2.*` to `3.*`
 
 * The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
@@ -212,14 +221,6 @@ repoConfig: |
   * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
   * `bitbucket.base_url` => `bitbucket.baseURL`
 
-### From `4.0.*` to `4.1.*`
-* The following value are deprecated:
-  * `dataStorage`
-  * `storageClassName`
-* In favor of the new working way:
-  * `volumeClaim.enabled`
-  * `volumeClaim.dataStorage`
-  * `volumeClaim.storageClassName`
 
 ## Testing the Deployment
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
