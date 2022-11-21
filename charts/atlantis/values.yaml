@@ -218,6 +218,7 @@ statefulSet:
     runAsUser: 100
     fsGroupChangePolicy: "OnRootMismatch"
   priorityClassName: ""
+  updateStrategy: {}
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
