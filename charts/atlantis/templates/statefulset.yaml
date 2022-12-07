@@ -138,6 +138,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
+          {{- end}}
           {{- if .Values.containerSecurityContext }}
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           {{- end }}
@@ -432,8 +438,7 @@ spec:
           {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           - name: gitconfig-volume
             readOnly: true
-            mountPath: /home/atlantis/.gitconfig
-            subPath: gitconfig
+            mountPath: /etc/secret-gitconfig
           {{- end }}
           {{- if or .Values.netrc .Values.netrcSecretName }}
           - name: netrc-volume
