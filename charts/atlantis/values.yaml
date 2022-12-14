@@ -445,3 +445,5 @@ redis: {}
 # If managing secrets outside the chart for the Redis secret, use this variable to reference the secret name
 # redisSecretName: "myRedisSecret"
 
+# Set lifecycle hooks https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}
