@@ -22,6 +22,7 @@ orgAllowlist: <replace-me>
 # If using a GitHub App, please enter your values as follows:
 # githubApp:
 #   id: 123456
+#   slug: foo
 #   key: |
 #     -----BEGIN PRIVATE KEY-----
 #     ...
