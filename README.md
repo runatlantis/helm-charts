@@ -18,7 +18,7 @@
 - [Testing the Deployment](#testing-the-deployment)
 
 ## Introduction
-This chart creates a single pod in a StatefulSet running Atlantis.  Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lockfiles](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request.  These files are stored in a PersistentVolumeClaim to survive Pod failures.
+This chart creates a single pod in a StatefulSet running Atlantis. Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lockfiles](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request. These files are stored in a PersistentVolumeClaim to survive Pod failures.
 
 ## Prerequisites
 - Kubernetes 1.9+
@@ -35,7 +35,7 @@ In order for Atlantis to start and run successfully:
     Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
-1. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
+2. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
 
 ## Additional manifests
 
@@ -53,7 +53,7 @@ extraManifests:
 ```
 
 ## Customization
-The following options are supported.  See [values.yaml](/charts/atlantis/values.yaml) for more detailed documentation and examples:
+The following options are supported. See [values.yaml](/charts/atlantis/values.yaml) for more detailed documentation and examples:
 
 | Parameter                                           | Description                                                                                                                                                                                                                                                                                               | Default               |
 |-----------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|
@@ -90,7 +90,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `environmentRaw`                                    | Array environment variables in plain Kubernetes yaml format. See `values.yaml` for example.                                                                                                                                                                                                               | `[]`                  |
 | `environmentSecrets`                                | Array of Kubernetes secrets that can be used to set environment variables. See `values.yaml` for example.                                                                                                                                                                                                 | `{}`                  |
 | `environment`                                       | Map of environment variables for the container.                                                                                                                                                                                                                                                           | `{}`                  |
-| `extraContainers`                                   | Additionnal containers to use and depends of use cases.                                                                                                                                                                                                                                                   | `[]`                  |
+| `extraContainers`                                   | Additional containers to use and depends of use cases.                                                                                                                                                                                                                                                    | `[]`                  |
 | `extraManifests`                                    | Add additional manifests to deploy                                                                                                                                                                                                                                                                        | `[]`                  |
 | `extraVolumeMounts`                                 | List of additional volumes mounted to the container.                                                                                                                                                                                                                                                      | `[]`                  |
 | `extraVolumes`                                      | List of additional volumes available to the pod.                                                                                                                                                                                                                                                          | `[]`                  |
@@ -133,7 +133,6 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `orgAllowlist`                                      | Allowlist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none                  |
 | `orgWhitelist`                                      | Deprecated (see orgAllowlist) List of repositories from which Atlantis will accept webhooks. Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                                                                   | none                  |
 | `podTemplate.annotations`                           | Additional annotations to use for pods.                                                                                                                                                                                                                                                                   | `{}`                  |
-| `podTemplate.annotations`                           | Additional annotations to use for the StatefulSet.                                                                                                                                                                                                                                                        | n/a                   |
 | `podTemplate.labels`                                | Additional labels to use for pods.                                                                                                                                                                                                                                                                        | `{}`                  |
 | `redis.db`                                          | Redis database number for Locking DB of type `redis`.                                                                                                                                                                                                                                                     | n/a                   |
 | `redis.host`                                        | Redis hostname for Locking DB of type `redis`.                                                                                                                                                                                                                                                            | n/a                   |
@@ -143,6 +142,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `redis.tlsEnabled`                                  | Whether to enable TLS connection to Redis.                                                                                                                                                                                                                                                                | n/a                   |
 | `redisSecretName`                                   | Name of a pre-existing Kubernetes `Secret` containing a `password` key. Use this instead of `redis.password`.                                                                                                                                                                                             | n/a                   |
 | `repoConfig`                                        | [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap.                                                                                                                                          | n/a                   |
+| `service.annotations`                               | Additional annotations to use for the service.                                                                                                                                                                                                                                                            | n/a                   |
 | `service.loadBalancerIP`                            | Expose this service on the given ip if service.type = `LoadBalancerIP`                                                                                                                                                                                                                                    | n/a                   |
 | `service.loadBalancerSourceRanges`                  | Array of allowlisted IP addresses for the Atlantis Service. If no value is specified, the Service will allow incoming traffic from all IP addresses (0.0.0.0/0).                                                                                                                                          | n/a                   |
 | `service.port`                                      | Port of the `Service`.                                                                                                                                                                                                                                                                                    | `80`                  |
@@ -228,14 +228,14 @@ repoConfig: |
 ## Testing the Deployment
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
 
-1. Install the chart.  Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
+1. Install the chart. Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
 
     ```bash
     helm repo add runatlantis https://runatlantis.github.io/helm-charts
     helm install -f test-values.yaml my-atlantis runatlantis/atlantis --debug
     ```
 
-1. Run the tests:
+2. Run the tests:
     ```bash
     helm test my-atlantis
     ```
