@@ -236,7 +236,7 @@ To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is u
     helm install -f test-values.yaml my-atlantis runatlantis/atlantis --debug
     ```
 
-2. Run the tests:
+1. Run the tests:
     ```bash
     helm test my-atlantis
     ```
