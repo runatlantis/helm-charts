@@ -275,6 +275,10 @@ spec:
           - name: ATLANTIS_GH_APP_ID
             value: {{ .Values.githubApp.id | quote}}
           {{- end }}
+          {{- if .Values.githubApp.slug }}
+          - name: ATLANTIS_GH_APP_SLUG
+            value: {{ .Values.githubApp.slug | quote}}
+          {{- end }}
           - name: ATLANTIS_WRITE_GIT_CREDS
             value: "true"
           {{- if or .Values.githubApp.secret .Values.vcsSecretName}}
