@@ -37,7 +37,7 @@ spec:
       hostAliases:
       {{- range .Values.hostAliases }}
         - hostnames: {{- range .hostnames }}
-          - {{ . }}{{- end}}
+          - {{ . }}{{- end }}
           ip: {{ .ip }}
       {{- end }}
       {{- end }}
@@ -265,7 +265,7 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_secret
-          {{- end}}
+          {{- end }}
           {{- if .Values.github.hostname }}
           - name: ATLANTIS_GH_HOSTNAME
             value: {{ .Values.github.hostname }}
@@ -310,7 +310,7 @@ spec:
           - name: ATLANTIS_GITLAB_HOSTNAME
             value: {{ .Values.gitlab.hostname }}
           {{- end }}
-          {{- end}}
+          {{- end }}
           {{- if .Values.bitbucket }}
           - name: ATLANTIS_BITBUCKET_USER
             value: {{ required "bitbucket.user is required if bitbucket configuration is specified." .Values.bitbucket.user }}
@@ -344,7 +344,7 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: azuredevops_webhook_password
-          {{- end}}
+          {{- end }}
           {{- if .Values.basicAuth }}
           - name: ATLANTIS_WEB_BASIC_AUTH
             value: "true"
@@ -358,14 +358,14 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.basicAuthSecretName" . }}
                 key: password
-          {{- end}}
+          {{- end }}
           {{- if or .Values.api .Values.apiSecretName }}
           - name: ATLANTIS_API_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.apiSecretName" . }}
                 key: apisecret
-          {{- end}}
+          {{- end }}
           {{- if .Values.lockingDbType }}
           - name: ATLANTIS_LOCKING_DB_TYPE
             value: {{ .Values.lockingDbType | quote }}
