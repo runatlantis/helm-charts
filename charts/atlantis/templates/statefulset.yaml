@@ -252,7 +252,7 @@ spec:
             value: http://{{ .Values.ingress.host }}
             {{- end }}
           {{- end }}
-          {{- if .Values.github }}
+          {{- if .Values.github.user }}
           - name: ATLANTIS_GH_USER
             value: {{ required "github.user is required if github configuration is specified." .Values.github.user }}
           - name: ATLANTIS_GH_TOKEN
@@ -397,11 +397,11 @@ spec:
           - name: ATLANTIS_REDIS_INSECURE_SKIP_VERIFY
             value: {{ .Values.redis.insecureSkipVerify | quote }}
           {{- end }}
-          {{ - if .Values.aws.directory }}
+          {{- if .Values.aws.directory }}
           - name: AWS_SHARED_CREDENTIALS_FILE
             value: {{ .Values.aws.directory }}/credentials
           - name: AWS_CONFIG_FILE
-          value: {{ .Values.aws.directory }}/config
+            value: {{ .Values.aws.directory }}/config
           {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
