@@ -108,6 +108,7 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `terminationGracePeriodSeconds`             | Set terminationGracePeriodSeconds for the StatefulSet. | `{}` |
 | `statefulSet.securityContext`               | Allow customizing fsGroup/runAsUser. | `{}` |
 | `statefulSet.priorityClassName`             | Leverage a PriorityClass to ensure your pods survive resource shortages. | `{}` |
+| `statefulSet.updateStrategy`                | Configure [updateStrategy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies) of the StatefulSet.                            | `{}` |
 | `logLevel`                                  | Level to use for logging. Either debug, info, warn, or error.                                                                                                                                                                                                                                             | n/a     |
 | `orgAllowlist`                              | Allowlist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                             | none    |
 | `orgWhitelist`                              | Deprecated (see orgAllowlist) List of repositories from which Atlantis will accept webhooks. Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                                                                   | none    |
@@ -165,10 +166,20 @@ The following options are supported.  See [values.yaml](/charts/atlantis/values.
 | `redis.insecureSkipVerify`                          | Whether Redis client should skip verification of Redis server's certificate chain and hostname. Setting to `true` may introduce a security vulnerability.                                                                                                                                                                                              | n/a           |
 | `redisSecretName`                                   | Name of a pre-existing Kubernetes `Secret` containing a `password` key. Use this instead of `redis.password`.                                                                                                                                                                                              | n/a           |
 | `enableKubernetesBackend`                   | Deploy rbac to allow for the serviceAccount to manage terraform state via a kubernetes backend | false |
+| `lifecycle`                                         | Configure pod container lifecycle hooks. See [Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/) for details.                                                                                                | `{}`      |
 
 **NOTE**: All the [Server Configurations](https://www.runatlantis.io/docs/server-configuration.html) are passed as [Environment Variables](https://www.runatlantis.io/docs/server-configuration.html#environment-variables).
 
 ## Upgrading
+
+### From `4.0.*` to `4.1.*`
+* The following value are deprecated:
+  * `dataStorage`
+  * `storageClassName`
+* In favor of the new working way:
+  * `volumeClaim.enabled`
+  * `volumeClaim.dataStorage`
+  * `volumeClaim.storageClassName`
 
 ### From `2.*` to `3.*`
 
@@ -213,14 +224,6 @@ repoConfig: |
   * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
   * `bitbucket.base_url` => `bitbucket.baseURL`
 
-### From `4.0.*` to `4.1.*`
-* The following value are deprecated:
-  * `dataStorage`
-  * `storageClassName`
-* In favor of the new working way:
-  * `volumeClaim.enabled`
-  * `volumeClaim.dataStorage`
-  * `volumeClaim.storageClassName`
 
 ## Testing the Deployment
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):

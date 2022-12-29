@@ -98,9 +98,6 @@ aws: {}
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
-# option to share process namespace with atlantis container
-shareProcessNamespace: false
-
 ## To be used for mounting credential files (when using google provider).
 serviceAccountSecrets:
   # credentials: <json file as base64 encoded string>
@@ -113,7 +110,7 @@ serviceAccountSecrets:
 
 image:
   repository: ghcr.io/runatlantis/atlantis
-  tag: v0.20.1
+  tag: v0.21.0
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -219,6 +216,9 @@ statefulSet:
     runAsUser: 100
     fsGroupChangePolicy: "OnRootMismatch"
   priorityClassName: ""
+  updateStrategy: {}
+  # option to share process namespace with atlantis container
+  shareProcessNamespace: false
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
@@ -446,3 +446,5 @@ redis: {}
 # If managing secrets outside the chart for the Redis secret, use this variable to reference the secret name
 # redisSecretName: "myRedisSecret"
 
+# Set lifecycle hooks https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}

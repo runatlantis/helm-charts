@@ -158,6 +158,9 @@ spec:
           ports:
           - name: atlantis
             containerPort: 4141
+          {{- with .Values.lifecycle }}
+          lifecycle: {{ toYaml . | nindent 12 }}
+          {{- end }}
           {{- if or .Values.loadEnvFromSecrets .Values.loadEnvFromConfigMaps }}
           envFrom:
           {{- range .Values.loadEnvFromSecrets }}
@@ -249,7 +252,7 @@ spec:
             value: http://{{ .Values.ingress.host }}
             {{- end }}
           {{- end }}
-          {{- if .Values.github }}
+          {{- if .Values.github.user }}
           - name: ATLANTIS_GH_USER
             value: {{ required "github.user is required if github configuration is specified." .Values.github.user }}
           - name: ATLANTIS_GH_TOKEN
@@ -506,6 +509,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+  {{- with .Values.statefulSet.updateStrategy }}
+  updateStrategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
   {{- if .Values.dataStorage }}
   volumeClaimTemplates:
   - metadata:
