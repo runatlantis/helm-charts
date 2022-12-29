@@ -85,7 +85,7 @@ spec:
         secret:
           secretName: {{ .Values.netrcSecretName }}
       {{- end }}
-      {{- if or .Values.aws .Values.awsSecretName}}
+      {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
       - name: aws-volume
         secret:
           secretName: {{ template "atlantis.awsSecretName" . }}
@@ -393,6 +393,12 @@ spec:
           - name: ATLANTIS_REDIS_INSECURE_SKIP_VERIFY
             value: {{ .Values.redis.insecureSkipVerify | quote }}
           {{- end }}
+          {{- if .Values.aws.directory }}
+          - name: AWS_SHARED_CREDENTIALS_FILE
+            value: {{ .Values.aws.directory }}/credentials
+          - name: AWS_CONFIG_FILE
+            value: {{ .Values.aws.directory }}/config
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -444,10 +450,10 @@ spec:
             mountPath: /home/atlantis/.netrc
             subPath: netrc
           {{- end }}
-          {{- if or .Values.aws .Values.awsSecretName }}
+          {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
-            mountPath: /home/atlantis/.aws
+            mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls
