@@ -84,8 +84,8 @@ orgAllowlist: <replace-me>
 # If managing secrets outside the chart for the netrc file, use this variable to reference the secret name
 # netrcSecretName: 'mynetrcsecret'
 
-# To specify AWS credentials to be mapped to ~/.aws:
-# aws:
+# To specify AWS credentials to be mapped to ~/.aws or to aws.directory:
+aws: {}
 #   credentials: |
 #     [default]
 #     aws_access_key_id=YOUR_ACCESS_KEY_ID
@@ -95,6 +95,7 @@ orgAllowlist: <replace-me>
 #     [profile a_role_to_assume]
 #     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
 #     source_profile = default
+#   directory: "/home/atlantis/.aws"
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
