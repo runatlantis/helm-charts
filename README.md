@@ -35,7 +35,7 @@ In order for Atlantis to start and run successfully:
     Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
-2. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
+1. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
 
 ## Additional manifests
 
