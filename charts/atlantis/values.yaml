@@ -15,6 +15,7 @@ orgAllowlist: <replace-me>
 #   user: foo
 #   token: bar
 #   secret: baz
+#   org: your-org (optional)
 # GitHub Enterprise only:
 #   hostname: github.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
