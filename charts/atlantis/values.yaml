@@ -318,6 +318,10 @@ enableKubernetesBackend: false
 
 # tlsSecretName: tls
 
+environment: {}
+# environment:
+#   ATLANTIS_DEFAULT_TF_VERSION: v1.2.9
+
 # Optionally specify additional environment variables to be populated from Kubernetes secrets.
 # Useful for passing in TF_VAR_foo or other secret environment variables from Kubernetes secrets.
 environmentSecrets: []
