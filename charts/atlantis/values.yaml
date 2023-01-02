@@ -11,6 +11,7 @@ orgAllowlist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
+github: {}
 # github:
 #   user: foo
 #   token: bar
