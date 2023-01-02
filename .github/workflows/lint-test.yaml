@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'charts/atlantis/**'
-      - 'ct.yaml`
+      - 'ct.yaml'
 
 jobs:
   lint-test:
