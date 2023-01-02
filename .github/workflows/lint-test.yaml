@@ -1,6 +1,10 @@
 name: Lint and Test Charts
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - 'charts/atlantis/**'
+      - 'ct.yaml`
 
 jobs:
   lint-test:
