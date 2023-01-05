@@ -48,7 +48,7 @@ github: {}
 #   secret: baz
 #   baseURL: https://bitbucket.yourorganization.com
 
-# For bit Bitbucket Cloud (bitbucket.org)
+# For Bitbucket Cloud (bitbucket.org)
 # bitbucket:
 #   user: # The recommended here is genarate a service user on your cloud environment, but yes, you can live on the edge using your own user :)
 #   token: # Create an APP PASSWORD to the user
