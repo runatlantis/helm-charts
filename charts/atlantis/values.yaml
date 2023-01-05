@@ -40,13 +40,19 @@ github: {}
 #   hostname: gitlab.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
-# If using Bitbucket, specify like the following:
+# If using Bitbucket 
+# Server 
 # bitbucket:
 #   user: foo
 #   token: bar
-# Bitbucket Server only:
 #   secret: baz
 #   baseURL: https://bitbucket.yourorganization.com
+
+# For bit Bitbucket Cloud (bitbucket.org)
+# bitbucket:
+#   user: # The recommended here is genarate a service user on your cloud environment, but yes, you can live on the edge using your own user :)
+#   token: # Create an APP PASSWORD to the user
+# Base URL are not needed here, but keep in mind to provide an IP Whitelist as the Atlantis documentation
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If using Azure DevOps, specify like the following:
