@@ -139,6 +139,9 @@ image:
 #        steps: [init, plan]
 #      apply:
 #        steps: [apply]
+#  # metrics:
+#  #   prometheus:
+#  #     endpoint: /metrics
 
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
@@ -429,7 +432,25 @@ containerSecurityContext: {}
 #   readOnlyRootFilesystem: true
 
 servicemonitor:
+  # to enable a Prometheus servicemonitor, set enabled to true,
+  #   and enable the metrics in this file's repoConfig
+  #   by setting a value for metrics.prometheus.endpoint
   enabled: false
+  interval: "30s"
+  auth:
+    # if auth is enabled on Atlantis, use one of the following mechanism
+    basicAuth:
+      # authentication from the secret generated with the basicAuth values
+      #   this will reference the username and password keys
+      #   from the atlantis-basic-auth secret
+      enabled: false
+    externalSecret:
+      # authentication based on an external secret
+      enabled: false
+      name: atlantis-env
+      keys:
+        username: USERNAME
+        password: ATLANTIS_WEB_PASSWORD
 
 # Enable this if you're using Google Managed Prometheus
 podMonitor:
