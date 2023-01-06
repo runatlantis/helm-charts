@@ -22,7 +22,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
-          version: v3.4.0
+          version: v3.10 # renovate:keep-up-to-date
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1
