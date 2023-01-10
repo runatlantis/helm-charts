@@ -230,7 +230,6 @@ repoConfig: |
   * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
   * `bitbucket.base_url` => `bitbucket.baseURL`
 
-  
 ## Testing the Deployment
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
 
