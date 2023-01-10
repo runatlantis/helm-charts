@@ -152,8 +152,6 @@ The following options are supported. See [values.yaml](/charts/atlantis/values.y
 | `serviceAccount.create`                             | Whether to create a Kubernetes ServiceAccount if no account matching `serviceAccount.name` exists.                                                                                                                                                                                                          | `true`                |
 | `serviceAccount.mount`                              | Whether to mount the Kubernetes ServiceAccount into the pod                                                                                                                                                                                                                                                 | `true`                |
 | `serviceAccount.name`                               | Name of the Kubernetes ServiceAccount under which Atlantis should run. If no value is specified and `serviceAccount.create` is `true`, Atlantis will be run under a ServiceAccount whose name is the FullName of the Helm chart's instance, else Atlantis will be run under the `default` ServiceAccount.   | n/a                   |
-| `serviceAccountSecrets.credentials-staging`         | Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform staging service account. Only applicable if hosting Atlantis on GKE.                                                                                                                              | n/a                   |
-| `serviceAccountSecrets.credentials`                 | Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform production service account. Only applicable if hosting Atlantis on GKE.                                                                                                                           | n/a                   |
 | `statefulSet.annotations`                           | Additional annotations to use for StatefulSet.                                                                                                                                                                                                                                                              | `{}`                  |
 | `statefulSet.labels`                                | Additional labels to use for StatefulSet.                                                                                                                                                                                                                                                                   | `{}`                  |
 | `statefulSet.priorityClassName`                     | Leverage a PriorityClass to ensure your pods survive resource shortages.                                                                                                                                                                                                                                    | `{}`                  |
@@ -177,6 +175,8 @@ The following options are supported. See [values.yaml](/charts/atlantis/values.y
   * `dataStorage`
   * `storageClassName`
   * `orgWhitelist`
+  * `serviceAccountSecrets.credentials-staging`
+  * `serviceAccountSecrets.credentials`
 
 ### From `4.0.*` to `4.1.*`
 * The following value are deprecated:
