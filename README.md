@@ -133,7 +133,6 @@ The following options are supported. See [values.yaml](/charts/atlantis/values.y
 | `netrcSecretName`                                   | Name of a pre-existing Kubernetes `Secret` containing a `netrc` key. Use this instead of `netrc` (optional)                                                                                                                                                                                                 | n/a                   |
 | `netrc`                                             | Contents of a file to be mounted to `~/.netrc`.  Use to authenticate with private registries hosting terraform modules.                                                                                                                                                                                     | n/a                   |
 | `orgAllowlist`                                      | Allowlist of repositories from which Atlantis will accept webhooks. **This value must be set for Atlantis to function correctly.** Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                               | none                  |
-| `orgWhitelist`                                      | Deprecated (see orgAllowlist) List of repositories from which Atlantis will accept webhooks. Accepts wildcard characters (`*`). Multiple values may be comma-separated.                                                                                                                                     | none                  |
 | `podTemplate.annotations`                           | Additional annotations to use for pods.                                                                                                                                                                                                                                                                     | `{}`                  |
 | `podTemplate.labels`                                | Additional labels to use for pods.                                                                                                                                                                                                                                                                          | `{}`                  |
 | `redis.db`                                          | Redis database number for Locking DB of type `redis`.                                                                                                                                                                                                                                                       | n/a                   |
@@ -177,6 +176,7 @@ The following options are supported. See [values.yaml](/charts/atlantis/values.y
 * The following value are removed:
   * `dataStorage`
   * `storageClassName`
+  * `orgWhitelist`
 
 ### From `4.0.*` to `4.1.*`
 * The following value are deprecated:
