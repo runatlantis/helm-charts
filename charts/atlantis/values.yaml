@@ -11,6 +11,7 @@ orgAllowlist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
+github: {}
 # github:
 #   user: foo
 #   token: bar
@@ -22,6 +23,7 @@ orgAllowlist: <replace-me>
 # If using a GitHub App, please enter your values as follows:
 # githubApp:
 #   id: 123456
+#   slug: foo
 #   key: |
 #     -----BEGIN PRIVATE KEY-----
 #     ...
@@ -74,8 +76,17 @@ orgAllowlist: <replace-me>
 # If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
  # gitconfigSecretName: 'mygitconfigsecret'
 
-# To specify AWS credentials to be mapped to ~/.aws:
-# aws:
+# When referencing Terraform modules in private repositories or registries (such as Artfactory)
+# configuing a .netrc file for authentication may be required:
+# netrc: |
+  # machine artifactory.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+  # machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+
+# If managing secrets outside the chart for the netrc file, use this variable to reference the secret name
+# netrcSecretName: 'mynetrcsecret'
+
+# To specify AWS credentials to be mapped to ~/.aws or to aws.directory:
+aws: {}
 #   credentials: |
 #     [default]
 #     aws_access_key_id=YOUR_ACCESS_KEY_ID
@@ -85,6 +96,7 @@ orgAllowlist: <replace-me>
 #     [profile a_role_to_assume]
 #     role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
 #     source_profile = default
+#   directory: "/home/atlantis/.aws"
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
@@ -100,7 +112,7 @@ serviceAccountSecrets:
 
 image:
   repository: ghcr.io/runatlantis/atlantis
-  tag: v0.20.1
+  tag: v0.22.2
   pullPolicy: IfNotPresent
 
 ## Optionally specify an array of imagePullSecrets.
@@ -206,6 +218,9 @@ statefulSet:
     runAsUser: 100
     fsGroupChangePolicy: "OnRootMismatch"
   priorityClassName: ""
+  updateStrategy: {}
+  # option to share process namespace with atlantis container
+  shareProcessNamespace: false
 
 ## Optionally customize the terminationGracePeriodSeconds
 # terminationGracePeriodSeconds: 60
@@ -230,12 +245,12 @@ ingress:
 
 ## in case we need several hosts:
   hosts:
-    - host: chart-example.local
-      paths: ["/"]
-#      service: chart-example1
-    - host: chart-example.local2
-#      service: chart-example1
-      paths: ["/lala"]
+  #   - host: chart-example.local
+  #     paths: ["/"]
+  #     service: chart-example1
+  #   - host: chart-example.local2
+  #     service: chart-example1
+  #     paths: ["/lala"]
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -293,7 +308,14 @@ serviceAccount:
   #   annotation2: value
   annotations: {}
 
+# Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend
+enableKubernetesBackend: false
+
 # tlsSecretName: tls
+
+environment: {}
+# environment:
+#   ATLANTIS_DEFAULT_TF_VERSION: v1.2.9
 
 # Optionally specify additional environment variables to be populated from Kubernetes secrets.
 # Useful for passing in TF_VAR_foo or other secret environment variables from Kubernetes secrets.
@@ -407,3 +429,22 @@ servicemonitor:
 podMonitor:
   enabled: false
   interval: "30s"
+
+# Set the desired Locking DB type
+# lockingDbType: <boltdb|redis>
+
+# Configure Redis Locking DB
+# lockingDbType value must be redis for the config to take effect
+redis: {}
+#  host: redis.host.name
+#  password: myRedisPassword
+#  port: 6379
+#  db: 0
+#  tlsEnabled: false
+#  insecureSkipVerify: false
+
+# If managing secrets outside the chart for the Redis secret, use this variable to reference the secret name
+# redisSecretName: "myRedisSecret"
+
+# Set lifecycle hooks https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+lifecycle: {}

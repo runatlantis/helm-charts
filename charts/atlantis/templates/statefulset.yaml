@@ -37,11 +37,12 @@ spec:
       hostAliases:
       {{- range .Values.hostAliases }}
         - hostnames: {{- range .hostnames }}
-          - {{ . }}{{- end}}
+          - {{ . }}{{- end }}
           ip: {{ .ip }}
       {{- end }}
       {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
+      shareProcessNamespace: {{ .Values.statefulSet.shareProcessNamespace }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
@@ -75,7 +76,16 @@ spec:
         secret:
           secretName: {{ .Values.gitconfigSecretName }}
       {{- end }}
-      {{- if or .Values.aws .Values.awsSecretName}}
+      {{- if .Values.netrc }}
+      - name: netrc-volume
+        secret:
+          secretName: {{ template "atlantis.fullname" . }}-netrc
+      {{- else if .Values.netrcSecretName }}
+      - name: netrc-volume
+        secret:
+          secretName: {{ .Values.netrcSecretName }}
+      {{- end }}
+      {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
       - name: aws-volume
         secret:
           secretName: {{ template "atlantis.awsSecretName" . }}
@@ -128,12 +138,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
-          lifecycle:
-            postStart:
-              exec:
-                command: ["/bin/sh", "-c", "cp /etc/secret-gitconfig/gitconfig /home/atlantis/.gitconfig && chown atlantis /home/atlantis/.gitconfig"]
-          {{- end}}
           {{- if .Values.containerSecurityContext }}
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           {{- end }}
@@ -154,6 +158,9 @@ spec:
           ports:
           - name: atlantis
             containerPort: 4141
+          {{- with .Values.lifecycle }}
+          lifecycle: {{ toYaml . | nindent 12 }}
+          {{- end }}
           {{- if or .Values.loadEnvFromSecrets .Values.loadEnvFromConfigMaps }}
           envFrom:
           {{- range .Values.loadEnvFromSecrets }}
@@ -245,7 +252,7 @@ spec:
             value: http://{{ .Values.ingress.host }}
             {{- end }}
           {{- end }}
-          {{- if .Values.github }}
+          {{- if .Values.github.user }}
           - name: ATLANTIS_GH_USER
             value: {{ required "github.user is required if github configuration is specified." .Values.github.user }}
           - name: ATLANTIS_GH_TOKEN
@@ -258,15 +265,19 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: github_secret
+          {{- end }}
           {{- if .Values.github.hostname }}
           - name: ATLANTIS_GH_HOSTNAME
             value: {{ .Values.github.hostname }}
           {{- end }}
-          {{- end}}
           {{- if .Values.githubApp }}
           {{- if .Values.githubApp.id }}
           - name: ATLANTIS_GH_APP_ID
             value: {{ .Values.githubApp.id | quote}}
+          {{- end }}
+          {{- if .Values.githubApp.slug }}
+          - name: ATLANTIS_GH_APP_SLUG
+            value: {{ .Values.githubApp.slug | quote}}
           {{- end }}
           - name: ATLANTIS_WRITE_GIT_CREDS
             value: "true"
@@ -299,7 +310,7 @@ spec:
           - name: ATLANTIS_GITLAB_HOSTNAME
             value: {{ .Values.gitlab.hostname }}
           {{- end }}
-          {{- end}}
+          {{- end }}
           {{- if .Values.bitbucket }}
           - name: ATLANTIS_BITBUCKET_USER
             value: {{ required "bitbucket.user is required if bitbucket configuration is specified." .Values.bitbucket.user }}
@@ -333,7 +344,7 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: azuredevops_webhook_password
-          {{- end}}
+          {{- end }}
           {{- if .Values.basicAuth }}
           - name: ATLANTIS_WEB_BASIC_AUTH
             value: "true"
@@ -347,14 +358,51 @@ spec:
               secretKeyRef:
                 name: {{ template "atlantis.basicAuthSecretName" . }}
                 key: password
-          {{- end}}
+          {{- end }}
           {{- if or .Values.api .Values.apiSecretName }}
           - name: ATLANTIS_API_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.apiSecretName" . }}
                 key: apisecret
-          {{- end}}
+          {{- end }}
+          {{- if .Values.lockingDbType }}
+          - name: ATLANTIS_LOCKING_DB_TYPE
+            value: {{ .Values.lockingDbType | quote }}
+          {{- end }}
+          {{- if .Values.redis.host }}
+          - name: ATLANTIS_REDIS_HOST
+            value: {{ .Values.redis.host | quote }}
+          {{- end }}
+          {{- if or .Values.redis.password .Values.redisSecretName }}
+          - name: ATLANTIS_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.redisSecretName" . }}
+                key: password
+          {{- end }}
+          {{- if .Values.redis.port }}
+          - name: ATLANTIS_REDIS_PORT
+            value: {{ .Values.redis.port | quote }}
+          {{- end }}
+          {{- if .Values.redis.db }}
+          - name: ATLANTIS_REDIS_DB
+            value: {{ .Values.redis.db | quote }}
+          {{- end }}
+          {{- if .Values.redis.tlsEnabled }}
+          - name: ATLANTIS_REDIS_TLS_ENABLED
+            value: {{ .Values.redis.tlsEnabled | quote }}
+          {{- end }}
+          {{- if .Values.redis.insecureSkipVerify }}
+          - name: ATLANTIS_REDIS_INSECURE_SKIP_VERIFY
+            value: {{ .Values.redis.insecureSkipVerify | quote }}
+          {{- end }}
+          {{- if .Values.aws.directory }}
+          - name: AWS_SHARED_CREDENTIALS_FILE
+            value: {{ .Values.aws.directory }}/credentials
+          - name: AWS_CONFIG_FILE
+            value: {{ .Values.aws.directory }}/config
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -397,12 +445,19 @@ spec:
           {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           - name: gitconfig-volume
             readOnly: true
-            mountPath: /etc/secret-gitconfig
+            mountPath: /home/atlantis/.gitconfig
+            subPath: gitconfig
           {{- end }}
-          {{- if or .Values.aws .Values.awsSecretName }}
+          {{- if or .Values.netrc .Values.netrcSecretName }}
+          - name: netrc-volume
+            readOnly: true
+            mountPath: /home/atlantis/.netrc
+            subPath: netrc
+          {{- end }}
+          {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
-            mountPath: /home/atlantis/.aws
+            mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls
@@ -458,6 +513,10 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+  {{- with .Values.statefulSet.updateStrategy }}
+  updateStrategy:
+{{ toYaml . | indent 4 }}
+  {{- end }}
   {{- if .Values.volumeClaim.enabled }}
   volumeClaimTemplates:
   - metadata:
