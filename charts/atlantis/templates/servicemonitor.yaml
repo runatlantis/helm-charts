@@ -18,4 +18,23 @@ spec:
      - {{ .Release.Namespace }}
   endpoints:
   - port: atlantis
+    interval: {{ .Values.servicemonitor.interval }}
+    path: {{ .Values.servicemonitor.path | default "/metrics" }}
+{{- if .Values.servicemonitor.auth.basicAuth.enabled }}
+    basicAuth:
+      username:
+        key: username
+        name: {{ template "atlantis.fullname" . }}-basic-auth
+      password:
+        key: password
+        name: {{ template "atlantis.fullname" . }}-basic-auth
+{{- else if .Values.servicemonitor.auth.externalSecret.enabled }}
+    basicAuth:
+      username:
+        key: {{ .Values.servicemonitor.auth.externalSecret.keys.username }}
+        name: {{ .Values.servicemonitor.auth.externalSecret.name }}
+      password:
+        key: {{ .Values.servicemonitor.auth.externalSecret.keys.password }}
+        name: {{ .Values.servicemonitor.auth.externalSecret.name }}
+{{- end }}
 {{- end -}}
