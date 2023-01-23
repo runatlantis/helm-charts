@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'charts/atlantis/**'
 
 jobs:
   release:
@@ -22,7 +24,7 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
-          version: v3.10 # renovate: datasource=github-releases depName=helm packageName=helm/helm
+          version: v3.10.3 # renovate: datasource=github-releases depName=helm packageName=helm/helm
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1
