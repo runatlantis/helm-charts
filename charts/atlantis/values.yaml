@@ -173,6 +173,9 @@ enableDiffMarkdownFormat: false
 #   username: "atlantis"
 #   password: "atlantis"
 
+# If managing secrets outside the chart for the Basic Auth secret, use this variable to reference the secret name
+# basicAuthSecretName: "basicauthsecret"
+
 # Optionally specify an API secret to enable the API
 # api:
 #   secret: "s3cr3t"
