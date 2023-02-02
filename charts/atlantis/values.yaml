@@ -40,15 +40,16 @@ github: {}
 #   hostname: gitlab.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
-# If using Bitbucket 
-# Server 
+# If using Bitbucket, there are two approachs, Bitbucket Server, deployed in your own infrastructure and Cloud available at (https://Bitbucket.org)
+
+# Bitbucket Server, specify like the following:
 # bitbucket:
 #   user: foo
 #   token: bar
 #   secret: baz
 #   baseURL: https://bitbucket.yourorganization.com
 
-# For Bitbucket Cloud (bitbucket.org)
+# Bitbucket Cloud, specify like the following:
 # bitbucket:
 #   user: # The recommended here is genarate a service user on your cloud environment, but yes, you can live on the edge using your own user :)
 #   token: # Create an APP PASSWORD to the user
