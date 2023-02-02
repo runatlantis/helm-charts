@@ -136,7 +136,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.containerSecurityContext }}
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
@@ -345,7 +345,7 @@ spec:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: azuredevops_webhook_password
           {{- end }}
-          {{- if .Values.basicAuth }}
+          {{- if or .Values.basicAuthSecretName .Values.basicAuth }}
           - name: ATLANTIS_WEB_BASIC_AUTH
             value: "true"
           - name: ATLANTIS_WEB_USERNAME

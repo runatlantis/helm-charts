@@ -121,6 +121,7 @@ Common labels
 {{- define "atlantis.labels" -}}
 app: {{ template "atlantis.name" . }}
 chart: {{ template "atlantis.chart" . }}
+helm.sh/chart: {{ template "atlantis.chart" . }}
 release: {{ .Release.Name }}
 heritage: {{ .Release.Service }}
 {{- if .Values.commonLabels}}

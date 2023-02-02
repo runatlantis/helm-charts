@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'charts/atlantis/**'
 
 jobs:
   release:
@@ -20,11 +22,11 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v3.5
+        uses: azure/setup-helm@v3
         with:
-          version: v3.4.0
+          version: v3.10.3 # renovate: datasource=github-releases depName=helm packageName=helm/helm
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.4.1
+        uses: helm/chart-releaser-action@v1.5.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
