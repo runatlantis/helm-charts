@@ -241,6 +241,10 @@ spec:
           - name: ATLANTIS_REPO_CONFIG
             value: /etc/atlantis/repos.yaml
           {{- end }}
+          {{- if .Values.githubAppOrg }}
+          - name: ATLANTIS_GH_ORG
+            value: {{ .Values.githubAppOrg | quote}}
+          {{- end }}
           {{- if .Values.atlantisUrl }}
           - name: ATLANTIS_ATLANTIS_URL
             value: {{ .Values.atlantisUrl }}

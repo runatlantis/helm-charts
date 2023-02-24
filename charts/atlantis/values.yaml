@@ -8,6 +8,7 @@
 
 # Replace this with your own repo allowlist:
 orgAllowlist: <replace-me>
+#githubAppOrg: myorgname
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
