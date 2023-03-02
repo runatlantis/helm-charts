@@ -114,7 +114,7 @@ image:
   repository: ghcr.io/runatlantis/atlantis
   # if not set appVersion field from Chart.yaml is used
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
