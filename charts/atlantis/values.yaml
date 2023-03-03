@@ -304,6 +304,15 @@ tolerations: []
 
 affinity: {}
 
+# topologySpreadConstraints -- You can use topology spread constraints to control how Pods are spread across your cluster among failure-domains such as regions, zones, nodes, and other user-defined topology domains. (requires Kubernetes >= 1.19).
+topologySpreadConstraints: []
+#  - labelSelector:
+#      matchLabels:
+#        app.kubernetes.io/name: aws-example-cluster
+#    maxSkew: 1
+#    topologyKey: topology.kubernetes.io/zone
+#    whenUnsatisfiable: DoNotSchedule
+
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
