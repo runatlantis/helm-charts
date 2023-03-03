@@ -1,0 +1,25 @@
+{
+  extends: [
+    "config:base",
+    "schedule:daily",
+  ],
+  commitMessageSuffix: " in {{packageFile}}",
+  dependencyDashboardAutoclose: true,
+  automerge: false,
+  platformAutomerge: false,
+  labels: ["dependencies"],
+  vulnerabilityAlerts: {
+    enabled: true,
+    labels: [
+      "security",
+    ],
+  },
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.yaml$"],
+      "matchStrings": [
+        "# ?renovate datasource=(?<datasource>.+?) depName=(?<depName>.+)\\n.+: [\"']?(?<currentValue>.+?)[\"']?\\n"
+      ]
+    }
+  ]
+}
