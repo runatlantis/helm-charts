@@ -511,10 +511,10 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
-{{- if .Values.topologySpreadConstraints }}
-      topologySpreadConstraints:
-{{ toYaml .Values.topologySpreadConstraints | indent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
   {{- with .Values.statefulSet.updateStrategy }}
