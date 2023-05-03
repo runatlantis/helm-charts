@@ -70,24 +70,24 @@ github: {}
 # When referencing Terraform modules in private repositories, it may be helpful
 # (necessary?) to use redirection in a .gitconfig like so:
 # gitconfig: |
-  # [url "https://YOUR_GH_TOKEN@github.com"]
-  #   insteadOf = https://github.com
-  # [url "https://YOUR_GH_TOKEN@github.com"]
-  #   insteadOf = ssh://git@github.com
-  # [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
-  #   insteadOf = https://gitlab.com
-  # [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
-  #   insteadOf = ssh://git@gitlab.com
+# [url "https://YOUR_GH_TOKEN@github.com"]
+#   insteadOf = https://github.com
+# [url "https://YOUR_GH_TOKEN@github.com"]
+#   insteadOf = ssh://git@github.com
+# [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
+#   insteadOf = https://gitlab.com
+# [url "https://oauth2:YOUR_GITLAB_TOKEN@gitlab.com"]
+#   insteadOf = ssh://git@gitlab.com
 # Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
 
 # If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
- # gitconfigSecretName: 'mygitconfigsecret'
+# gitconfigSecretName: 'mygitconfigsecret'
 
 # When referencing Terraform modules in private repositories or registries (such as Artfactory)
 # configuing a .netrc file for authentication may be required:
 # netrc: |
-  # machine artifactory.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
-  # machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+# machine artifactory.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
+# machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
 
 # If managing secrets outside the chart for the netrc file, use this variable to reference the secret name
 # netrcSecretName: 'mynetrcsecret'
@@ -111,7 +111,6 @@ aws: {}
 serviceAccountSecrets:
   # credentials: <json file as base64 encoded string>
   # credentials-staging: <json file as base64 encoded string>
-
 
 ## -------------------------- ##
 # Default values for atlantis (override as needed).
@@ -218,7 +217,8 @@ service:
   loadBalancerIP: null
 
 podTemplate:
-  annotations: {}
+  annotations:
+    {}
     # kube2iam example:
     # iam.amazonaws.com/role: role-arn
   labels: {}
@@ -243,22 +243,57 @@ ingress:
   enabled: true
   ingressClassName:
   apiVersion: ""
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   path: /*
-## this is in case we want several paths under the same host, with different backend services
-#  paths:
-#    - path: "/path1"
-#      service: test1
-#      port:
-#    - path: "/path2"
-#      service: test2
-#      port:
+  ## this is in case we want several paths under the same host, with different backend services
+  #  paths:
+  #    - path: "/path1"
+  #      service: test1
+  #      port:
+  #    - path: "/path2"
+  #      service: test2
+  #      port:
   pathType: ImplementationSpecific
   host:
 
-## in case we need several hosts:
+  ## in case we need several hosts:
+  hosts:
+  #   - host: chart-example.local
+  #     paths: ["/"]
+  #     service: chart-example1
+  #   - host: chart-example.local2
+  #     service: chart-example1
+  #     paths: ["/lala"]
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+  labels: {}
+
+private_ingress: # Create secondary ingress for exposing webhooks publically.
+  enabled: false
+  ingressClassName:
+  apiVersion: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /*
+  ## this is in case we want several paths under the same host, with different backend services
+  #  paths:
+  #    - path: "/path1"
+  #      service: test1
+  #      port:
+  #    - path: "/path2"
+  #      service: test2
+  #      port:
+  pathType: ImplementationSpecific
+  host:
+
+  ## in case we need several hosts:
   hosts:
   #   - host: chart-example.local
   #     paths: ["/"]
