@@ -246,8 +246,8 @@ ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /* # / for nginx
-## this is in case we want several paths under the same host, with different backend services
+  path: /*  # / for nginx
+##  this is in case we want several paths under the same host, with different backend services
 #  paths:
 #    - path: "/path1"
 #      service: test1
@@ -279,7 +279,7 @@ webhook_ingress:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /* # / for nginx
+  path: /*  # / for nginx
 ## this is in case we want several paths under the same host, with different backend services
 #  paths:
 #    - path: "/path1"
