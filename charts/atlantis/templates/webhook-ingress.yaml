@@ -1,0 +1,107 @@
+{{- if .Values.webhook_ingress.enabled -}}
+{{- $apiVersion := .Values.webhook_ingress.apiVersion }}
+{{- if and $apiVersion (or (eq $apiVersion "networking.k8s.io/v1") (eq $apiVersion "networking.k8s.io/v1beta1") (eq $apiVersion "extensions/v1beta1")) -}}
+{{- else -}}
+  {{- $kubeVersion := .Capabilities.KubeVersion.GitVersion }}
+  {{- if semverCompare ">=1.19-0" $kubeVersion -}}
+    {{- $apiVersion = "networking.k8s.io/v1" -}}
+  {{- else if semverCompare ">=1.14-0" $kubeVersion -}}
+    {{- $apiVersion = "networking.k8s.io/v1beta1" -}}
+  {{- else -}}
+    {{- $apiVersion = "extensions/v1beta1" -}}
+  {{- end }}
+{{- end }}
+{{- $fullName := include "atlantis.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
+{{- $pathType := .Values.webhook_ingress.pathType -}}
+apiVersion: {{ $apiVersion }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-secondary
+  labels:
+{{- include "atlantis.labels" . | nindent 4 }}
+{{- if .Values.webhook_ingress.labels }}
+{{ toYaml .Values.webhook_ingress.labels | indent 4 }}
+{{- end }}
+{{- with .Values.webhook_ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.webhook_ingress.ingressClassName }}
+  ingressClassName: {{ .Values.webhook_ingress.ingressClassName }}
+{{- end }}
+{{- if .Values.webhook_ingress.tls }}
+  tls:
+{{ toYaml .Values.webhook_ingress.tls | indent 4 }}
+{{- end }}
+  rules:
+    {{- if not .Values.webhook_ingress.hosts }}
+    -
+      {{- if .Values.webhook_ingress.host }}
+      host: {{ .Values.webhook_ingress.host | quote }}
+      {{- end }}
+      http:
+        paths:
+        {{- if .Values.webhook_ingress.paths }}
+          {{- range .Values.webhook_ingress.paths }}
+          - path: {{ .path }}
+            backend:
+            {{- if eq $apiVersion "networking.k8s.io/v1" }}
+              service:
+                name: {{ .service }}
+                port:
+                  number: {{ .port }}
+            pathType: {{ $.Values.webhook_ingress.pathType }}
+            {{- else }}
+              serviceName: {{ .service }}
+              servicePort: {{ .port }}
+            {{- end }}
+          {{- end }}
+        {{ else }}
+          - path: {{ .Values.webhook_ingress.path }}
+            backend:
+            {{- if eq $apiVersion "networking.k8s.io/v1" }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ .Values.service.port }}
+            pathType: {{ .Values.webhook_ingress.pathType }}
+            {{ else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ .Values.service.port }}
+            {{- end }}
+        {{- end }}
+    {{ else }}
+    {{- range $k := .Values.webhook_ingress.hosts }}
+    -
+      {{- if .host }}
+      host: {{ .host | quote }}
+      {{- end }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              {{- if eq $apiVersion "networking.k8s.io/v1" }}
+              service:
+                {{- if $k.service }}
+                name: {{ $k.service }}
+                {{- else }}
+                name: {{ $fullName }}
+                {{- end }}
+                port:
+                  number: {{ $svcPort }}
+            pathType: {{ $pathType }}
+              {{- else -}}
+                {{- if $k.service }}
+              serviceName: {{ $k.service }}
+                {{- else }}
+              serviceName: {{ $fullName }}
+                {{- end }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+        {{- end }}
+    {{- end }}
+    {{- end }}
+{{- end }}
