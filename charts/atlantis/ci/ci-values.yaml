@@ -7,6 +7,17 @@ github:
 service:
   type: ClusterIP
 
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: atlantis.localdev.me
+  path: /
+secondary_ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: atlantis-webook.localdev.me
+  path: /events
+
 resources:
   requests:
     memory: 64Mi
