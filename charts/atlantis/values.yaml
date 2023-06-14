@@ -273,7 +273,7 @@ ingress:
   labels: {}
 
 webhook_ingress:
-  enabled: false
+  enabled: false # true to create secondary webhook.
   ingressClassName:
   apiVersion: ""
   annotations: {}
