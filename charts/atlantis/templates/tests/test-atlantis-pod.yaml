@@ -4,37 +4,19 @@ kind: Pod
 metadata:
   name: "{{ .Release.Name }}-ui-test-{{ randAlphaNum 5 | lower }}"
   annotations:
-    "helm.sh/hook": test-success
+    helm.sh/hook: test
 spec:
-  initContainers:
-    - name: test-framework
-      image: bats/bats:1.9.0
-      command:
-      - "bash"
-      - "-c"
-      - |
-        set -ex
-        # copy bats to tools dir
-        mkdir -p /tools/bats
-        cp /usr/local/bin/bats /tools/bats/
-      volumeMounts:
-      - mountPath: /tools
-        name: tools
   containers:
     - name: {{ .Release.Name }}-ui-test
       image: {{ .Values.test.image }}:{{ .Values.test.imageTag }}
-      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      command: ["/usr/local/bin/bats", "/tests/"]
       volumeMounts:
       - mountPath: /tests
         name: tests
         readOnly: true
-      - mountPath: /tools
-        name: tools
   volumes:
   - name: tests
     configMap:
       name: {{ template "atlantis.fullname" . }}-tests
-  - name: tools
-    emptyDir: {}
   restartPolicy: Never
 {{- end }}
