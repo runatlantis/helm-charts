@@ -1,0 +1,18 @@
+{{- $usingVolumeClaimInterface := not .Values.dataStorage }}
+{{- if and .Values.volumeClaim.enabled $usingVolumeClaimInterface }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlantis-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      # The biggest thing Atlantis stores is the Git repo when it checks it out.
+      # It deletes the repo after the pull request is merged.
+      storage: {{ .Values.volumeClaim.dataStorage }}
+  {{- if .Values.volumeClaim.storageClassName }}
+  storageClassName: {{ .Values.volumeClaim.storageClassName }} 
+  {{- end }}
+{{- end }}
