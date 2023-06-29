@@ -172,6 +172,12 @@ disableApplyAll: false
 # disableRepoLocking stops atlantis locking projects and or workspaces when running terraform
 disableRepoLocking: false
 
+# executableName comment command trigger executable name. Defaults to atlantis.
+#executableName: "atlantis-development"
+
+# silenceNoProjects will tell Atlantis to ignore PRs if none of the modified files are part of a project defined in the atlantis.yaml file
+#silenceNoProjects: true
+
 # Use Diff Markdown Format for color coding diffs
 enableDiffMarkdownFormat: false
 
