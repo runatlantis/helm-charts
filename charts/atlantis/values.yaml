@@ -338,6 +338,7 @@ test:
   enabled: true
   image: bats/bats
   imageTag: 1.9.0
+  annotations: {}
 
 nodeSelector: {}
 
