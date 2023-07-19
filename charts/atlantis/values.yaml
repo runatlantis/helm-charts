@@ -214,6 +214,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  nodePort: null
   targetPort: 4141
   loadBalancerIP: null
 
@@ -309,13 +310,13 @@ webhook_ingress:
 # You have to create a secret `my-ca-certificates`
 # customPem: my-ca-certificates
 
-resources:
-  requests:
-    memory: 1Gi
-    cpu: 100m
-  limits:
-    memory: 1Gi
-    cpu: 100m
+resources: {}
+  # requests:
+  #   memory: 1Gi
+  #   cpu: 100m
+  # limits:
+  #   memory: 1Gi
+  #   cpu: 100m
 
 ## Embedded data volume & volumeMount (default working)
 volumeClaim:
@@ -338,6 +339,7 @@ test:
   enabled: true
   image: bats/bats
   imageTag: 1.9.0
+  annotations: {}
 
 nodeSelector: {}
 
