@@ -214,6 +214,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  nodePort: null
   targetPort: 4141
   loadBalancerIP: null
 
