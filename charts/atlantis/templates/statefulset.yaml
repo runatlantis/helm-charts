@@ -201,6 +201,10 @@ spec:
           - name: ATLANTIS_HIDE_PREV_PLAN_COMMENTS
             value: {{ .Values.hidePrevPlanComments | quote }}
           {{- end }}
+          {{- if .Values.hideUnchangedPlanComments }}
+          - name: ATLANTIS_HIDE_UNCHANGED_PLAN_COMMENTS
+            value: {{ .Values.hideUnchangedPlanComments | quote }}
+          {{- end }}
           {{- if .Values.disableApply }}
           - name: ATLANTIS_DISABLE_APPLY
             value: {{ .Values.disableApply | quote }}
