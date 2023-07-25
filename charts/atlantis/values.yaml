@@ -160,6 +160,9 @@ allowDraftPRs: false
 # hidePrevPlanComments enables atlantis to hide previous plan comments
 hidePrevPlanComments: false
 
+# hideUnchangedPlanComments enables atlantis to hide no-changes plan comments from the pull request
+hideUnchangedPlanComments: false
+
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
 
@@ -220,6 +223,7 @@ readinessProbe:
 service:
   type: NodePort
   port: 80
+  nodePort: null
   targetPort: 4141
   loadBalancerIP: null
 
@@ -315,13 +319,13 @@ webhook_ingress:
 # You have to create a secret `my-ca-certificates`
 # customPem: my-ca-certificates
 
-resources:
-  requests:
-    memory: 1Gi
-    cpu: 100m
-  limits:
-    memory: 1Gi
-    cpu: 100m
+resources: {}
+  # requests:
+  #   memory: 1Gi
+  #   cpu: 100m
+  # limits:
+  #   memory: 1Gi
+  #   cpu: 100m
 
 ## Embedded data volume & volumeMount (default working)
 volumeClaim:
