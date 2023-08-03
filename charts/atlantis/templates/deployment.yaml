@@ -1,19 +1,18 @@
-{{- if eq  ( default "statefulSet" .Values.atlantisController ) ("statefulSet")}}
+{{- if eq  ( default "statefulSet" .Values.atlantisController ) ("deployment")}}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
 {{- include "atlantis.labels" . | nindent 4 }}
-{{- if .Values.statefulSet.labels }}
-{{ toYaml .Values.statefulSet.labels | indent 4 }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
 {{- end }}
-  {{- with .Values.statefulSet.annotations }}
+  {{- with .Values.deployment.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
-  serviceName: {{ template "atlantis.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -43,16 +42,21 @@ spec:
       {{- end }}
       {{- end }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
-      shareProcessNamespace: {{ .Values.statefulSet.shareProcessNamespace }}
+      shareProcessNamespace: {{ .Values.deployment.shareProcessNamespace }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
-      securityContext: {{ .Values.statefulSet.securityContext | toYaml | nindent 8 }}
-      {{- if .Values.statefulSet.priorityClassName }}
-      priorityClassName: {{ .Values.statefulSet.priorityClassName }}
+      securityContext: {{ .Values.deployment.securityContext | toYaml | nindent 8 }}
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
       {{- end }}
       volumes:
+      {{- if or .Values.volumeClaim.enabled .Values.dataStorage  }}
+      - name: "atlantis-data"
+        persistentVolumeClaim:
+          claimName: "atlantis-data"
+      {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
         secret:
@@ -522,37 +526,8 @@ spec:
       topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
-  {{- with .Values.statefulSet.updateStrategy }}
-  updateStrategy:
+  {{- with .Values.deployment.strategy }}
+  strategy:
 {{ toYaml . | indent 4 }}
   {{- end }}
-  {{- if .Values.dataStorage }}
-  volumeClaimTemplates:
-  - metadata:
-      name: atlantis-data
-    spec:
-      accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.storageClassName }}
-      storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
-      {{- end }}
-      resources:
-        requests:
-          # The biggest thing Atlantis stores is the Git repo when it checks it out.
-          # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.dataStorage }}
-  {{- else if .Values.volumeClaim.enabled }}
-  volumeClaimTemplates:
-  - metadata:
-      name: atlantis-data
-    spec:
-      accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.volumeClaim.storageClassName }}
-      storageClassName: {{ .Values.volumeClaim.storageClassName }} # Storage class of the volume
-      {{- end }}
-      resources:
-        requests:
-          # The biggest thing Atlantis stores is the Git repo when it checks it out.
-          # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.volumeClaim.dataStorage }}
-  {{- end }}
-{{- end }}
+{{- end}}

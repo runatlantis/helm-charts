@@ -1,0 +1,35 @@
+{{- if eq  ( default "statefulSet" .Values.atlantisController ) ("deployment")}}
+{{- if .Values.dataStorage }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlantis-data
+spec:
+    accessModes:
+        - "ReadWriteOnce" # Volume should not be shared by multiple nodes.
+    {{- if .Values.storageClassName }}
+    storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
+    {{- end }}
+    resources:
+        requests:
+            # The biggest thing Atlantis stores is the Git repo when it checks it out.
+            # It deletes the repo after the pull request is merged.
+            storage: {{ .Values.dataStorage }}
+{{- else if .Values.volumeClaim.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlantis-data
+spec:
+    accessModes:
+        - "ReadWriteOnce" # Volume should not be shared by multiple nodes.
+    {{- if .Values.volumeClaim.storageClassName }}
+    storageClassName: {{ .Values.volumeClaim.storageClassName }} # Storage class of the volume
+    {{- end }}
+    resources:
+            requests:
+                # The biggest thing Atlantis stores is the Git repo when it checks it out.
+                # It deletes the repo after the pull request is merged.
+                storage: {{ .Values.volumeClaim.dataStorage }}
+{{- end }}
+{{- end }}

@@ -227,6 +227,9 @@ podTemplate:
     # iam.amazonaws.com/role: role-arn
   labels: {}
 
+# Pick the controller used to deploy atlantis: "statefulSet" or "deployment"
+atlantisController: "statefulSet" # Use statefulSet by default
+
 # It is not recommended to run atlantis as root
 statefulSet:
   annotations: {}
@@ -238,6 +241,18 @@ statefulSet:
   priorityClassName: ""
   updateStrategy: {}
   # option to share process namespace with atlantis container
+  shareProcessNamespace: false
+
+# These values will only be used if you have atlantisController: "deployment" above
+deployment:
+  annotations: {}
+  labels: {}
+  securityContext:
+    fsGroup: 1000
+    runAsUser: 100
+    fsGroupChangePolicy: "OnRootMismatch"
+  priorityClassName: ""
+  strategy: {}
   shareProcessNamespace: false
 
 ## Optionally customize the terminationGracePeriodSeconds
