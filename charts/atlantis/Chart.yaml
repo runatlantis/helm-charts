@@ -9,6 +9,10 @@ keywords:
 home: https://www.runatlantis.io
 icon: https://www.runatlantis.io/hero.png
 sources:
-  - https://github.com/jacob-jameson/atlantis-helm-charts
+  - https://github.com/runatlantis/atlantis
 maintainers:
-  - name: jacob-jameson
+  - name: lkysow
+  - name: jamengual
+  - name: chenrui333
+  - name: nitrocode
+  - name: genpage
