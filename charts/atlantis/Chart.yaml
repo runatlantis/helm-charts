@@ -3,16 +3,12 @@ apiVersion: v1
 appVersion: v0.24.4
 description: A Helm chart for Atlantis https://www.runatlantis.io
 name: atlantis
-version: 4.14.2
+version: 4.15.0
 keywords:
   - terraform
 home: https://www.runatlantis.io
 icon: https://www.runatlantis.io/hero.png
 sources:
-  - https://github.com/runatlantis/atlantis
+  - https://github.com/jacob-jameson/atlantis-helm-charts
 maintainers:
-  - name: lkysow
-  - name: jamengual
-  - name: chenrui333
-  - name: nitrocode
-  - name: genpage
+  - name: jacob-jameson
