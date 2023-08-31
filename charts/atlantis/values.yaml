@@ -464,6 +464,8 @@ initContainers: []
 #     - bbb.com
 #     ip: 10.0.0.2
 
+hostNetwork: false
+
 extraArgs: []
 # extraArgs:
 # - --disable-autoplan
