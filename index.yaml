@@ -3,6 +3,27 @@ entries:
   atlantis:
   - apiVersion: v1
     appVersion: v0.25.0
+    created: "2023-08-31T17:50:28.612329141Z"
+    description: A Helm chart for Atlantis https://www.runatlantis.io
+    digest: afbcec655dbc6de49376f9454928cb0e3b532dbca39c474e03196763f9fb1898
+    home: https://www.runatlantis.io
+    icon: https://www.runatlantis.io/hero.png
+    keywords:
+    - terraform
+    maintainers:
+    - name: lkysow
+    - name: jamengual
+    - name: chenrui333
+    - name: nitrocode
+    - name: genpage
+    name: atlantis
+    sources:
+    - https://github.com/runatlantis/atlantis
+    urls:
+    - https://github.com/runatlantis/helm-charts/releases/download/atlantis-4.15.1/atlantis-4.15.1.tgz
+    version: 4.15.1
+  - apiVersion: v1
+    appVersion: v0.25.0
     created: "2023-08-11T23:11:33.105825505Z"
     description: A Helm chart for Atlantis https://www.runatlantis.io
     digest: 29283408b7b009db06b0b285a08df6dcfcd46a579ef288aac6dffba41bf7d983
@@ -1699,4 +1720,4 @@ entries:
     urls:
     - https://github.com/runatlantis/helm-charts/releases/download/atlantis-3.12.4/atlantis-3.12.4.tgz
     version: 3.12.4
-generated: "2023-08-11T23:11:33.106202607Z"
+generated: "2023-08-31T17:50:28.612589842Z"
