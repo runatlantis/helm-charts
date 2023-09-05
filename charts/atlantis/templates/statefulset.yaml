@@ -42,6 +42,7 @@ spec:
           ip: {{ .ip }}
       {{- end }}
       {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       shareProcessNamespace: {{ .Values.statefulSet.shareProcessNamespace }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
