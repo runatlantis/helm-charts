@@ -55,7 +55,7 @@ spec:
       {{- if or .Values.volumeClaim.enabled .Values.dataStorage  }}
       - name: "atlantis-data"
         persistentVolumeClaim:
-          claimName: "atlantis-data"
+          claimName: {{ template "atlantis.fullname" . }}
       {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
