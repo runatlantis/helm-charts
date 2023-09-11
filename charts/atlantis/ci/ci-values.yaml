@@ -3,3 +3,25 @@ github:
   user: foo
   token: bar
   secret: baz
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: atlantis.localdev.me
+  path: /
+secondary_ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: atlantis-webook.localdev.me
+  path: /events
+
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 10m
+  limits:
+    memory: 128Mi
+    cpu: 100m

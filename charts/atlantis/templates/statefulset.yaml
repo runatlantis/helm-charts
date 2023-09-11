@@ -41,6 +41,7 @@ spec:
           ip: {{ .ip }}
       {{- end }}
       {{- end }}
+      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
       shareProcessNamespace: {{ .Values.statefulSet.shareProcessNamespace }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
@@ -200,6 +201,10 @@ spec:
           {{- if .Values.hidePrevPlanComments }}
           - name: ATLANTIS_HIDE_PREV_PLAN_COMMENTS
             value: {{ .Values.hidePrevPlanComments | quote }}
+          {{- end }}
+          {{- if .Values.hideUnchangedPlanComments }}
+          - name: ATLANTIS_HIDE_UNCHANGED_PLAN_COMMENTS
+            value: {{ .Values.hideUnchangedPlanComments | quote }}
           {{- end }}
           {{- if .Values.disableApply }}
           - name: ATLANTIS_DISABLE_APPLY
@@ -515,6 +520,10 @@ spec:
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
   {{- with .Values.statefulSet.updateStrategy }}
