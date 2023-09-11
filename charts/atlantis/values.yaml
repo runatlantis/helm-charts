@@ -160,6 +160,9 @@ allowDraftPRs: false
 # hidePrevPlanComments enables atlantis to hide previous plan comments
 hidePrevPlanComments: false
 
+# hideUnchangedPlanComments enables atlantis to hide no-changes plan comments from the pull request
+hideUnchangedPlanComments: false
+
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
 
@@ -460,6 +463,8 @@ initContainers: []
 #   - hostnames:
 #     - bbb.com
 #     ip: 10.0.0.2
+
+hostNetwork: false
 
 extraArgs: []
 # extraArgs:
