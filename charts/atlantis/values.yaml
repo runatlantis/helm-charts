@@ -510,8 +510,8 @@ servicemonitor:
       enabled: false
       # name: atlantis-env
       # keys:
-        # username: USERNAME
-        # password: ATLANTIS_WEB_PASSWORD
+      #   username: USERNAME
+      #   password: ATLANTIS_WEB_PASSWORD
 
 # Enable this if you're using Google Managed Prometheus
 podMonitor:
