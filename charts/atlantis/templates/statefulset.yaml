@@ -237,7 +237,7 @@ spec:
             value: /etc/tls/tls.key
           {{- end }}
           - name: ATLANTIS_DATA_DIR
-            value: /atlantis-data
+            value: {{ .Values.atlantisDataDirectory }}
           - name: ATLANTIS_REPO_ALLOWLIST
             value: {{ toYaml (coalesce .Values.orgWhitelist .Values.orgAllowlist) }}
           - name: ATLANTIS_PORT
@@ -435,7 +435,7 @@ spec:
           volumeMounts:
           {{- if or .Values.volumeClaim.enabled .Values.dataStorage  }}
           - name: atlantis-data
-            mountPath: /atlantis-data
+            mountPath: {{ .Values.atlantisDataDirectory }}
           {{- end }}
           {{- range $name, $_ := .Values.serviceAccountSecrets }}
           - name: {{ $name }}-volume

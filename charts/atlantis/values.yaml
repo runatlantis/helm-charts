@@ -321,6 +321,9 @@ resources: {}
   #   memory: 1Gi
   #   cpu: 100m
 
+## Path to the data directory for the volumeMount
+atlantisDataDirectory: /atlantis-data
+
 ## Embedded data volume & volumeMount (default working)
 volumeClaim:
   enabled: true
