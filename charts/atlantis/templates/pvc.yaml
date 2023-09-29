@@ -6,7 +6,7 @@ metadata:
   name: atlantis-data
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       # The biggest thing Atlantis stores is the Git repo when it checks it out.
