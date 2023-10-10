@@ -228,7 +228,7 @@ podTemplate:
   labels: {}
 
 # Pick the controller used to deploy atlantis: "statefulSet" or "deployment"
-atlantisController: "statefulSet" # Use statefulSet by default
+atlantisController: "statefulSet"
 
 # It is not recommended to run atlantis as root
 statefulSet:
