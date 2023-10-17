@@ -147,9 +147,9 @@ image:
 #        steps: [init, plan]
 #      apply:
 #        steps: [apply]
-#  # metrics:
-#  #   prometheus:
-#  #     endpoint: /metrics
+## metrics:
+##   prometheus:
+##     endpoint: /metrics
 
 # allowForkPRs enables atlantis to run on a fork Pull Requests
 allowForkPRs: false
