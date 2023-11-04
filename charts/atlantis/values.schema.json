@@ -1,0 +1,2360 @@
+{
+  "$schema":"https://json-schema.org/draft/2019-09/schema",
+  "description":"Default values for atlantis. Declare variables to be passed into your templates.",
+  "type":"object",
+  "additionalProperties":false,
+  "properties":{
+    "atlantisUrl":{
+      "description":"The URL at which Atlantis will be available. This is used to set the webhook URL in GitHub.",
+      "type":"string",
+      "default":"",
+      "examples":[
+        "https://atlantis.example.com"
+      ]
+    },
+    "orgAllowlist":{
+      "type":"string",
+      "default":"<replace-me>",
+      "description":"Allowlist of repositories from which Atlantis will accept webhooks",
+      "examples":[
+        "github.com/myorg/*"
+      ]
+    },
+    "logLevel":{
+      "type":"string",
+      "description":"Level to use for logging. Either debug, info, warn, or error.",
+      "enum":[
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ],
+      "examples":[
+        "debug"
+      ]
+    },
+    "github":{
+      "type":"object",
+      "description":"GitHub settings",
+      "properties":{
+        "user":{
+          "type":"string",
+          "description":"Name of the Atlantis GitHub user."
+        },
+        "token":{
+          "type":"string",
+          "description":"Name of the Atlantis GitHub user."
+        },
+        "secret":{
+          "type":"string",
+          "description":"Repository or organization-wide webhook secret for the Atlantis GitHub integration. All repositories in GitHub that are to be integrated with Atlantis must share the same value."
+        },
+        "hostname":{
+          "type":"string",
+          "description":"Hostname of your GitHub Enterprise installation."
+        }
+      },
+      "additionalProperties":false
+    },
+    "githubApp":{
+      "type":"object",
+      "description":"GitHub App settings",
+      "properties":{
+        "id":{
+          "type":[
+            "integer",
+            "string"
+          ],
+          "description":"GitHub app ID. If set, GitHub authentication will be performed as an [installation](https://developer.github.com/v3/apps/installations/)."
+        },
+        "slug":{
+          "type":"string",
+          "description":"A slugged version of GitHub app name shown in pull requests comments, etc (not Atlantis App but something like atlantis-app). Atlantis uses the value of this parameter to identify the comments it has left on GitHub pull requests. This is used for functions such as `hidePrevPlanComments`."
+        },
+        "key":{
+          "type":"string",
+          "description":"A GitHub App PEM encoded private key file. If set, GitHub authentication will be performed as an [installation]((https://developer.github.com/v3/apps/installations/))."
+        },
+        "secret":{
+          "type":"string",
+          "description":"Secret used to validate GitHub webhooks (see [Securing your webhooks](https://developer.github.com/webhooks/securing/))."
+        }
+      },
+      "additionalProperties":false
+    },
+    "gitlab":{
+      "type":"object",
+      "description":"GitLab settings",
+      "properties":{
+        "user":{
+          "type":"string",
+          "description":"Name of the Atlantis GitLab user."
+        },
+        "token":{
+          "type":"string",
+          "description":"Personal access token for the Atlantis GitLab user."
+        },
+        "secret":{
+          "type":"string",
+          "description":"Webhook secret for the Atlantis GitLab integration. All repositories in GitLab that are to be integrated with Atlantis must share the same value."
+        },
+        "hostname":{
+          "type":"string",
+          "description":"Hostname of your GitLab Enterprise installation."
+        }
+      },
+      "additionalProperties":false
+    },
+    "bitbucket":{
+      "type":"object",
+      "description":"Bitbucket settings",
+      "properties":{
+        "user":{
+          "type":"string",
+          "description":"Name of the Atlantis Bitbucket user."
+        },
+        "token":{
+          "type":"string",
+          "description":"Personal access token for the Atlantis Bitbucket user."
+        },
+        "secret":{
+          "type":"string",
+          "description":"Webhook secret for Bitbucket repositories (Bitbucket Server only)."
+        },
+        "baseURL":{
+          "type":"string",
+          "description":"Base URL of Bitbucket Server installation."
+        }
+      },
+      "additionalProperties":false
+    },
+    "azuredevops":{
+      "type":"object",
+      "description":"Azure DevOps settings",
+      "properties":{
+        "user":{
+          "type":"string",
+          "description":"Name of the Atlantis Azure DevOps user."
+        },
+        "token":{
+          "type":"string",
+          "description":"Personal access token for the Atlantis Azure DevOps user."
+        },
+        "webhookUser":{
+          "type":"string",
+          "description":"Webhook user for the Atlantis Azure DevOps integration."
+        },
+        "webhookPassword":{
+          "type":"string",
+          "description":"Webhook password for the Atlantis Azure DevOps integration. All repositories in Azure DevOps that are to be integrated with Atlantis must share the same value."
+        }
+      },
+      "additionalProperties":false
+    },
+    "vcsSecretName":{
+      "type":"string",
+      "description":"Name of a pre-existing Kubernetes `Secret` containing `token` and `secret` keys set to your VCS provider's API token and webhook secret, respectively. Use this instead of `github.token`/`github.secret`, etc. (optional)"
+    },
+    "gitconfig":{
+      "type":"string",
+      "description":"Contents of a file to be mounted to `~/.gitconfig`.  Use to allow redirection for Terraform modules in private git repositories."
+    },
+    "gitconfigSecretName":{
+      "type":"string",
+      "description":"Name of a pre-existing Kubernetes `Secret` containing a `gitconfig` key. Use this instead of `gitconfig` (optional)"
+    },
+    "netrc":{
+      "type":"string",
+      "description":"Contents of a file to be mounted to `~/.netrc`.  Use to authenticate with private registries hosting terraform modules."
+    },
+    "netrcSecretName":{
+      "type":"string",
+      "description":"Name of a pre-existing Kubernetes `Secret` containing a `netrc` key. Use this instead of `netrc` (optional)"
+    },
+    "aws":{
+      "type":"object",
+      "description":"AWS settings",
+      "properties":{
+        "credentials":{
+          "type":"string",
+          "description":"Contents of a file to be mounted to `~/.aws/credentials` `aws.directory/credentials`."
+        },
+        "config":{
+          "type":"string",
+          "description":"Contents of a file to be mounted to `~/.aws/config` or `aws.directory/config`."
+        },
+        "directory":{
+          "type":"string",
+          "description":"If set, will mount AWS credentials to the specified path and set `AWS_SHARED_CREDENTIALS_FILE` and `AWS_CONFIG_FILE` variables. If not set, default path `/home/atlantis/.aws` will be used."
+        }
+      },
+      "additionalProperties":false
+    },
+    "awsSecretName":{
+      "type":"string",
+      "description":"Secret name containing AWS credentials - will override aws.credentials and aws.config. Will be used a volume mount on `$HOME/.aws` or `aws.directory`, so it needs a `credentials` key. The key `config` is optional. See the file `templates/secret-aws.yml` for more info on the Secret contents."
+    },
+    "serviceAccountSecrets":{
+      "type":"object",
+      "description":"Deprecated (see googleServiceAccountSecrets). To be used for mounting credential files (when using google provider).",
+      "properties":{
+        "credentials":{
+          "type":"string",
+          "description":"Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform production service account. Only applicable if hosting Atlantis on GKE."
+        },
+        "credentials-staging":{
+          "type":"string",
+          "description":"Deprecated (see googleServiceAccountSecrets) JSON string representing secrets for a Google Cloud Platform staging service account. Only applicable if hosting Atlantis on GKE."
+        }
+      }
+    },
+    "image":{
+      "type":"object",
+      "description":"Atlantis image configuration.",
+      "properties":{
+        "repository":{
+          "description":"image repository.",
+          "type":"string",
+          "default":"ghcr.io/runatlantis/atlantis"
+        },
+        "tag":{
+          "description":"image tag. if not set appVersion field from Chart.yaml is used",
+          "type":[
+            "string",
+            "null"
+          ],
+          "default":""
+        },
+        "pullPolicy":{
+          "description":"image pull policy.",
+          "type":"string",
+          "enum":[
+            "Always",
+            "Never",
+            "IfNotPresent"
+          ],
+          "default":"Always"
+        }
+      },
+      "additionalProperties":false
+    },
+    "imagePullSecrets":{
+      "type":"array",
+      "description":"List of secrets for pulling images from private registries.",
+      "items":{
+        "type":"string"
+      }
+    },
+    "config":{
+      "type":"string",
+      "description":"Override atlantis main configuration by config map. It's allow some additional functionality like slack notifications."
+    },
+    "repoConfig":{
+      "type":"string",
+      "description":"[Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html) as a raw YAML string. Configuration is stored in ConfigMap."
+    },
+    "allowForkPRs":{
+      "type":"boolean",
+      "description":"Allow atlantis to run on fork Pull Requests",
+      "default":false
+    },
+    "allowDraftPRs":{
+      "type":"boolean",
+      "description":"Allow atlantis to run on draft Pull Requests",
+      "default":false
+    },
+    "hidePrevPlanComments":{
+      "type":"boolean",
+      "description":"Allow atlantis to hide previous plan comments",
+      "default":false
+    },
+    "hideUnchangedPlanComments":{
+      "type":"boolean",
+      "description":"Allow atlantis to hide no-changes plan comments",
+      "default":false
+    },
+    "defaultTFVersion":{
+      "type":"string",
+      "description":"Default Terraform version to be used by atlantis server"
+    },
+    "disableApply":{
+      "type":"boolean",
+      "description":"Disables running `atlantis apply` regardless of what options are specified",
+      "default":false
+    },
+    "disableApplyAll":{
+      "type":"boolean",
+      "description":"Disables running `atlantis apply` regardless of what options are specified",
+      "default":false
+    },
+    "disableRepoLocking":{
+      "type":"boolean",
+      "description":"Stops atlantis locking projects and or workspaces when running terraform",
+      "default":false
+    },
+    "enableDiffMarkdownFormat":{
+      "type":"boolean",
+      "description":"Enable Atlantis to format Terraform plan output into a markdown-diff friendly format for color-coding purposes.",
+      "default":false
+    },
+    "basicAuth":{
+      "type":"object",
+      "description":"Basic auth settings",
+      "properties":{
+        "username":{
+          "type":"string",
+          "description":"Username for basic authentication"
+        },
+        "password":{
+          "type":"string",
+          "description":"Password for basic authentication"
+        }
+      },
+      "required":[
+        "username",
+        "password"
+      ],
+      "additionalProperties":false
+    },
+    "api":{
+      "type":"object",
+      "description":"API settings",
+      "properties":{
+        "secret":{
+          "type":"string",
+          "description":"API secret to enable API endpoints"
+        }
+      },
+      "additionalProperties":false
+    },
+    "basicAuthSecretName":{
+      "type":"string",
+      "description":"Name of a pre-existing Kubernetes `Secret` containing `username` and `password` keys for basic auth credentials. Use this instead of `basicAuth.username`/`basicAuth.password`"
+    },
+    "apiSecretName":{
+      "type":"string",
+      "description":"Name of a pre-existing Kubernetes `Secret` containing a `apisecret` key. Use this instead of `api.secret`"
+    },
+    "commonLabels":{
+      "type":"object",
+      "description":"Add Common Labels to all resources",
+      "additionalProperties":true
+    },
+    "livenessProbe":{
+      "type":"object",
+      "description":"Liveness probe configuration for atlantis containers.",
+      "additionalProperties":false,
+      "properties":{
+        "enabled":{
+          "description":"Enable liveness probe.",
+          "type":"boolean",
+          "default":true
+        },
+        "periodSeconds":{
+          "description":"How often (in seconds) to perform the probe. Minimum value is 1.",
+          "type":"integer",
+          "default":60
+        },
+        "initialDelaySeconds":{
+          "description":"Number of seconds after the container has started before liveness probes are initiated.",
+          "type":"integer",
+          "default":5
+        },
+        "timeoutSeconds":{
+          "description":"Number of seconds after which the probe times out. Minimum value is 1 seconds.",
+          "type":"integer",
+          "default":5
+        },
+        "successThreshold":{
+          "description":"Number of consecutive successful probe executions required for the container to be considered healthy again after having failed.",
+          "type":"integer",
+          "default":1
+        },
+        "failureThreshold":{
+          "description":"Minimum consecutive failures for the probe to be considered failed after having succeeded. Minimum value is 1.",
+          "type":"integer",
+          "default":5
+        },
+        "scheme":{
+          "description":"The URI scheme used for the request. The only supported schemes are http and https.",
+          "type":"string",
+          "default":"HTTP",
+          "enum":[
+            "HTTP",
+            "HTTPS"
+          ]
+        }
+      }
+    },
+    "readinessProbe":{
+      "type":"object",
+      "description":"Readiness probe configuration for atlantis containers.",
+      "additionalProperties":false,
+      "properties":{
+        "enabled":{
+          "description":"Enable readiness probe.",
+          "type":"boolean",
+          "default":true
+        },
+        "periodSeconds":{
+          "description":"How often (in seconds) to perform the probe. Minimum value is 1.",
+          "type":"integer",
+          "default":60
+        },
+        "initialDelaySeconds":{
+          "description":"Number of seconds after the container has started before readiness probes are initiated.",
+          "type":"integer",
+          "default":5
+        },
+        "timeoutSeconds":{
+          "description":"Number of seconds after which the probe times out. Minimum value is 1 seconds.",
+          "type":"integer",
+          "default":5
+        },
+        "successThreshold":{
+          "description":"Number of consecutive successful probe executions required for the container to be considered healthy again after having failed.",
+          "type":"integer",
+          "default":1
+        },
+        "failureThreshold":{
+          "description":"Minimum consecutive failures for the probe to be considered failed after having succeeded. Minimum value is 1.",
+          "type":"integer",
+          "default":5
+        },
+        "scheme":{
+          "description":"The URI scheme used for the request. The only supported schemes are http and https.",
+          "type":"string",
+          "default":"HTTP",
+          "enum":[
+            "HTTP",
+            "HTTPS"
+          ]
+        }
+      }
+    },
+    "service":{
+      "description":"Atlantis Service configuration.",
+      "type":"object",
+      "additionalProperties":false,
+      "properties":{
+        "type":{
+          "description":"Service type.",
+          "type":"string",
+          "default":"NodePort",
+          "enum":[
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer"
+          ]
+        },
+        "annotations":{
+          "description":"Annotations to add to the service.",
+          "type":"object",
+          "additionalProperties":{
+            "type":"string"
+          }
+        },
+        "port":{
+          "description":"Port to expose on the service.",
+          "type":[
+            "string",
+            "integer"
+          ],
+          "default":80
+        },
+        "nodePort":{
+          "description":"Port to expose on the node when the service type is NodePort.",
+          "type":[
+            "string",
+            "integer",
+            "null"
+          ]
+        },
+        "targetPort":{
+          "description":"Port on the container to direct traffic to.",
+          "type":[
+            "string",
+            "integer"
+          ],
+          "default":4141
+        },
+        "loadBalancerIP":{
+          "description":"IP address to assign to load balancer (if supported).",
+          "type":[
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "podTemplate":{
+      "description":"Pod template configuration for pods.",
+      "type":"object",
+      "additionalProperties":false,
+      "properties":{
+        "annotations":{
+          "description":"Additional annotations to use for pods.",
+          "type":"object",
+          "additionalProperties":{
+            "type":"string"
+          }
+        },
+        "labels":{
+          "description":"Additional labels to use for pods.",
+          "type":"object",
+          "additionalProperties":{
+            "type":"string"
+          }
+        }
+      }
+    },
+    "statefulSet":{
+      "description":"StatefulSet configuration.",
+      "type":"object",
+      "additionalProperties":false,
+      "properties":{
+        "annotations":{
+          "description":"Additional annotations to use for StatefulSet.",
+          "type":"object",
+          "additionalProperties":{
+            "type":"string"
+          }
+        },
+        "labels":{
+          "description":"Additional labels to use for StatefulSet.",
+          "type":"object",
+          "default":{
+
+          },
+          "additionalProperties":{
+            "type":"string"
+          }
+        },
+        "securityContext":{
+          "type":"object",
+          "description":"Allow customizing securityContext.",
+          "$ref":"#/definitions/io.k8s.api.core.v1.PodSecurityContext"
+        },
+        "priorityClassName":{
+          "description":"Leverage a PriorityClass to ensure your pods survive resource shortages.",
+          "type":[
+            "string",
+            "null"
+          ]
+        },
+        "updateStrategy":{
+          "type":"object",
+          "description":"Configure [updateStrategy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies) of the StatefulSet.",
+          "$ref":"#/definitions/io.k8s.api.apps.v1.StatefulSetUpdateStrategy"
+        },
+        "shareProcessNamespace":{
+          "type":"boolean",
+          "default":false,
+          "description":"Share the process namespace between all containers in a pod."
+        }
+      }
+    },
+    "terminationGracePeriodSeconds":{
+      "type":"integer",
+      "description":"Set terminationGracePeriodSeconds for the StatefulSet."
+    },
+    "ingress":{
+      "type":"object",
+      "description":"Ingress configuration.",
+      "properties":{
+        "enabled":{
+          "type":"boolean",
+          "description":"Whether to create a Kubernetes Ingress.",
+          "default":true
+        },
+        "ingressClassName":{
+          "type":[
+            "string",
+            "null"
+          ],
+          "default":null,
+          "description":"Name of the ingress class to use for the Ingress."
+        },
+        "apiVersion":{
+          "type":"string",
+          "description":"The Kubernetes API version used for configuring ingress. If not specified, Helm tries to automatically determine a compatible version based on the cluster's capabilities. The default value is \"\" and is only accepted if it is one of the supported versions: `networking.k8s.io/v1`, `networking.k8s.io/v1beta1`, or `extensions/v1beta1`. In cases where Helm can't determine the cluster's capabilities automatically, this value can be used to override the API version. Setting an unsupported value will result in an error during the Helm chart installation.",
+          "default":""
+        },
+        "annotations":{
+          "type":"object",
+          "description":"Additional annotations to use for the Ingress.",
+          "additionalProperties":{
+            "type":"string"
+          },
+          "labels":{
+            "type":"object",
+            "description":"Additional labels to use for the Ingress.",
+            "additionalProperties":{
+              "type":"string"
+            }
+          },
+          "path":{
+            "type":"string",
+            "description":"Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.",
+            "default":"/*"
+          },
+          "paths":{
+            "type":"array",
+            "description":"collection of paths that map requests to backends.",
+            "items":{
+              "type":"object",
+              "properties":{
+                "path":{
+                  "type":"string",
+                  "description":"path is matched against the path of an incoming request"
+                },
+                "service":{
+                  "type":"string",
+                  "description":"service references a service as a backend."
+                },
+                "port":{
+                  "type":[
+                    "integer",
+                    "null"
+                  ],
+                  "description":"backend defines the referenced service endpoint to which the traffic will be forwarded to"
+                }
+              }
+            }
+          },
+          "pathType":{
+            "type":"string",
+            "description":"pathType to use in the `Ingress`. specify how Ingress paths should be matched. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types) for details.",
+            "default":"ImplementationSpecific"
+          },
+          "host":{
+            "type":[
+              "string",
+              "null"
+            ],
+            "description":"Domain name Kubernetes Ingress rule looks for. Set it to the domain Atlantis will be hosted on.",
+            "default":null
+          },
+          "hosts":{
+            "type":[
+              "array",
+              "null"
+            ],
+            "description":"An array of hosts to expose (optional)",
+            "items":{
+              "type":"object",
+              "properties":{
+                "host":{
+                  "type":"string",
+                  "description":"List of domain names Kubernetes Ingress rule looks for. Set it to the domains in which Atlantis will be hosted on."
+                },
+                "paths":{
+                  "type":"array",
+                  "description":"List of paths to use in Kubernetes Ingress rules.  Should be set to `/*` if using gce-ingress in Google",
+                  "items":{
+                    "type":"string"
+                  }
+                },
+                "service":{
+                  "type":"string",
+                  "description":"service references a service as a backend."
+                }
+              }
+            }
+          },
+          "tls":{
+            "type":"array",
+            "description":"Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.",
+            "items":{
+              "type":"object",
+              "properties":{
+                "secretName":{
+                  "type":"string",
+                  "description":"The name of the secret containing the TLS certificate and key"
+                },
+                "hosts":{
+                  "type":"array",
+                  "description":"An array of hosts to use TLS for",
+                  "items":{
+                    "type":"string",
+                    "description":"The host to use TLS for"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "webhook_ingress":{
+      "$ref":"#/properties/ingress"
+    },
+    "customPem":{
+      "type":"string",
+      "description":"SecretName of the custom `ca-certificates.cert` to override the `/etc/ssl/certs/ca-certificates.crt` with your custom one (self-signed certificates)<br>Secret has to be created manually and shall contain `ca-certificates.crt: PEM`"
+    },
+    "resources":{
+      "type":"object",
+      "description":"Resource configuration for atlantis containers.",
+      "$ref":"#/definitions/io.k8s.api.core.v1.ResourceRequirements"
+    },
+    "atlantisDataDirectory":{
+      "type":"string",
+      "description":"Directory to store atlantis data.",
+      "default":"/atlantis-data"
+    },
+    "volumeClaim":{
+      "type":"object",
+      "description":"VolumeClaim configuration for atlantis data.",
+      "properties":{
+        "enabled":{
+          "type":"boolean",
+          "description":"Activate embedded volume claim for Atlantis' data directory (mostly used to check out git repositories)."
+        },
+        "dataStorage":{
+          "type":"string",
+          "description":"Amount of storage available for embedded Atlantis' data directory"
+        },
+        "storageClassName":{
+          "type":"string",
+          "description":"Storage class of the embedded volume mounted for the Atlantis data directory."
+        }
+      }
+    },
+    "dataStorage":{
+      "type":"string",
+      "description":"DEPRECATED - Amount of storage available for Atlantis' data directory (mostly used to check out git repositories)."
+    },
+    "storageClassName":{
+      "type":"string",
+      "description":"DEPRECATED - Storage class of the volume mounted for the Atlantis data directory."
+    },
+    "replicaCount":{
+      "type":"integer",
+      "description":"Number of replicas to run for the Atlantis server.",
+      "default":1
+    },
+    "test":{
+      "type":"object",
+      "description":"Test configuration for atlantis containers.",
+      "properties":{
+        "enabled":{
+          "type":"boolean",
+          "description":"Whether to enable the test"
+        },
+        "image":{
+          "type":"string",
+          "description":"The image to use for testing"
+        },
+        "imageTag":{
+          "type":"string",
+          "description":"The tag of the image to use for testing"
+        },
+        "annotations":{
+          "type":"object",
+          "description":"Annotations to apply to the test pod (optional)",
+          "additionalProperties":{
+            "type":"string"
+          }
+        }
+      },
+      "additionalProperties":false
+    },
+    "nodeSelector":{
+      "type":"object",
+      "description":"NodeSelector configuration for atlantis containers.",
+      "additionalProperties":{
+        "type":"string"
+      }
+    },
+    "tolerations":{
+      "description":"Specify Tolerations for all pods.",
+      "type":"array",
+      "default":[
+
+      ],
+      "items":{
+        "type":"object",
+        "$ref":"#/definitions/io.k8s.api.core.v1.Toleration"
+      }
+    },
+    "affinity":{
+      "description":"Specify Affinity for all pods.",
+      "type":"object",
+      "default":"{}",
+      "$ref":"#/definitions/io.k8s.api.core.v1.Affinity"
+    },
+    "topologySpreadConstraints":{
+      "description":"Specify topology spread constraints for all pods.",
+      "type":"array",
+      "default":[
+
+      ],
+      "items":{
+        "type":"object",
+        "$ref":"#/definitions/io.k8s.api.core.v1.TopologySpreadConstraint"
+      }
+    },
+    "serviceAccount":{
+      "type":"object",
+      "description":"ServiceAccount configuration for atlantis containers.",
+      "properties":{
+        "create":{
+          "type":"boolean",
+          "description":"Whether to create a Kubernetes ServiceAccount if no account matching `serviceAccount.name` exists."
+        },
+        "mount":{
+          "type":"boolean",
+          "description":"Whether to mount the Kubernetes ServiceAccount into the pod"
+        },
+        "name":{
+          "type":[
+            "string",
+            "null"
+          ],
+          "description":"Name of the Kubernetes ServiceAccount under which Atlantis should run. If no value is specified and `serviceAccount.create` is `true`, Atlantis will be run under a ServiceAccount whose name is the FullName of the Helm chart's instance, else Atlantis will be run under the `default` ServiceAccount."
+        },
+        "annotations":{
+          "type":"object",
+          "description":"Additional Service Account annotations",
+          "additionalProperties":{
+            "type":"string"
+          }
+        }
+      },
+      "additionalProperties":false
+    },
+    "enableKubernetesBackend":{
+      "type":"boolean",
+      "description":"Deploy rbac to allow for the serviceAccount to manage terraform state via a kubernetes backend",
+      "default":false
+    },
+    "tlsSecretName": {
+        "type": "string",
+        "description": "Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key."
+    },
+    "environment":{
+      "type":"object",
+      "description":"Map of environment variables for the container.",
+      "additionalProperties":{
+        "type":"string"
+      }
+    },
+    "environmentSecrets":{
+      "type":"array",
+      "description":"Array of Kubernetes secrets that can be used to set environment variables. See `values.yaml` for example.",
+      "items":{
+        "type":"object",
+        "properties":{
+          "name":{
+            "type":"string",
+            "description":"The name of the environment variable."
+          },
+          "secretKeyRef":{
+            "type":"object",
+            "properties":{
+              "name":{
+                "type":"string",
+                "description":"The name of the Kubernetes secret."
+              },
+              "key":{
+                "type":"string",
+                "description":"The key of the value in the Kubernetes secret that should be used to populate the environment variable."
+              }
+            },
+            "required":[
+              "name",
+              "key"
+            ]
+          }
+        },
+        "required":[
+          "name",
+          "secretKeyRef"
+        ]
+      }
+    },
+    "environmentRaw":{
+      "type":"array",
+      "description":"Array environment variables in plain Kubernetes yaml format. See `values.yaml` for example.",
+      "items":{
+        "type":"object"
+      }
+    },
+    "loadEnvFromSecrets":{
+      "type":"array",
+      "description":"Array of Kubernetes secrets to set all key-value pairs as environment variables. See `values.yaml` for example.",
+      "items":{
+        "type":"string"
+      }
+    },
+    "loadEnvFromConfigMaps":{
+      "type":"array",
+      "description":"Array of Kubernetes `ConfigMap`s to set all key-value pairs as environment variables. See `values.yaml` for example.",
+      "items":{
+        "type":"string"
+      }
+    },
+    "googleServiceAccountSecrets":{
+      "type":"array",
+      "description":"An array of Kubernetes secrets containing Google Service Account credentials. See `values.yaml` for examples and additional documentation.",
+      "items":{
+        "type":"object",
+        "properties":{
+          "name":{
+            "type":"string",
+            "description":"The name of the volume that will mount the secret."
+          },
+          "secretName":{
+            "type":"string",
+            "description":"The name of the Kubernetes secret containing the Google service account credentials."
+          }
+        },
+        "additionalProperties":false,
+        "required":[
+          "name",
+          "secretName"
+        ]
+      }
+    },
+    "extraVolumes":{
+      "description":"List of additional volumes available to the pod.",
+      "type":"array",
+      "default":[
+
+      ],
+      "items":{
+        "type":"object"
+      }
+    },
+    "extraVolumeMounts":{
+      "description":"List of additional volumes mounted to the container.",
+      "type":"array",
+      "default":[
+
+      ],
+      "items":{
+        "$ref":"#/definitions/io.k8s.api.core.v1.VolumeMount"
+      }
+    },
+    "extraManifests":{
+      "type":"array",
+      "description":"Add additional manifests to deploy",
+      "items":{
+        "type":"object"
+      }
+    },
+    "initContainers":{
+      "description":"Containers used to initialize context for Atlantis pods",
+      "items":{
+        "$ref":"#/definitions/io.k8s.api.core.v1.Container"
+      },
+      "type":"array",
+      "default":[
+
+      ]
+    },
+    "hostAliases":{
+      "description":"Specify HostAliases for Atlantis containers.",
+      "items":{
+        "$ref":"#/definitions/io.k8s.api.core.v1.HostAlias"
+      },
+      "type":"array",
+      "default":[
+
+      ],
+      "examples":[
+        {
+          "ip":"127.0.0.2",
+          "hostnames":[
+            "test.hostname.one"
+          ]
+        },
+        {
+          "ip":"127.0.0.3",
+          "hostnames":[
+            "test.hostname.two"
+          ]
+        }
+      ]
+    },
+    "hostNetwork":{
+      "type":"boolean",
+      "description":"Use the host's network namespace.",
+      "default":false
+    },
+    "extraArgs":{
+      "type":"array",
+      "description":"Add additional arguments to the atlantis server",
+      "items":{
+        "type":"string"
+      },
+      "examples":[
+        [
+          "--disable-autoplan",
+          "--disable-repo-locking"
+        ]
+      ]
+    },
+    "extraContainers":{
+      "description":"Additional containers to use and depends of use cases.",
+      "items":{
+        "$ref":"#/definitions/io.k8s.api.core.v1.Container"
+      },
+      "type":"array",
+      "default":[
+
+      ]
+    },
+    "containerSecurityContext":{
+      "type":"object",
+      "description":"SecurityContext configuration for atlantis containers.",
+      "properties":{
+        "allowPrivilegeEscalation":{
+          "type":"boolean",
+          "description":"Whether to enable privilege escalation"
+        },
+        "readOnlyRootFilesystem":{
+          "type":"boolean",
+          "description":"Whether the root file system should be read-only"
+        }
+      },
+      "additionalProperties":false
+    },
+    "servicemonitor":{
+      "type":"object",
+      "description":"ServiceMonitor configuration for atlantis containers.",
+      "properties":{
+        "enabled":{
+          "type":"boolean",
+          "description":"Enable Prometheus service monitor. This requires metrics.prometheus.endpoint to be defined (/metrics is a good default) in the repoConfig value"
+        },
+        "interval":{
+          "type":"string",
+          "description":"Interval at which metrics should be scraped"
+        },
+        "path":{
+          "type":"string",
+          "description":"HTTP path to scrape for metrics"
+        },
+        "auth":{
+          "type":"object",
+          "description":"Authentication configuration for the ServiceMonitor",
+          "properties":{
+            "basicAuth":{
+              "type":"object",
+              "properties":{
+                "enabled":{
+                  "type":"boolean",
+                  "description":"Whether to enable basic authentication (default: false)"
+                }
+              },
+              "required":[
+                "enabled"
+              ]
+            },
+            "externalSecret":{
+              "type":"object",
+              "properties":{
+                "enabled":{
+                  "type":"boolean",
+                  "description":"Whether to enable external secret authentication (default: false)"
+                },
+                "name":{
+                  "type":"string",
+                  "description":"The name of the Kubernetes secret containing the authentication credentials"
+                },
+                "keys":{
+                  "type":"object",
+                  "description":"A map of key-value pairs to be used for authentication"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "podMonitor":{
+      "type":"object",
+      "description":"PodMonitor configuration for atlantis containers. for Google Managed Prometheus",
+      "properties":{
+        "enabled":{
+          "type":"boolean",
+          "description":"Whether to enable a PodMonitor for Atlantis"
+        },
+        "interval":{
+          "type":"string",
+          "description":"The interval at which to scrape the metrics"
+        }
+      }
+    },
+    "lockingDbType":{
+      "type":"string",
+      "description":"Locking DB type for storing plan and apply locks. Allowed values are `boltdb` and `redis`.",
+      "default":"postgres",
+      "enum":[
+        "boltdb",
+        "redis"
+      ]
+    },
+    "redis":{
+      "type":"object",
+      "description":"Redis configuration for for Locking DB of type `redis`.",
+      "properties":{
+        "host":{
+          "type":"string",
+          "description":"Redis database number for Locking DB of type `redis`."
+        },
+        "password":{
+          "type":"string",
+          "description":"Redis password for Locking DB of type `redis`."
+        },
+        "port":{
+          "type":"integer",
+          "description":"Redis port for Locking DB of type `redis`."
+        },
+        "db":{
+          "type":"integer",
+          "description":"Redis database number for Locking DB of type `redis`."
+        },
+        "tlsEnabled":{
+          "type":"boolean",
+          "description":"Whether to enable TLS connection to Redis."
+        },
+        "insecureSkipVerify":{
+          "type":"boolean",
+          "description":"Whether Redis client should skip verification of Redis server's certificate chain and hostname. Setting to `true` may introduce a security vulnerability."
+        }
+      },
+      "additionalProperties":false
+    },
+    "redisSecretName": {
+        "type": "string",
+        "description": "Name of a pre-existing Kubernetes `Secret` containing a `password` key. Use this instead of `redis.password`."
+    },
+    "lifecycle":{
+      "type":"object",
+      "description":"Configure pod container lifecycle hooks. See [Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/) for details.",
+      "$ref":"#/definitions/io.k8s.api.core.v1.Lifecycle"
+    }
+  },
+  "definitions":{
+    "io.k8s.api.core.v1.HostAlias":{
+      "description":"HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.",
+      "properties":{
+        "hostnames":{
+          "description":"Hostnames for the above IP address.",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        },
+        "ip":{
+          "description":"IP address of the host file entry.",
+          "type":"string"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Container":{
+      "description":"A single application container that you want to run within a pod.",
+      "properties":{
+        "args":{
+          "description":"Arguments to the entrypoint. The docker image's CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        },
+        "command":{
+          "description":"Entrypoint array. Not executed within a shell. The docker image's ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container's environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        },
+        "env":{
+          "description":"List of environment variables to set in the container. Cannot be updated.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.EnvVar"
+          },
+          "type":"array",
+          "x-kubernetes-patch-merge-key":"name",
+          "x-kubernetes-patch-strategy":"merge"
+        },
+        "envFrom":{
+          "description":"List of sources to populate environment variables in the container. The keys defined within a source must be a C_IDENTIFIER. All invalid keys will be reported as an event when the container is starting. When a key exists in multiple sources, the value associated with the last source will take precedence. Values defined by an Env with a duplicate key will take precedence. Cannot be updated.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.EnvFromSource"
+          },
+          "type":"array"
+        },
+        "image":{
+          "description":"Docker image name. More info: https://kubernetes.io/docs/concepts/containers/images This field is optional to allow higher level config management to default or override container images in workload controllers like Deployments and StatefulSets.",
+          "type":"string"
+        },
+        "imagePullPolicy":{
+          "description":"Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images",
+          "type":"string"
+        },
+        "lifecycle":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Lifecycle",
+          "description":"Actions that the management system should take in response to container lifecycle events. Cannot be updated."
+        },
+        "livenessProbe":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Probe",
+          "description":"Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+        },
+        "name":{
+          "description":"Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.",
+          "type":"string"
+        },
+        "ports":{
+          "description":"List of ports to expose from the container. Exposing a port here gives the system additional information about the network connections a container uses, but is primarily informational. Not specifying a port here DOES NOT prevent that port from being exposed. Any port which is listening on the default \"0.0.0.0\" address inside a container will be accessible from the network. Cannot be updated.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.ContainerPort"
+          },
+          "type":"array",
+          "x-kubernetes-list-map-keys":[
+            "containerPort",
+            "protocol"
+          ],
+          "x-kubernetes-list-type":"map",
+          "x-kubernetes-patch-merge-key":"containerPort",
+          "x-kubernetes-patch-strategy":"merge"
+        },
+        "readinessProbe":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Probe",
+          "description":"Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+        },
+        "resources":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ResourceRequirements",
+          "description":"Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
+        },
+        "securityContext":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SecurityContext",
+          "description":"SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/"
+        },
+        "startupProbe":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Probe",
+          "description":"StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+        },
+        "stdin":{
+          "description":"Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.",
+          "type":"boolean"
+        },
+        "stdinOnce":{
+          "description":"Whether the container runtime should close the stdin channel after it has been opened by a single attach. When stdin is true the stdin stream will remain open across multiple attach sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the first client attaches to stdin, and then remains open and accepts data until the client disconnects, at which time stdin is closed and remains closed until the container is restarted. If this flag is false, a container processes that reads from stdin will never receive an EOF. Default is false",
+          "type":"boolean"
+        },
+        "terminationMessagePath":{
+          "description":"Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.",
+          "type":"string"
+        },
+        "terminationMessagePolicy":{
+          "description":"Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.",
+          "type":"string"
+        },
+        "tty":{
+          "description":"Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.",
+          "type":"boolean"
+        },
+        "volumeDevices":{
+          "description":"volumeDevices is the list of block devices to be used by the container.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.VolumeDevice"
+          },
+          "type":"array",
+          "x-kubernetes-patch-merge-key":"devicePath",
+          "x-kubernetes-patch-strategy":"merge"
+        },
+        "volumeMounts":{
+          "description":"Pod volumes to mount into the container's filesystem. Cannot be updated.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.VolumeMount"
+          },
+          "type":"array",
+          "x-kubernetes-patch-merge-key":"mountPath",
+          "x-kubernetes-patch-strategy":"merge"
+        },
+        "workingDir":{
+          "description":"Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "name"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Lifecycle":{
+      "description":"Lifecycle describes actions that the management system should take in response to container lifecycle events. For the PostStart and PreStop lifecycle handlers, management of the container blocks until the action is complete, unless the container process fails, in which case the handler is aborted.",
+      "properties":{
+        "postStart":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Handler",
+          "description":"PostStart is called immediately after a container is created. If the handler fails, the container is terminated and restarted according to its restart policy. Other management of the container blocks until the hook completes. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
+        },
+        "preStop":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Handler",
+          "description":"PreStop is called immediately before a container is terminated due to an API request or management event such as liveness/startup probe failure, preemption, resource contention, etc. The handler is not called if the container crashes or exits. The reason for termination is passed to the handler. The Pod's termination grace period countdown begins before the PreStop hooked is executed. Regardless of the outcome of the handler, the container will eventually terminate within the Pod's termination grace period. Other management of the container blocks until the hook completes or until the termination grace period is reached. More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Handler":{
+      "description":"Handler defines a specific action that should be taken",
+      "properties":{
+        "exec":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ExecAction",
+          "description":"One and only one of the following should be specified. Exec specifies the action to take."
+        },
+        "httpGet":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.HTTPGetAction",
+          "description":"HTTPGet specifies the http request to perform."
+        },
+        "tcpSocket":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.TCPSocketAction",
+          "description":"TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ContainerPort":{
+      "description":"ContainerPort represents a network port in a single container.",
+      "properties":{
+        "containerPort":{
+          "description":"Number of port to expose on the pod's IP address. This must be a valid port number, 0 < x < 65536.",
+          "format":"int32",
+          "type":"integer"
+        },
+        "hostIP":{
+          "description":"What host IP to bind the external port to.",
+          "type":"string"
+        },
+        "hostPort":{
+          "description":"Number of port to expose on the host. If specified, this must be a valid port number, 0 < x < 65536. If HostNetwork is specified, this must match ContainerPort. Most containers do not need this.",
+          "format":"int32",
+          "type":"integer"
+        },
+        "name":{
+          "description":"If specified, this must be an IANA_SVC_NAME and unique within the pod. Each named port in a pod must have a unique name. Name for the port that can be referred to by services.",
+          "type":"string"
+        },
+        "protocol":{
+          "description":"Protocol for port. Must be UDP, TCP, or SCTP. Defaults to \"TCP\".",
+          "type":"string"
+        }
+      },
+      "required":[
+        "containerPort"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.EnvVar":{
+      "description":"EnvVar represents an environment variable present in a Container.",
+      "properties":{
+        "name":{
+          "description":"Name of the environment variable. Must be a C_IDENTIFIER.",
+          "type":"string"
+        },
+        "value":{
+          "description":"Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to \"\".",
+          "type":"string"
+        },
+        "valueFrom":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.EnvVarSource",
+          "description":"Source for the environment variable's value. Cannot be used if value is not empty."
+        }
+      },
+      "required":[
+        "name"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.EnvFromSource":{
+      "description":"EnvFromSource represents the source of a set of ConfigMaps",
+      "properties":{
+        "configMapRef":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ConfigMapEnvSource",
+          "description":"The ConfigMap to select from"
+        },
+        "prefix":{
+          "description":"An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.",
+          "type":"string"
+        },
+        "secretRef":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SecretEnvSource",
+          "description":"The Secret to select from"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ConfigMapEnvSource":{
+      "description":"ConfigMapEnvSource selects a ConfigMap to populate the environment variables with.\n\nThe contents of the target ConfigMap's Data field will represent the key-value pairs as environment variables.",
+      "properties":{
+        "name":{
+          "description":"Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+          "type":"string"
+        },
+        "optional":{
+          "description":"Specify whether the ConfigMap must be defined",
+          "type":"boolean"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.SecretEnvSource":{
+      "description":"SecretEnvSource selects a Secret to populate the environment variables with.\n\nThe contents of the target Secret's Data field will represent the key-value pairs as environment variables.",
+      "properties":{
+        "name":{
+          "description":"Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+          "type":"string"
+        },
+        "optional":{
+          "description":"Specify whether the Secret must be defined",
+          "type":"boolean"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.VolumeDevice":{
+      "description":"volumeDevice describes a mapping of a raw block device within a container.",
+      "properties":{
+        "devicePath":{
+          "description":"devicePath is the path inside of the container that the device will be mapped to.",
+          "type":"string"
+        },
+        "name":{
+          "description":"name must match the name of a persistentVolumeClaim in the pod",
+          "type":"string"
+        }
+      },
+      "required":[
+        "name",
+        "devicePath"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Probe":{
+      "description":"Probe describes a health check to be performed against a container to determine whether it is alive or ready to receive traffic.",
+      "properties":{
+        "exec":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ExecAction",
+          "description":"One and only one of the following should be specified. Exec specifies the action to take."
+        },
+        "failureThreshold":{
+          "description":"Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.",
+          "format":"int32",
+          "type":"integer"
+        },
+        "httpGet":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.HTTPGetAction",
+          "description":"HTTPGet specifies the http request to perform."
+        },
+        "initialDelaySeconds":{
+          "description":"Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
+          "format":"int32",
+          "type":"integer"
+        },
+        "periodSeconds":{
+          "description":"How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.",
+          "format":"int32",
+          "type":"integer"
+        },
+        "successThreshold":{
+          "description":"Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.",
+          "format":"int32",
+          "type":"integer"
+        },
+        "tcpSocket":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.TCPSocketAction",
+          "description":"TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported"
+        },
+        "terminationGracePeriodSeconds":{
+          "description":"Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "timeoutSeconds":{
+          "description":"Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes",
+          "format":"int32",
+          "type":"integer"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.TCPSocketAction":{
+      "description":"TCPSocketAction describes an action based on opening a socket",
+      "properties":{
+        "host":{
+          "description":"Optional: Host name to connect to, defaults to the pod IP.",
+          "type":"string"
+        },
+        "port":{
+          "$ref":"#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString",
+          "description":"Number or name of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+        }
+      },
+      "required":[
+        "port"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.apimachinery.pkg.util.intstr.IntOrString":{
+      "oneOf":[
+        {
+          "type":"string"
+        },
+        {
+          "type":"integer"
+        }
+      ]
+    },
+    "io.k8s.api.core.v1.HTTPGetAction":{
+      "description":"HTTPGetAction describes an action based on HTTP Get requests.",
+      "properties":{
+        "host":{
+          "description":"Host name to connect to, defaults to the pod IP. You probably want to set \"Host\" in httpHeaders instead.",
+          "type":"string"
+        },
+        "httpHeaders":{
+          "description":"Custom headers to set in the request. HTTP allows repeated headers.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.HTTPHeader"
+          },
+          "type":"array"
+        },
+        "path":{
+          "description":"Path to access on the HTTP server.",
+          "type":"string"
+        },
+        "port":{
+          "$ref":"#/definitions/io.k8s.apimachinery.pkg.util.intstr.IntOrString",
+          "description":"Name or number of the port to access on the container. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME."
+        },
+        "scheme":{
+          "description":"Scheme to use for connecting to the host. Defaults to HTTP.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "port"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.HTTPHeader":{
+      "description":"HTTPHeader describes a custom header to be used in HTTP probes",
+      "properties":{
+        "name":{
+          "description":"The header field name",
+          "type":"string"
+        },
+        "value":{
+          "description":"The header field value",
+          "type":"string"
+        }
+      },
+      "required":[
+        "name",
+        "value"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ExecAction":{
+      "description":"ExecAction describes a \"run in container\" action.",
+      "properties":{
+        "command":{
+          "description":"Command is the command line to execute inside the container, the working directory for the command  is root ('/') in the container's filesystem. The command is simply exec'd, it is not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use a shell, you need to explicitly call out to that shell. Exit status of 0 is treated as live/healthy and non-zero is unhealthy.",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.EnvVarSource":{
+      "description":"EnvVarSource represents a source for the value of an EnvVar.",
+      "properties":{
+        "configMapKeyRef":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ConfigMapKeySelector",
+          "description":"Selects a key of a ConfigMap."
+        },
+        "fieldRef":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ObjectFieldSelector",
+          "description":"Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+        },
+        "resourceFieldRef":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.ResourceFieldSelector",
+          "description":"Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+        },
+        "secretKeyRef":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SecretKeySelector",
+          "description":"Selects a key of a secret in the pod's namespace"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ConfigMapKeySelector":{
+      "description":"Selects a key from a ConfigMap.",
+      "properties":{
+        "key":{
+          "description":"The key to select.",
+          "type":"string"
+        },
+        "name":{
+          "description":"Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+          "type":"string"
+        },
+        "optional":{
+          "description":"Specify whether the ConfigMap or its key must be defined",
+          "type":"boolean"
+        }
+      },
+      "required":[
+        "key"
+      ],
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ObjectFieldSelector":{
+      "description":"ObjectFieldSelector selects an APIVersioned field of an object.",
+      "properties":{
+        "apiVersion":{
+          "description":"Version of the schema the FieldPath is written in terms of, defaults to \"v1\".",
+          "type":"string"
+        },
+        "fieldPath":{
+          "description":"Path of the field to select in the specified API version.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "fieldPath"
+      ],
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ResourceFieldSelector":{
+      "description":"ResourceFieldSelector represents container resources (cpu, memory) and their output format",
+      "properties":{
+        "containerName":{
+          "description":"Container name: required for volumes, optional for env vars",
+          "type":"string"
+        },
+        "divisor":{
+          "$ref":"#/definitions/io.k8s.apimachinery.pkg.api.resource.Quantity",
+          "description":"Specifies the output format of the exposed resources, defaults to \"1\""
+        },
+        "resource":{
+          "description":"Required: resource to select",
+          "type":"string"
+        }
+      },
+      "required":[
+        "resource"
+      ],
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.SecretKeySelector":{
+      "description":"SecretKeySelector selects a key of a Secret.",
+      "properties":{
+        "key":{
+          "description":"The key of the secret to select from.  Must be a valid secret key.",
+          "type":"string"
+        },
+        "name":{
+          "description":"Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names",
+          "type":"string"
+        },
+        "optional":{
+          "description":"Specify whether the Secret or its key must be defined",
+          "type":"boolean"
+        }
+      },
+      "required":[
+        "key"
+      ],
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.VolumeMount":{
+      "description":"VolumeMount describes a mounting of a Volume within a container.",
+      "properties":{
+        "mountPath":{
+          "description":"Path within the container at which the volume should be mounted.  Must not contain ':'.",
+          "type":"string"
+        },
+        "mountPropagation":{
+          "description":"mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.",
+          "type":"string"
+        },
+        "name":{
+          "description":"This must match the Name of a Volume.",
+          "type":"string"
+        },
+        "readOnly":{
+          "description":"Mounted read-only if true, read-write otherwise (false or unspecified). Defaults to false.",
+          "type":"boolean"
+        },
+        "subPath":{
+          "description":"Path within the volume from which the container's volume should be mounted. Defaults to \"\" (volume's root).",
+          "type":"string"
+        },
+        "subPathExpr":{
+          "description":"Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to \"\" (volume's root). SubPathExpr and SubPath are mutually exclusive.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "name",
+        "mountPath"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.TopologySpreadConstraint":{
+      "description":"TopologySpreadConstraint specifies how to spread matching pods among the given topology.",
+      "properties":{
+        "labelSelector":{
+          "$ref":"#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+          "description":"LabelSelector is used to find matching pods. Pods that match this label selector are counted to determine the number of pods in their corresponding topology domain."
+        },
+        "maxSkew":{
+          "description":"MaxSkew describes the degree to which pods may be unevenly distributed. When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference between the number of matching pods in the target topology and the global minimum. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 1/1/0: | zone1 | zone2 | zone3 | |   P   |   P   |       | - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 1/1/1; scheduling it onto zone1(zone2) would make the ActualSkew(2-0) on zone1(zone2) violate MaxSkew(1). - if MaxSkew is 2, incoming pod can be scheduled onto any zone. When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence to topologies that satisfy it. It's a required field. Default value is 1 and 0 is not allowed.",
+          "format":"int32",
+          "type":"integer"
+        },
+        "topologyKey":{
+          "description":"TopologyKey is the key of node labels. Nodes that have a label with this key and identical values are considered to be in the same topology. We consider each <key, value> as a \"bucket\", and try to put balanced number of pods into each bucket. It's a required field.",
+          "type":"string"
+        },
+        "whenUnsatisfiable":{
+          "description":"WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy the spread constraint. - DoNotSchedule (default) tells the scheduler not to schedule it. - ScheduleAnyway tells the scheduler to schedule the pod in any location,\n  but giving higher precedence to topologies that would help reduce the\n  skew.\nA constraint is considered \"Unsatisfiable\" for an incoming pod if and only if every possible node assigment for that pod would violate \"MaxSkew\" on some topology. For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same labelSelector spread as 3/1/1: | zone1 | zone2 | zone3 | | P P P |   P   |   P   | If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler won't make it *more* imbalanced. It's a required field.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "maxSkew",
+        "topologyKey",
+        "whenUnsatisfiable"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Affinity":{
+      "description":"Affinity is a group of affinity scheduling rules.",
+      "properties":{
+        "nodeAffinity":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.NodeAffinity",
+          "description":"Describes node affinity scheduling rules for the pod."
+        },
+        "podAffinity":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.PodAffinity",
+          "description":"Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s))."
+        },
+        "podAntiAffinity":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.PodAntiAffinity",
+          "description":"Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.PodAffinity":{
+      "description":"Pod affinity is a group of inter pod affinity scheduling rules.",
+      "properties":{
+        "preferredDuringSchedulingIgnoredDuringExecution":{
+          "description":"The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding \"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.WeightedPodAffinityTerm"
+          },
+          "type":"array"
+        },
+        "requiredDuringSchedulingIgnoredDuringExecution":{
+          "description":"If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.PodAffinityTerm"
+          },
+          "type":"array"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.PodAffinityTerm":{
+      "description":"Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running",
+      "properties":{
+        "labelSelector":{
+          "$ref":"#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+          "description":"A label query over a set of resources, in this case pods."
+        },
+        "namespaceSelector":{
+          "$ref":"#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector",
+          "description":"A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means \"this pod's namespace\". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled."
+        },
+        "namespaces":{
+          "description":"namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means \"this pod's namespace\"",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        },
+        "topologyKey":{
+          "description":"This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "topologyKey"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.PodAntiAffinity":{
+      "description":"Pod anti affinity is a group of inter pod anti affinity scheduling rules.",
+      "properties":{
+        "preferredDuringSchedulingIgnoredDuringExecution":{
+          "description":"The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding \"weight\" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.WeightedPodAffinityTerm"
+          },
+          "type":"array"
+        },
+        "requiredDuringSchedulingIgnoredDuringExecution":{
+          "description":"If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.PodAffinityTerm"
+          },
+          "type":"array"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.WeightedPodAffinityTerm":{
+      "description":"The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)",
+      "properties":{
+        "podAffinityTerm":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.PodAffinityTerm",
+          "description":"Required. A pod affinity term, associated with the corresponding weight."
+        },
+        "weight":{
+          "description":"weight associated with matching the corresponding podAffinityTerm, in the range 1-100.",
+          "format":"int32",
+          "type":"integer"
+        }
+      },
+      "required":[
+        "weight",
+        "podAffinityTerm"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.NodeAffinity":{
+      "description":"Node affinity is a group of node affinity scheduling rules.",
+      "properties":{
+        "preferredDuringSchedulingIgnoredDuringExecution":{
+          "description":"The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding \"weight\" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.PreferredSchedulingTerm"
+          },
+          "type":"array"
+        },
+        "requiredDuringSchedulingIgnoredDuringExecution":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.NodeSelector",
+          "description":"If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node."
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.PreferredSchedulingTerm":{
+      "description":"An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).",
+      "properties":{
+        "preference":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.NodeSelectorTerm",
+          "description":"A node selector term, associated with the corresponding weight."
+        },
+        "weight":{
+          "description":"Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.",
+          "format":"int32",
+          "type":"integer"
+        }
+      },
+      "required":[
+        "weight",
+        "preference"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.NodeSelectorTerm":{
+      "description":"A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.",
+      "properties":{
+        "matchExpressions":{
+          "description":"A list of node selector requirements by node's labels.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.NodeSelectorRequirement"
+          },
+          "type":"array"
+        },
+        "matchFields":{
+          "description":"A list of node selector requirements by node's fields.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.NodeSelectorRequirement"
+          },
+          "type":"array"
+        }
+      },
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.NodeSelectorRequirement":{
+      "description":"A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.",
+      "properties":{
+        "key":{
+          "description":"The label key that the selector applies to.",
+          "type":"string"
+        },
+        "operator":{
+          "description":"Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.",
+          "type":"string"
+        },
+        "values":{
+          "description":"An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        }
+      },
+      "required":[
+        "key",
+        "operator"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.NodeSelector":{
+      "description":"A node selector represents the union of the results of one or more label queries over a set of nodes; that is, it represents the OR of the selectors represented by the node selector terms.",
+      "properties":{
+        "nodeSelectorTerms":{
+          "description":"Required. A list of node selector terms. The terms are ORed.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.NodeSelectorTerm"
+          },
+          "type":"array"
+        }
+      },
+      "required":[
+        "nodeSelectorTerms"
+      ],
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelector":{
+      "description":"A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.",
+      "properties":{
+        "matchExpressions":{
+          "description":"matchExpressions is a list of label selector requirements. The requirements are ANDed.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement"
+          },
+          "type":"array"
+        },
+        "matchLabels":{
+          "additionalProperties":{
+            "type":"string"
+          },
+          "description":"matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed.",
+          "type":"object"
+        }
+      },
+      "type":"object",
+      "x-kubernetes-map-type":"atomic",
+      "additionalProperties":false
+    },
+    "io.k8s.apimachinery.pkg.apis.meta.v1.LabelSelectorRequirement":{
+      "description":"A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.",
+      "properties":{
+        "key":{
+          "description":"key is the label key that the selector applies to.",
+          "type":"string",
+          "x-kubernetes-patch-merge-key":"key",
+          "x-kubernetes-patch-strategy":"merge"
+        },
+        "operator":{
+          "description":"operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.",
+          "type":"string"
+        },
+        "values":{
+          "description":"values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        }
+      },
+      "required":[
+        "key",
+        "operator"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Toleration":{
+      "description":"The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>.",
+      "properties":{
+        "effect":{
+          "description":"Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.",
+          "type":"string"
+        },
+        "key":{
+          "description":"Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys.",
+          "type":"string"
+        },
+        "operator":{
+          "description":"Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category.",
+          "type":"string"
+        },
+        "tolerationSeconds":{
+          "description":"TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "value":{
+          "description":"Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.",
+          "type":"string"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.ResourceRequirements":{
+      "description":"ResourceRequirements describes the compute resource requirements.",
+      "properties":{
+        "limits":{
+          "additionalProperties":{
+            "$ref":"#/definitions/io.k8s.apimachinery.pkg.api.resource.Quantity"
+          },
+          "description":"Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "type":"object"
+        },
+        "requests":{
+          "additionalProperties":{
+            "$ref":"#/definitions/io.k8s.apimachinery.pkg.api.resource.Quantity"
+          },
+          "description":"Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+          "type":"object"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.apimachinery.pkg.api.resource.Quantity":{
+      "oneOf":[
+        {
+          "type":"string"
+        },
+        {
+          "type":"number"
+        }
+      ]
+    },
+    "io.k8s.api.apps.v1.StatefulSetUpdateStrategy":{
+      "description":"StatefulSetUpdateStrategy indicates the strategy that the StatefulSet controller will use to perform updates. It includes any additional parameters necessary to perform the update for the indicated strategy.",
+      "properties":{
+        "rollingUpdate":{
+          "description":"RollingUpdateStatefulSetStrategy is used to communicate parameter for RollingUpdateStatefulSetStrategyType.",
+          "properties":{
+            "maxUnavailable":{
+              "oneOf":[
+                {
+                  "type":[
+                    "string",
+                    "null"
+                  ]
+                },
+                {
+                  "type":[
+                    "integer",
+                    "null"
+                  ]
+                }
+              ]
+            },
+            "partition":{
+              "description":"Partition indicates the ordinal at which the StatefulSet should be partitioned for updates. During a rolling update, all pods from ordinal Replicas-1 to Partition are updated. All pods from ordinal Partition-1 to 0 remain untouched. This is helpful in being able to do a canary based deployment. The default value is 0.",
+              "format":"int32",
+              "type":[
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "type":[
+            "object",
+            "null"
+          ],
+          "additionalProperties":false
+        },
+        "type":{
+          "description":"Type indicates the type of the StatefulSetUpdateStrategy. Default is RollingUpdate.",
+          "type":[
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Capabilities":{
+      "description":"Adds and removes POSIX capabilities from running containers.",
+      "properties":{
+        "add":{
+          "description":"Added capabilities",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        },
+        "drop":{
+          "description":"Removed capabilities",
+          "items":{
+            "type":"string"
+          },
+          "type":"array"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.PodSecurityContext":{
+      "description":"PodSecurityContext holds pod-level security attributes and common container settings. Some fields are also present in container.securityContext.  Field values of container.securityContext take precedence over field values of PodSecurityContext.",
+      "properties":{
+        "fsGroup":{
+          "description":"A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod:\n\n1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw----\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "fsGroupChangePolicy":{
+          "description":"fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are \"OnRootMismatch\" and \"Always\". If not specified, \"Always\" is used.",
+          "type":"string"
+        },
+        "runAsGroup":{
+          "description":"The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "runAsNonRoot":{
+          "description":"Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.",
+          "type":"boolean"
+        },
+        "runAsUser":{
+          "description":"The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "seLinuxOptions":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SELinuxOptions",
+          "description":"The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container."
+        },
+        "seccompProfile":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SeccompProfile",
+          "description":"The seccomp options to use by the containers in this pod."
+        },
+        "supplementalGroups":{
+          "description":"A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container.",
+          "items":{
+            "format":"int64",
+            "type":"integer"
+          },
+          "type":"array"
+        },
+        "sysctls":{
+          "description":"Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch.",
+          "items":{
+            "$ref":"#/definitions/io.k8s.api.core.v1.Sysctl"
+          },
+          "type":"array"
+        },
+        "windowsOptions":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.WindowsSecurityContextOptions",
+          "description":"The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.SELinuxOptions":{
+      "description":"SELinuxOptions are the labels to be applied to the container",
+      "properties":{
+        "level":{
+          "description":"Level is SELinux level label that applies to the container.",
+          "type":"string"
+        },
+        "role":{
+          "description":"Role is a SELinux role label that applies to the container.",
+          "type":"string"
+        },
+        "type":{
+          "description":"Type is a SELinux type label that applies to the container.",
+          "type":"string"
+        },
+        "user":{
+          "description":"User is a SELinux user label that applies to the container.",
+          "type":"string"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.SeccompProfile":{
+      "description":"SeccompProfile defines a pod/container's seccomp profile settings. Only one profile source may be set.",
+      "properties":{
+        "localhostProfile":{
+          "description":"localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is \"Localhost\".",
+          "type":"string"
+        },
+        "type":{
+          "description":"type indicates which kind of seccomp profile will be applied. Valid options are:\n\nLocalhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.",
+          "type":"string"
+        }
+      },
+      "required":[
+        "type"
+      ],
+      "type":"object",
+      "x-kubernetes-unions":[
+        {
+          "discriminator":"type",
+          "fields-to-discriminateBy":{
+            "localhostProfile":"LocalhostProfile"
+          }
+        }
+      ],
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.SecurityContext":{
+      "description":"SecurityContext holds security configuration that will be applied to a container. Some fields are present in both SecurityContext and PodSecurityContext.  When both are set, the values in SecurityContext take precedence.",
+      "properties":{
+        "allowPrivilegeEscalation":{
+          "description":"AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN",
+          "type":"boolean"
+        },
+        "capabilities":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.Capabilities",
+          "description":"The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime."
+        },
+        "privileged":{
+          "description":"Run container in privileged mode. Processes in privileged containers are essentially equivalent to root on the host. Defaults to false.",
+          "type":"boolean"
+        },
+        "procMount":{
+          "description":"procMount denotes the type of proc mount to use for the containers. The default is DefaultProcMount which uses the container runtime defaults for readonly paths and masked paths. This requires the ProcMountType feature flag to be enabled.",
+          "type":"string"
+        },
+        "readOnlyRootFilesystem":{
+          "description":"Whether this container has a read-only root filesystem. Default is false.",
+          "type":"boolean"
+        },
+        "runAsGroup":{
+          "description":"The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "runAsNonRoot":{
+          "description":"Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.",
+          "type":"boolean"
+        },
+        "runAsUser":{
+          "description":"The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.",
+          "format":"int64",
+          "type":"integer"
+        },
+        "seLinuxOptions":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SELinuxOptions",
+          "description":"The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+        },
+        "seccompProfile":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.SeccompProfile",
+          "description":"The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options."
+        },
+        "windowsOptions":{
+          "$ref":"#/definitions/io.k8s.api.core.v1.WindowsSecurityContextOptions",
+          "description":"The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence."
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.Sysctl":{
+      "description":"Sysctl defines a kernel parameter to be set",
+      "properties":{
+        "name":{
+          "description":"Name of a property to set",
+          "type":"string"
+        },
+        "value":{
+          "description":"Value of a property to set",
+          "type":"string"
+        }
+      },
+      "required":[
+        "name",
+        "value"
+      ],
+      "type":"object",
+      "additionalProperties":false
+    },
+    "io.k8s.api.core.v1.WindowsSecurityContextOptions":{
+      "description":"WindowsSecurityContextOptions contain Windows-specific options and credentials.",
+      "properties":{
+        "gmsaCredentialSpec":{
+          "description":"GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.",
+          "type":"string"
+        },
+        "gmsaCredentialSpecName":{
+          "description":"GMSACredentialSpecName is the name of the GMSA credential spec to use.",
+          "type":"string"
+        },
+        "hostProcess":{
+          "description":"HostProcess determines if a container should be run as a 'Host Process' container. This field is alpha-level and will only be honored by components that enable the WindowsHostProcessContainers feature flag. Setting this field without the feature flag will result in errors when validating the Pod. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).  In addition, if HostProcess is true then HostNetwork must also be set to true.",
+          "type":"boolean"
+        },
+        "runAsUserName":{
+          "description":"The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.",
+          "type":"string"
+        }
+      },
+      "type":"object",
+      "additionalProperties":false
+    }
+  }
+}
