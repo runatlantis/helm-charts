@@ -231,9 +231,9 @@ service:
   type: NodePort
   annotations: {}
   port: 80
-  nodePort: ~
+  nodePort: null
   targetPort: 4141
-  loadBalancerIP: ~
+  loadBalancerIP: null
 
 podTemplate:
   annotations: {}
@@ -249,7 +249,7 @@ statefulSet:
     fsGroup: 1000
     runAsUser: 100
     fsGroupChangePolicy: "OnRootMismatch"
-  priorityClassName: ~
+  priorityClassName: ""
   updateStrategy: {}
   # option to share process namespace with atlantis container
   shareProcessNamespace: false
@@ -385,7 +385,7 @@ serviceAccount:
   mount: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: ~
+  name: null
   # Annotations for the Service Account
   # Example:
   #
