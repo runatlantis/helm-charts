@@ -537,10 +537,7 @@
         },
         "priorityClassName":{
           "description":"Leverage a PriorityClass to ensure your pods survive resource shortages.",
-          "type":[
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "updateStrategy":{
           "type":"object",
