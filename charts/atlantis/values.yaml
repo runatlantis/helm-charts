@@ -134,7 +134,7 @@ image:
 
 ## Override atlantis main configuration by config map,
 ## ref: https://www.runatlantis.io/docs/using-slack-hooks.html#configuring-atlantis
-#config: |
+# config: |
 #  ---
 #  webhooks:
 #    - event: apply
