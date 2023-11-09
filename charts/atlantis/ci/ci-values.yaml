@@ -12,7 +12,7 @@ ingress:
   ingressClassName: nginx
   host: atlantis.localdev.me
   path: /
-secondary_ingress:
+webhook_ingress:
   enabled: true
   ingressClassName: nginx
   host: atlantis-webook.localdev.me
