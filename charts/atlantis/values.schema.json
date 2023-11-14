@@ -3,7 +3,22 @@
   "description":"Default values for atlantis. Declare variables to be passed into your templates.",
   "type":"object",
   "additionalProperties":false,
-  "properties": {
+  "properties":{
+    "global": {
+      "description": "Global values applied to all charts",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "fullnameOverride": {
+      "description": "Provide a name to substitute for the full names of resources",
+      "type": "string",
+      "default": ""
+    },
+    "nameOverride": {
+      "description": "Override the name of the chart",
+      "type": "string",
+      "default": ""
+    },
     "atlantisUrl":{
       "description":"The URL at which Atlantis will be available. This is used to set the webhook URL in GitHub.",
       "type":"string",
