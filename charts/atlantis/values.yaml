@@ -2,6 +2,12 @@
 # Values to override for your instance.
 ## -------------------------- ##
 
+# Provide a name to substitute for the full names of resources
+fullnameOverride: ""
+
+# Provide a name to substitute for the name of the chart
+nameOverride: ""
+
 ## An option to override the atlantis url,
 ##   if not using an ingress, set it to the external IP.
 # atlantisUrl: http://10.0.0.0
