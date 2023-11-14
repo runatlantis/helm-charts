@@ -3,7 +3,7 @@
   "description":"Default values for atlantis. Declare variables to be passed into your templates.",
   "type":"object",
   "additionalProperties":false,
-  "properties":{
+  "properties": {
     "atlantisUrl":{
       "description":"The URL at which Atlantis will be available. This is used to set the webhook URL in GitHub.",
       "type":"string",
@@ -16,6 +16,14 @@
       "type":"string",
       "default":"<replace-me>",
       "description":"Allowlist of repositories from which Atlantis will accept webhooks",
+      "examples":[
+        "github.com/myorg/*"
+      ]
+    },
+    "orgWhitelist":{
+      "type":"string",
+      "default":"<replace-me>",
+      "description":"Deprecated (see orgAllowlist) List of repositories from which Atlantis will accept webhooks. Accepts wildcard characters (`*`). Multiple values may be comma-separated.",
       "examples":[
         "github.com/myorg/*"
       ]
@@ -54,7 +62,13 @@
           "description":"Hostname of your GitHub Enterprise installation."
         }
       },
-      "additionalProperties":false
+      "additionalProperties":false,
+      "if": {
+            "minProperties": 1
+        },
+      "then": {
+            "required": ["user"]
+        }
     },
     "githubApp":{
       "type":"object",
@@ -1135,6 +1149,26 @@
       "$ref":"#/definitions/io.k8s.api.core.v1.Lifecycle"
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "githubApp": {
+            "minProperties": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "vcsSecretName": {
+            "minLength": 0
+          }
+        }
+    }
+    }
+  ],
   "definitions":{
     "io.k8s.api.core.v1.HostAlias":{
       "description":"HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.",

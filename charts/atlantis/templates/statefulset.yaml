@@ -142,12 +142,6 @@ spec:
           {{- if .Values.containerSecurityContext }}
           securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           {{- end }}
-          {{- if .Values.command }}
-          command:
-          {{- range .Values.command }}
-          - {{ . }}
-          {{- end }}
-          {{- end }}
           args:
             - server
             {{- if .Values.config }}
