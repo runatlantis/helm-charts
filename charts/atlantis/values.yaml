@@ -2,6 +2,12 @@
 # Values to override for your instance.
 ## -------------------------- ##
 
+# Provide a name to substitute for the full names of resources
+fullnameOverride: ""
+
+# Provide a name to substitute for the name of the chart
+nameOverride: ""
+
 ## An option to override the atlantis url,
 ##   if not using an ingress, set it to the external IP.
 # atlantisUrl: http://10.0.0.0
@@ -107,10 +113,12 @@ aws: {}
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
+## To keep backwards compatibility
+## Deprecated (see googleServiceAccountSecrets)
 ## To be used for mounting credential files (when using google provider).
-serviceAccountSecrets:
-  # credentials: <json file as base64 encoded string>
-  # credentials-staging: <json file as base64 encoded string>
+## serviceAccountSecrets:
+    # credentials: <json file as base64 encoded string>
+    # credentials-staging: <json file as base64 encoded string>
 
 
 ## -------------------------- ##
@@ -129,6 +137,17 @@ image:
 ##
 # imagePullSecrets:
 # - myRegistryKeySecretName
+
+## Override atlantis main configuration by config map,
+## ref: https://www.runatlantis.io/docs/using-slack-hooks.html#configuring-atlantis
+# config: |
+#  ---
+#  webhooks:
+#    - event: apply
+#      workspace-regex: .*
+#      branch-regex: .*
+#      kind: slack
+#      channel: my-channel
 
 ## Use Server Side Repo Config,
 ## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
@@ -222,10 +241,12 @@ readinessProbe:
 
 service:
   type: NodePort
+  annotations: {}
   port: 80
   nodePort: null
   targetPort: 4141
   loadBalancerIP: null
+  loadBalancerSourceRanges: []
 
 podTemplate:
   annotations: {}
@@ -253,6 +274,7 @@ ingress:
   enabled: true
   ingressClassName:
   apiVersion: ""
+  labels: {}
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -280,7 +302,7 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
-  labels: {}
+
 
 webhook_ingress:
   enabled: false  # true to create secondary webhook.
@@ -326,6 +348,9 @@ resources: {}
   # limits:
   #   memory: 1Gi
   #   cpu: 100m
+
+## Path to the data directory for the volumeMount
+atlantisDataDirectory: /atlantis-data
 
 ## Embedded data volume & volumeMount (default working)
 volumeClaim:
@@ -373,7 +398,7 @@ serviceAccount:
   mount: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: null
   # Annotations for the Service Account
   # Example:
   #
@@ -381,6 +406,8 @@ serviceAccount:
   #   annotation1: value
   #   annotation2: value
   annotations: {}
+  # IRSA example:
+  # eks.amazonaws.com/role-arn: role-arn
 
 # Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend
 enableKubernetesBackend: false
@@ -470,6 +497,8 @@ initContainers: []
 #     - bbb.com
 #     ip: 10.0.0.2
 
+hostNetwork: false
+
 extraArgs: []
 # extraArgs:
 # - --disable-autoplan
@@ -502,6 +531,7 @@ servicemonitor:
   #   by setting a value for metrics.prometheus.endpoint
   enabled: false
   interval: "30s"
+  path: /metrics
   auth:
     # if auth is enabled on Atlantis, use one of the following mechanism
     basicAuth:
@@ -512,10 +542,10 @@ servicemonitor:
     externalSecret:
       # authentication based on an external secret
       enabled: false
-      name: atlantis-env
-      keys:
-        username: USERNAME
-        password: ATLANTIS_WEB_PASSWORD
+      # name: atlantis-env
+      # keys:
+      #   username: USERNAME
+      #   password: ATLANTIS_WEB_PASSWORD
 
 # Enable this if you're using Google Managed Prometheus
 podMonitor:
