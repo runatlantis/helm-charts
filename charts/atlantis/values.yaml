@@ -234,6 +234,7 @@ service:
   nodePort: null
   targetPort: 4141
   loadBalancerIP: null
+  loadBalancerSourceRanges: []
 
 podTemplate:
   annotations: {}
