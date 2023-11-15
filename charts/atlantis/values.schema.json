@@ -350,6 +350,10 @@
       "type":"string",
       "description":"Name of a pre-existing Kubernetes `Secret` containing a `apisecret` key. Use this instead of `api.secret`"
     },
+    "command":{
+      "type":"array",
+      "description":"Override the command field of the Atlantis container"
+    },
     "commonLabels":{
       "type":"object",
       "description":"Add Common Labels to all resources",
