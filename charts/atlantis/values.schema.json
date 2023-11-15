@@ -499,6 +499,13 @@
             "string",
             "null"
           ]
+        },
+        "loadBalancerSourceRanges":{
+          "description":"If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature.",
+          "type":[
+            "array",
+            "null"
+          ]
         }
       }
     },
