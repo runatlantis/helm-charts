@@ -1036,17 +1036,7 @@
     "containerSecurityContext":{
       "type":"object",
       "description":"SecurityContext configuration for atlantis containers.",
-      "properties":{
-        "allowPrivilegeEscalation":{
-          "type":"boolean",
-          "description":"Whether to enable privilege escalation"
-        },
-        "readOnlyRootFilesystem":{
-          "type":"boolean",
-          "description":"Whether the root file system should be read-only"
-        }
-      },
-      "additionalProperties":false
+      "$ref":"#/definitions/io.k8s.api.core.v1.SecurityContext"
     },
     "servicemonitor":{
       "type":"object",
