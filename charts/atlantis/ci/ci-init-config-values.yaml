@@ -1,0 +1,22 @@
+---
+github:
+  user: foo
+  token: bar
+  secret: baz
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: atlantis.localdev.me
+  path: /
+webhook_ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: atlantis-webook.localdev.me
+  path: /events
+
+initConfig:
+  enabled: true
