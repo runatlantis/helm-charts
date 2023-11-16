@@ -860,7 +860,11 @@
       "type":"object",
       "description":"Map of environment variables for the container.",
       "additionalProperties":{
-        "type":"string"
+        "type":[
+          "string",
+          "integer",
+          "boolean"
+          ]
       }
     },
     "environmentSecrets":{
