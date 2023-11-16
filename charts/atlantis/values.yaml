@@ -212,6 +212,9 @@ enableDiffMarkdownFormat: false
 # If managing secrets outside the chart for the API secret, use this variable to reference the secret name
 # apiSecretName: "myapisecret"
 
+# Override the command field of the Atlantis container
+# command: []
+
 # Common Labels for all resources created by this chart.
 commonLabels: {}
 
@@ -240,6 +243,7 @@ service:
   nodePort: null
   targetPort: 4141
   loadBalancerIP: null
+  loadBalancerSourceRanges: []
 
 podTemplate:
   annotations: {}

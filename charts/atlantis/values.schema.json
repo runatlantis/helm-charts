@@ -364,6 +364,10 @@
       "type":"string",
       "description":"Name of a pre-existing Kubernetes `Secret` containing a `apisecret` key. Use this instead of `api.secret`"
     },
+    "command":{
+      "type":"array",
+      "description":"Override the command field of the Atlantis container"
+    },
     "commonLabels":{
       "type":"object",
       "description":"Add Common Labels to all resources",
@@ -511,6 +515,13 @@
           "description":"IP address to assign to load balancer (if supported).",
           "type":[
             "string",
+            "null"
+          ]
+        },
+        "loadBalancerSourceRanges":{
+          "description":"If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature.",
+          "type":[
+            "array",
             "null"
           ]
         }
