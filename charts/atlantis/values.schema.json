@@ -977,9 +977,41 @@
         "$ref":"#/definitions/io.k8s.api.core.v1.Container"
       },
       "type":"array",
-      "default":[
-
-      ]
+      "default":[]
+    },
+    "initConfig":{
+      "type":"object",
+      "description":"Init container used to install plugins/providers shared with Atlantis pods",
+      "properties":{
+        "enabled":{
+          "type":"boolean",
+          "description":"Enable creation of init config"
+        },
+        "image":{
+          "type":"string",
+          "description":"Container image to use on init configs"
+        },
+        "imagePullPolicy":{
+          "type":"string",
+          "description":"Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images"
+        },
+        "sharedDir":{
+          "type":"string",
+          "description":"sharedDir is set as env var INIT_SHARED_DIR"
+        },
+        "workDir":{
+          "type":"string",
+          "description":"Starting directory for the script"
+        },
+        "sizeLimit":{
+          "type":"string",
+          "description":"Size for the init-shared-path emptyDir volume"
+        },
+        "script":{
+          "type":"string",
+          "description":"Script to install tools/providers required by the atlantis pod"
+        }
+      }
     },
     "hostAliases":{
       "description":"Specify HostAliases for Atlantis containers.",
@@ -987,9 +1019,7 @@
         "$ref":"#/definitions/io.k8s.api.core.v1.HostAlias"
       },
       "type":"array",
-      "default":[
-
-      ],
+      "default":[],
       "examples":[
         {
           "ip":"127.0.0.2",

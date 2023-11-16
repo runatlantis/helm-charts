@@ -18,14 +18,18 @@
 - [Testing the Deployment](#testing-the-deployment)
 
 ## Introduction
+
 This chart creates a single pod in a StatefulSet running Atlantis. Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lockfiles](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request. These files are stored in a PersistentVolumeClaim to survive Pod failures.
 
 ## Prerequisites
+
 - Kubernetes 1.9+
 - PersistentVolume support
 
 ## Required Configuration
+
 In order for Atlantis to start and run successfully:
+
 1. At least one of the following sets of credentials must be defined:
     - `github`
     - `gitlab`
@@ -53,6 +57,7 @@ extraManifests:
 ```
 
 ## Customization
+
 The following options are supported. See [values.yaml](/charts/atlantis/values.yaml) for more detailed documentation and examples:
 
 | Parameter                                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Default                  |
@@ -132,6 +137,7 @@ The following options are supported. See [values.yaml](/charts/atlantis/values.y
 | `ingress.path`                                      | Path to use in the `Ingress`. Should be set to `/*` if using gce-ingress in Google Cloud.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `/`                      |
 | `ingress.tls`                                       | Kubernetes tls block. See [Kubernetes docs](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) for details.                                                                                                                                                                                                                                                                                                                                                                                                                                           | `[]`                     |
 | `initContainers`                                    | Containers used to initialize context for Atlantis pods                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `[]`                     |
+| `initConfig`                                        | Init container used to install plugins/providers shared with Atlantis pods                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | n/a                      |
 | `lifecycle`                                         | Configure pod container lifecycle hooks. See [Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/) for details.                                                                                                                                                                                                                                                                                                                                                                                                    | `{}`                     |
 | `loadEnvFromConfigMaps`                             | Array of Kubernetes `ConfigMap`s to set all key-value pairs as environment variables. See `values.yaml` for example.                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `[]`                     |
 | `loadEnvFromSecrets`                                | Array of Kubernetes secrets to set all key-value pairs as environment variables. See `values.yaml` for example.                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `[]`                     |
@@ -189,20 +195,22 @@ The following options are supported. See [values.yaml](/charts/atlantis/values.y
 ## Upgrading
 
 ### From `4.0.*` to `4.1.*`
-* The following value are deprecated:
-  * `dataStorage`
-  * `storageClassName`
-* In favor of the new working way:
-  * `volumeClaim.enabled`
-  * `volumeClaim.dataStorage`
-  * `volumeClaim.storageClassName`
+
+- The following value are deprecated:
+  - `dataStorage`
+  - `storageClassName`
+
+- In favor of the new working way:
+  - `volumeClaim.enabled`
+  - `volumeClaim.dataStorage`
+  - `volumeClaim.storageClassName`
 
 ### From `2.*` to `3.*`
 
-* The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
-  * `requireApproval`
-  * `requireMergeable`
-  * `allowRepoConfig`
+- The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
+  - `requireApproval`
+  - `requireMergeable`
+  - `allowRepoConfig`
 
 To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
 
@@ -234,14 +242,15 @@ repoConfig: |
 ```
 
 ### From `1.*` to `2.*`
-* The following value names have changed:
-  * `allow_repo_config` => `allowRepoConfig`
-  * `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
-  * `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
-  * `bitbucket.base_url` => `bitbucket.baseURL`
 
+- The following value names have changed:
+  - `allow_repo_config` => `allowRepoConfig`
+  - `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
+  - `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
+  - `bitbucket.base_url` => `bitbucket.baseURL`
 
 ## Testing the Deployment
+
 To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
 
 1. Install the chart. Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
@@ -252,6 +261,7 @@ To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is u
     ```
 
 1. Run the tests:
+
     ```bash
     helm test my-atlantis
     ```
