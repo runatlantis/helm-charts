@@ -29,9 +29,12 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
         checksum/repo-config: {{ include (print $.Template.BasePath "/configmap-repo-config.yaml") . | sha256sum }}
-      {{- if .Values.podTemplate.annotations }}
-{{ toYaml .Values.podTemplate.annotations | indent 8 }}
-      {{- end }}
+        {{- if .Values.initConfig.enabled }}
+        checksum/init-config: {{ include (print $.Template.BasePath "/configmap-init-config.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.podTemplate.annotations }}
+        {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
+        {{- end }}
     spec:
       {{- if .Values.hostAliases }}
       hostAliases:
@@ -123,7 +126,19 @@ spec:
           secretName: {{ .Values.customPem }}
       {{- end }}
       {{- if .Values.extraVolumes }}
-{{ toYaml .Values.extraVolumes | indent 6 }}
+      {{- toYaml .Values.extraVolumes | nindent 6 }}
+      {{- end }}
+      {{- if .Values.initConfig.enabled }}
+      - name: init-config
+        configMap:
+          name: {{ template "atlantis.fullname" . }}-init-config
+          items:
+            - key: init-config.sh
+              path: init-config.sh
+              mode: 0555
+      - name: init-shared-path
+        emptyDir:
+          sizeLimit: {{ .Values.initConfig.sizeLimit }}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -131,9 +146,30 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      {{- if .Values.initContainers }}
+      {{- if or .Values.initContainers .Values.initConfig.enabled }}
       initContainers:
-{{ toYaml .Values.initContainers | indent 8 }}
+        {{- with .Values.initContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.initConfig.enabled }}
+        - name: init-config
+          image: {{ .Values.initConfig.image }}
+          imagePullPolicy: {{ .Values.initConfig.pullPolicy }}
+          command:
+            - /init-config.sh
+          workingDir: {{ .Values.initConfig.workDir }}
+          env:
+            - name: PATH
+              value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}
+            - name: INIT_SHARED_DIR
+              value: {{ .Values.initConfig.sharedDir }}
+          volumeMounts:
+            - name: init-config
+              mountPath: /init-config.sh
+              subPath: init-config.sh
+            - name: init-shared-path
+              mountPath: {{ .Values.initConfig.sharedDir }}
+        {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -402,6 +438,12 @@ spec:
           - name: AWS_CONFIG_FILE
             value: {{ .Values.aws.directory }}/config
           {{- end }}
+          {{- if .Values.initConfig.enabled }}
+          - name: PATH
+            value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}
+          - name: INIT_SHARED_DIR
+            value: {{ .Values.initConfig.sharedDir }}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -493,32 +535,37 @@ spec:
             subPath: ca-certificates.crt
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
-{{ toYaml .Values.extraVolumeMounts | indent 10 }}
+          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
+          {{- end }}
+          {{- if .Values.initConfig.enabled }}
+          - name: init-shared-path
+            mountPath: {{ .Values.initConfig.sharedDir }}
+            readOnly: true
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.extraContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-{{ toYaml . | indent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
   {{- with .Values.statefulSet.updateStrategy }}
   updateStrategy:
-{{ toYaml . | indent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   {{- if .Values.dataStorage }}
   volumeClaimTemplates:

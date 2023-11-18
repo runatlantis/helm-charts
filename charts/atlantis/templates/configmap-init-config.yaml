@@ -1,0 +1,11 @@
+{{- if .Values.initConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "atlantis.fullname" . }}-init-config
+  labels:
+{{- include "atlantis.labels" . | nindent 4 }}
+data:
+  init-config.sh: |
+    {{- .Values.initConfig.script | nindent 4 }}
+{{- end -}}
