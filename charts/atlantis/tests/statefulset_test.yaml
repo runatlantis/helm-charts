@@ -613,13 +613,24 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: ATLANTIS_GITLAB_TOKEN
-            value: "123456"
+            name: ATLANTIS_GITLAB_USER
+            value: "foo"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: ATLANTIS_GITLAB_URL
-            value: https://gitlab.com
+            name: ATLANTIS_GITLAB_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: gitlab_token
+                name: my-release-atlantis-webhook
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GITLAB_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: gitlab_secret
+                name: my-release-atlantis-webhook
 
 
 
