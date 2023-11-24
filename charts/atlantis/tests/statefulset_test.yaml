@@ -565,6 +565,63 @@ tests:
             content:
               name: ATLANTIS_GH_APP_KEY_FILE
               value: /var/github-app/key.pem
+  - it: githubApp vcsSecretName
+    template: statefulset.yaml
+    set:
+        vcsSecretName: 'atlantis-vcs'
+        githubApp:
+          id: 123456
+          slug: foo
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: github-app-key-volume
+              secret:
+                items:
+                  - key: key.pem
+                    path: key.pem
+                secretName: atlantis-vcs
+
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "github-app-key-volume")]
+          value:
+            mountPath: /var/github-app
+            name: github-app-key-volume
+            readOnly: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: github_secret
+                name: atlantis-vcs
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_APP_KEY_FILE
+            value: /var/github-app/key.pem
+  - it: gitlab
+    template: statefulset.yaml
+    set:
+     gitlab:
+       user: foo
+       token: bar
+       secret: baz
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GITLAB_TOKEN
+            value: "123456"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GITLAB_URL
+            value: https://gitlab.com
+
+
 
 
 
