@@ -16,6 +16,9 @@ nameOverride: ""
 orgAllowlist: <replace-me>
 # logLevel: "debug"
 
+# Deprecated in favor of orgAllowlist
+# orgWhitelist:  <replace-me>
+
 # If using GitHub, specify like the following:
 github: {}
 # github:
