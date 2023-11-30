@@ -17,7 +17,14 @@ podTemplate:
     podTemplateAnnotation1: value3
     podTemplateAnnotation2: value4
 
+atlantisController: "statefulSet"
+
 statefulSet:
   annotations:
     statefulSetAnnotation1: value5
     statefulSetAnnotation2: value6
+
+deployment:
+  annotations:
+    deploymentAnnotation1: value5
+    deploymentAnnotation2: value6

@@ -1,19 +1,18 @@
-{{- if eq  ( default "statefulSet" .Values.atlantisController ) ("statefulSet")}}
+{{- if eq  ( default "statefulSet" .Values.atlantisController ) ("deployment")}}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
 {{- include "atlantis.labels" . | nindent 4 }}
-{{- if .Values.statefulSet.labels }}
-{{ toYaml .Values.statefulSet.labels | indent 4 }}
+{{- if .Values.deployment.labels }}
+{{ toYaml .Values.deployment.labels | indent 4 }}
 {{- end }}
-  {{- with .Values.statefulSet.annotations }}
+  {{- with .Values.deployment.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
   {{- end }}
 spec:
-  serviceName: {{ template "atlantis.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -30,12 +29,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
         checksum/repo-config: {{ include (print $.Template.BasePath "/configmap-repo-config.yaml") . | sha256sum }}
-        {{- if .Values.initConfig.enabled }}
-        checksum/init-config: {{ include (print $.Template.BasePath "/configmap-init-config.yaml") . | sha256sum }}
-        {{- end }}
-        {{- if .Values.podTemplate.annotations }}
-        {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
-        {{- end }}
+      {{- if .Values.podTemplate.annotations }}
+{{ toYaml .Values.podTemplate.annotations | indent 8 }}
+      {{- end }}
     spec:
       {{- if .Values.hostAliases }}
       hostAliases:
@@ -45,18 +41,22 @@ spec:
           ip: {{ .ip }}
       {{- end }}
       {{- end }}
-      hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}
-      shareProcessNamespace: {{ .Values.statefulSet.shareProcessNamespace }}
+      shareProcessNamespace: {{ .Values.deployment.shareProcessNamespace }}
       automountServiceAccountToken: {{ .Values.serviceAccount.mount }}
       {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- end }}
-      securityContext: {{ .Values.statefulSet.securityContext | toYaml | nindent 8 }}
-      {{- if .Values.statefulSet.priorityClassName }}
-      priorityClassName: {{ .Values.statefulSet.priorityClassName }}
+      securityContext: {{ .Values.deployment.securityContext | toYaml | nindent 8 }}
+      {{- if .Values.deployment.priorityClassName }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
       {{- end }}
       volumes:
+      {{- if or .Values.volumeClaim.enabled .Values.dataStorage  }}
+      - name: "atlantis-data"
+        persistentVolumeClaim:
+          claimName: {{ template "atlantis.fullname" . }}
+      {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
         secret:
@@ -127,19 +127,7 @@ spec:
           secretName: {{ .Values.customPem }}
       {{- end }}
       {{- if .Values.extraVolumes }}
-      {{- toYaml .Values.extraVolumes | nindent 6 }}
-      {{- end }}
-      {{- if .Values.initConfig.enabled }}
-      - name: init-config
-        configMap:
-          name: {{ template "atlantis.fullname" . }}-init-config
-          items:
-            - key: init-config.sh
-              path: init-config.sh
-              mode: 0555
-      - name: init-shared-path
-        emptyDir:
-          sizeLimit: {{ .Values.initConfig.sizeLimit }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
       {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -147,30 +135,9 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      {{- if or .Values.initContainers .Values.initConfig.enabled }}
+      {{- if .Values.initContainers }}
       initContainers:
-        {{- with .Values.initContainers }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- if .Values.initConfig.enabled }}
-        - name: init-config
-          image: {{ .Values.initConfig.image }}
-          imagePullPolicy: {{ .Values.initConfig.pullPolicy }}
-          command:
-            - /init-config.sh
-          workingDir: {{ .Values.initConfig.workDir }}
-          env:
-            - name: PATH
-              value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}
-            - name: INIT_SHARED_DIR
-              value: {{ .Values.initConfig.sharedDir }}
-          volumeMounts:
-            - name: init-config
-              mountPath: /init-config.sh
-              subPath: init-config.sh
-            - name: init-shared-path
-              mountPath: {{ .Values.initConfig.sharedDir }}
-        {{- end }}
+{{ toYaml .Values.initContainers | indent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -274,7 +241,7 @@ spec:
             value: /etc/tls/tls.key
           {{- end }}
           - name: ATLANTIS_DATA_DIR
-            value: {{ .Values.atlantisDataDirectory }}
+            value: /atlantis-data
           - name: ATLANTIS_REPO_ALLOWLIST
             value: {{ toYaml (coalesce .Values.orgWhitelist .Values.orgAllowlist) }}
           - name: ATLANTIS_PORT
@@ -445,12 +412,6 @@ spec:
           - name: AWS_CONFIG_FILE
             value: {{ .Values.aws.directory }}/config
           {{- end }}
-          {{- if .Values.initConfig.enabled }}
-          - name: PATH
-            value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}
-          - name: INIT_SHARED_DIR
-            value: {{ .Values.initConfig.sharedDir }}
-          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
@@ -478,7 +439,7 @@ spec:
           volumeMounts:
           {{- if or .Values.volumeClaim.enabled .Values.dataStorage  }}
           - name: atlantis-data
-            mountPath: {{ .Values.atlantisDataDirectory }}
+            mountPath: /atlantis-data
           {{- end }}
           {{- range $name, $_ := .Values.serviceAccountSecrets }}
           - name: {{ $name }}-volume
@@ -542,65 +503,31 @@ spec:
             subPath: ca-certificates.crt
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
-          {{- toYaml .Values.extraVolumeMounts | nindent 10 }}
-          {{- end }}
-          {{- if .Values.initConfig.enabled }}
-          - name: init-shared-path
-            mountPath: {{ .Values.initConfig.sharedDir }}
-            readOnly: true
+{{ toYaml .Values.extraVolumeMounts | indent 10 }}
           {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
       {{- with .Values.extraContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-        {{- toYaml . | nindent 8 }}
+{{ toYaml . | indent 8 }}
     {{- end }}
-  {{- with .Values.statefulSet.updateStrategy }}
-  updateStrategy:
-    {{- toYaml . | nindent 4 }}
+  {{- with .Values.deployment.strategy }}
+  strategy:
+{{ toYaml . | indent 4 }}
   {{- end }}
-  {{- if .Values.dataStorage }}
-  volumeClaimTemplates:
-  - metadata:
-      name: atlantis-data
-    spec:
-      accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.storageClassName }}
-      storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
-      {{- end }}
-      resources:
-        requests:
-          # The biggest thing Atlantis stores is the Git repo when it checks it out.
-          # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.dataStorage }}
-  {{- else if .Values.volumeClaim.enabled }}
-  volumeClaimTemplates:
-  - metadata:
-      name: atlantis-data
-    spec:
-      accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.volumeClaim.storageClassName }}
-      storageClassName: {{ .Values.volumeClaim.storageClassName }} # Storage class of the volume
-      {{- end }}
-      resources:
-        requests:
-          # The biggest thing Atlantis stores is the Git repo when it checks it out.
-          # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.volumeClaim.dataStorage }}
-  {{- end }}
-{{- end }}
+{{- end}}
