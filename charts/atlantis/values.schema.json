@@ -77,13 +77,7 @@
           "description":"Hostname of your GitHub Enterprise installation."
         }
       },
-      "additionalProperties":false,
-      "if": {
-            "minProperties": 1
-        },
-      "then": {
-            "required": ["user"]
-        }
+      "additionalProperties":false
     },
     "githubApp":{
       "type":"object",
@@ -1199,26 +1193,6 @@
       "$ref":"#/definitions/io.k8s.api.core.v1.Lifecycle"
     }
   },
-  "allOf": [
-    {
-      "if": {
-        "properties": {
-          "githubApp": {
-            "minProperties": 1
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "vcsSecretName": {
-            "minLength": 0
-          }
-        }
-    }
-    }
-  ],
   "definitions":{
     "io.k8s.api.core.v1.HostAlias":{
       "description":"HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.",
