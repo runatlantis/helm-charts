@@ -631,6 +631,142 @@ tests:
               secretKeyRef:
                 key: gitlab_secret
                 name: my-release-atlantis-webhook
+  - it: bitbucket
+    template: statefulset.yaml
+    set:
+     bitbucket:
+       user: foo
+       token: bar
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_USER
+            value: "foo"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: bitbucket_token
+                name: my-release-atlantis-webhook
+  - it: bitbucket server
+    template: statefulset.yaml
+    set:
+     bitbucket:
+       user: foo
+       token: bar
+       secret: baz
+       baseURL: https://bitbucket.yourorganization.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: bitbucket_secret
+                name: my-release-atlantis-webhook
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_BASE_URL
+            value: "https://bitbucket.yourorganization.com"
+  - it: azuredevops
+    template: statefulset.yaml
+    set:
+      azuredevops:
+         user: foo
+         token: bar
+         webhookUser: bobby
+         webhookPassword: bacala
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_AZUREDEVOPS_USER
+            value: "foo"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_AZUREDEVOPS_TOKEN
+            valueFrom:
+                secretKeyRef:
+                  key: azuredevops_token
+                  name: my-release-atlantis-webhook
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_AZUREDEVOPS_WEBHOOK_USER
+            value: "bobby"
+      - contains:
+            path: spec.template.spec.containers[0].env
+            content:
+                name: ATLANTIS_AZUREDEVOPS_WEBHOOK_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                      key: azuredevops_webhook_password
+                      name: my-release-atlantis-webhook
+  - it: basicAuth
+    template: statefulset.yaml
+    set:
+     basicAuth:
+       username: "atlantis"
+       password: "forever"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_WEB_BASIC_AUTH
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_WEB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: my-release-atlantis-basic-auth
+
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_WEB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: my-release-atlantis-basic-auth
+  - it: basicAuthSecretName
+    template: statefulset.yaml
+    set:
+       basicAuthSecretName: "atlantis-basic-auth"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_WEB_BASIC_AUTH
+            value: "true"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_WEB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: atlantis-basic-auth
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_WEB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: atlantis-basic-auth
+
+
+
+
 
 
 
