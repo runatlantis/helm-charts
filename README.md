@@ -13,7 +13,7 @@
 - [Additional manifests](#additional-manifests)
 - [Customization](#customization)
 - [Upgrading](#upgrading)
-  - [From `4.1.*` to `5.0.*`](#from-41-to-50)
+  - [From `4.*` to `5.0.*`](#from-4-to-50)
   - [From `4.0.*` to `4.1.*`](#from-40-to-41)
   - [From `2.*` to `3.*`](#from-2-to-3)
   - [From `1.*` to `2.*`](#from-1-to-2)
