@@ -2,6 +2,12 @@
 # Values to override for your instance.
 ## -------------------------- ##
 
+# Provide a name to substitute for the full names of resources
+fullnameOverride: ""
+
+# Provide a name to substitute for the name of the chart
+nameOverride: ""
+
 ## An option to override the atlantis url,
 ##   if not using an ingress, set it to the external IP.
 # atlantisUrl: http://10.0.0.0
@@ -40,13 +46,20 @@ github: {}
 #   hostname: gitlab.your.org
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
-# If using Bitbucket, specify like the following:
+# If using Bitbucket, there are two approachs, Bitbucket Server, deployed in your own infrastructure and Cloud available at (https://Bitbucket.org)
+
+# Bitbucket Server, specify like the following:
 # bitbucket:
 #   user: foo
 #   token: bar
-# Bitbucket Server only:
 #   secret: baz
 #   baseURL: https://bitbucket.yourorganization.com
+
+# Bitbucket Cloud, specify like the following:
+# bitbucket:
+#   user: # The recommended here is genarate a service user on your cloud environment, but yes, you can live on the edge using your own user :)
+#   token: # Create an APP PASSWORD to the user
+# Base URL are not needed here, but keep in mind to provide an IP Whitelist as the Atlantis documentation
 # (The chart will perform the base64 encoding for you for values that are stored in secrets.)
 
 # If using Azure DevOps, specify like the following:
@@ -100,7 +113,6 @@ aws: {}
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
-
 ## -------------------------- ##
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
@@ -117,6 +129,17 @@ image:
 ##
 # imagePullSecrets:
 # - myRegistryKeySecretName
+
+## Override atlantis main configuration by config map,
+## ref: https://www.runatlantis.io/docs/using-slack-hooks.html#configuring-atlantis
+# config: |
+#  ---
+#  webhooks:
+#    - event: apply
+#      workspace-regex: .*
+#      branch-regex: .*
+#      kind: slack
+#      channel: my-channel
 
 ## Use Server Side Repo Config,
 ## ref: https://www.runatlantis.io/docs/server-side-repo-config.html
@@ -148,6 +171,9 @@ allowDraftPRs: false
 # hidePrevPlanComments enables atlantis to hide previous plan comments
 hidePrevPlanComments: false
 
+# hideUnchangedPlanComments enables atlantis to hide no-changes plan comments from the pull request
+hideUnchangedPlanComments: false
+
 ## defaultTFVersion set the default terraform version to be used in atlantis server
 # defaultTFVersion: 0.12.0
 
@@ -178,6 +204,9 @@ enableDiffMarkdownFormat: false
 # If managing secrets outside the chart for the API secret, use this variable to reference the secret name
 # apiSecretName: "myapisecret"
 
+# Override the command field of the Atlantis container
+# command: []
+
 # Common Labels for all resources created by this chart.
 commonLabels: {}
 
@@ -201,9 +230,12 @@ readinessProbe:
 
 service:
   type: NodePort
+  annotations: {}
   port: 80
+  nodePort: null
   targetPort: 4141
   loadBalancerIP: null
+  loadBalancerSourceRanges: []
 
 podTemplate:
   annotations: {}
@@ -230,10 +262,45 @@ statefulSet:
 ingress:
   enabled: true
   ingressClassName:
+  apiVersion: ""
+  labels: {}
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  path: /*
+  path: /*  # / for nginx
+##  this is in case we want several paths under the same host, with different backend services
+#  paths:
+#    - path: "/path1"
+#      service: test1
+#      port:
+#    - path: "/path2"
+#      service: test2
+#      port:
+  pathType: ImplementationSpecific
+  host:
+
+## in case we need several hosts:
+  hosts:
+  #   - host: chart-example.local
+  #     paths: ["/"]
+  #     service: chart-example1
+  #   - host: chart-example.local2
+  #     service: chart-example1
+  #     paths: ["/lala"]
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+
+webhook_ingress:
+  enabled: false  # true to create secondary webhook.
+  ingressClassName:
+  apiVersion: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /*  # / for nginx
 ## this is in case we want several paths under the same host, with different backend services
 #  paths:
 #    - path: "/path1"
@@ -263,13 +330,16 @@ ingress:
 # You have to create a secret `my-ca-certificates`
 # customPem: my-ca-certificates
 
-resources:
-  requests:
-    memory: 1Gi
-    cpu: 100m
-  limits:
-    memory: 1Gi
-    cpu: 100m
+resources: {}
+  # requests:
+  #   memory: 1Gi
+  #   cpu: 100m
+  # limits:
+  #   memory: 1Gi
+  #   cpu: 100m
+
+## Path to the data directory for the volumeMount
+atlantisDataDirectory: /atlantis-data
 
 ## Embedded data volume & volumeMount (default working)
 volumeClaim:
@@ -284,8 +354,9 @@ replicaCount: 1
 ## test container details
 test:
   enabled: true
-  image: lachlanevenson/k8s-kubectl
-  imageTag: v1.4.8-bash
+  image: bats/bats
+  imageTag: 1.9.0
+  annotations: {}
 
 nodeSelector: {}
 
@@ -310,7 +381,7 @@ serviceAccount:
   mount: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: null
   # Annotations for the Service Account
   # Example:
   #
@@ -318,6 +389,8 @@ serviceAccount:
   #   annotation1: value
   #   annotation2: value
   annotations: {}
+  # IRSA example:
+  # eks.amazonaws.com/role-arn: role-arn
 
 # Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend
 enableKubernetesBackend: false
@@ -398,6 +471,41 @@ initContainers: []
 #   image: alpine:latest
 #   command: ['sh', '-c', 'echo The init container is running! && sleep 10']
 
+# Install providers/plugins into a path shared with the Atlantis pod
+initConfig:
+  enabled: false
+  image: alpine:latest
+  imagePullPolicy: IfNotPresent
+  # sharedDir is set as env var INIT_SHARED_DIR
+  sharedDir: /plugins
+  workDir: /tmp
+  sizeLimit: 100Mi
+  # example of how the script can be configured to install tools/providers required by the atlantis pod
+  script: |
+    #!/bin/sh
+    set -eoux pipefail
+
+    # example for terragrunt
+    TG_VERSION="v0.47.0"
+    TG_SHA256_SUM="98d45f6bfbfae84b51364c1ad6920f09ecb4d834908b0535e4e331a9fc6fc75b"
+    TG_FILE="${INIT_SHARED_DIR}/terragrunt"
+    wget https://github.com/gruntwork-io/terragrunt/releases/download/${TG_VERSION}/terragrunt_linux_amd64 -O "${TG_FILE}"
+    echo "${TG_SHA256_SUM}  ${TG_FILE}" | sha256sum -c
+    chmod 755 "${TG_FILE}"
+    terragrunt -v
+
+    # example for terragrunt-atlantis-config
+    TAC_VERSION="1.16.0" # without v
+    TAC_SHA256_SUM="fc3b069cf4ae51e9b7a7d01f09862d1974b260fffb3ec857d661d7b1756fe26f"
+    TAC_FILE="${INIT_SHARED_DIR}/terragrunt-atlantis-config"
+    wget "https://github.com/transcend-io/terragrunt-atlantis-config/releases/download/v${TAC_VERSION}/terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64.tar.gz"
+    echo "${TAC_SHA256_SUM}  terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64.tar.gz" | sha256sum -c
+    tar xf "terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64.tar.gz"
+    cp -fv "terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64/terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64" "${TAC_FILE}"
+    chmod 755 "${TG_FILE}"
+    terragrunt-atlantis-config version
+
+
 # hostAliases:
 #   - hostnames:
 #     - aaa.com
@@ -406,6 +514,8 @@ initContainers: []
 #   - hostnames:
 #     - bbb.com
 #     ip: 10.0.0.2
+
+hostNetwork: false
 
 extraArgs: []
 # extraArgs:
@@ -439,6 +549,7 @@ servicemonitor:
   #   by setting a value for metrics.prometheus.endpoint
   enabled: false
   interval: "30s"
+  path: /metrics
   auth:
     # if auth is enabled on Atlantis, use one of the following mechanism
     basicAuth:
@@ -449,10 +560,10 @@ servicemonitor:
     externalSecret:
       # authentication based on an external secret
       enabled: false
-      name: atlantis-env
-      keys:
-        username: USERNAME
-        password: ATLANTIS_WEB_PASSWORD
+      # name: atlantis-env
+      # keys:
+      #   username: USERNAME
+      #   password: ATLANTIS_WEB_PASSWORD
 
 # Enable this if you're using Google Managed Prometheus
 podMonitor:

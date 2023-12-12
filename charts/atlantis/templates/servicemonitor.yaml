@@ -8,7 +8,7 @@ metadata:
   {{- with .Values.service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
-  {{- end }}  
+  {{- end }}
 spec:
   selector:
     matchLabels:
@@ -19,7 +19,7 @@ spec:
   endpoints:
   - port: atlantis
     interval: {{ .Values.servicemonitor.interval }}
-    path: {{ .Values.servicemonitor.path | default "/metrics" }}
+    path: {{ .Values.servicemonitor.path }}
 {{- if .Values.servicemonitor.auth.basicAuth.enabled }}
     basicAuth:
       username:

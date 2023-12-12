@@ -4,10 +4,13 @@ kind: ConfigMap
 metadata:
   name: {{ template "atlantis.fullname" . }}-tests
 data:
-  run.sh: |-
+  tests.bats: |-
+    setup() {
+      apk add curl -q
+    }
     @test "Atlantis UI is available" {
       ATLANTIS_URL={{ template "atlantis.url" . }}
       echo "Trying Atlantis at: $ATLANTIS_URL"
-      curl $ATLANTIS_URL
+      curl -v $ATLANTIS_URL
     }
 {{- end }}
