@@ -740,7 +740,7 @@
         },
         "accessModes":{
           "type":"array",
-          "description":"Array of requested access modes for the volume."
+          "description":"Array of requested access modes for the volume.",
           "items":{
             "type":"string",
             "description":"The access mode to be requested."
