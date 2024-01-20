@@ -578,7 +578,7 @@ spec:
   - metadata:
       name: atlantis-data
     spec:
-      accessModes: ["ReadWriteMany"] # Volume should not be shared by multiple nodes.
+      accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
       {{- if .Values.storageClassName }}
       storageClassName: {{ .Values.storageClassName }} # Storage class of the volume
       {{- end }}

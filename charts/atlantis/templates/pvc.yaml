@@ -5,8 +5,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: atlantis-data
 spec:
-  accessModes:
-    - ReadWriteMany
+  accessModes: {{ .Values.volumeClaim.accessModes| toYaml | nindent 2 }}
   resources:
     requests:
       # The biggest thing Atlantis stores is the Git repo when it checks it out.
