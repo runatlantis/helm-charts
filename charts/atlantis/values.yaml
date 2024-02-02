@@ -113,14 +113,6 @@ aws: {}
 # To reference an already existing Secret object with AWS credentials
 # awsSecretName: 'mysecretwithawscreds'
 
-## To keep backwards compatibility
-## Deprecated (see googleServiceAccountSecrets)
-## To be used for mounting credential files (when using google provider).
-## serviceAccountSecrets:
-    # credentials: <json file as base64 encoded string>
-    # credentials-staging: <json file as base64 encoded string>
-
-
 ## -------------------------- ##
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
@@ -356,12 +348,6 @@ volumeClaim:
   dataStorage: 5Gi
   ## Storage class name (if possible, use a resizable one)
   # storageClassName: value
-
-## To keep backwards compatibility
-## DEPRECATED - Disk space for Atlantis to check out repositories
-# dataStorage: 5Gi
-## DEPRECATED - Storage class name for Atlantis disk
-# storageClassName: value
 
 replicaCount: 1
 
