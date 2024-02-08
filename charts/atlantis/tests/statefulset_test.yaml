@@ -171,16 +171,6 @@ tests:
                 resources:
                   requests:
                     storage: 5Gi
-  - it: Statefulset annotations
-    template: statefulset.yaml
-    set:
-      statefulSet.annotations:
-        strong-stuff: "true"
-    asserts:
-      - equal:
-          path: metadata.annotations
-          value:
-            strong-stuff: "true"
   - it: replicaCount
     template: statefulset.yaml
     set:
@@ -189,24 +179,6 @@ tests:
       - equal:
           path: spec.replicas
           value: 2
-  - it: podTemplate labels
-    template: statefulset.yaml
-    set:
-      podTemplate.labels:
-        team: infra
-    asserts:
-      - equal:
-          path: spec.template.metadata.labels.team
-          value: infra
-  - it: podTemplate annotations
-    template: statefulset.yaml
-    set:
-      podTemplate.annotations:
-        iam.amazonaws.com/role: arn:aws:iam::123456789123:role/atlantis-role
-    asserts:
-      - equal:
-          path: spec.template.metadata.annotations["iam.amazonaws.com/role"]
-          value: arn:aws:iam::123456789123:role/atlantis-role
   - it: hostAliases
     template: statefulset.yaml
     set:
@@ -261,38 +233,6 @@ tests:
       - equal:
           path: spec.template.spec.automountServiceAccountToken
           value: false
-  - it: terminationGracePeriodSeconds
-    template: statefulset.yaml
-    set:
-      terminationGracePeriodSeconds: 30
-    asserts:
-      - equal:
-          path: spec.template.spec.terminationGracePeriodSeconds
-          value: 30
-  - it: securityContext
-    template: statefulset.yaml
-    set:
-      statefulSet.securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: Always
-    asserts:
-      - equal:
-          path: spec.template.spec.securityContext
-          value:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
-            fsGroupChangePolicy: Always
-  - it: priorityClassName
-    template: statefulset.yaml
-    set:
-      statefulSet.priorityClassName: high-priority
-    asserts:
-      - equal:
-          path: spec.template.spec.priorityClassName
-          value: high-priority
   - it: tlsSecretName
     template: statefulset.yaml
     set:
@@ -873,3 +813,82 @@ tests:
             periodSeconds: 10
             successThreshold: 2
             timeoutSeconds: 1
+  - it: podTemplate
+    template: statefulset.yaml
+    set:
+      podTemplate:
+        annotations:
+          iam.amazonaws.com/role: arn:aws:iam::123456789123:role/atlantis-role
+        labels:
+          group: base
+    asserts:
+      - equal:
+          path: spec.template.metadata.labels.group
+          value: base
+      - equal:
+          path: spec.template.metadata.annotations["iam.amazonaws.com/role"]
+          value: arn:aws:iam::123456789123:role/atlantis-role
+  - it: Statefulset annotations
+    template: statefulset.yaml
+    set:
+      statefulSet.annotations:
+        strong-stuff: "true"
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            strong-stuff: "true"
+  - it: securityContext
+    template: statefulset.yaml
+    set:
+      statefulSet.securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.securityContext
+          value:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: Always
+  - it: priorityClassName
+    template: statefulset.yaml
+    set:
+      statefulSet.priorityClassName: high-priority
+    asserts:
+      - equal:
+          path: spec.template.spec.priorityClassName
+          value: high-priority
+  - it: updateStrategy
+    template: statefulset.yaml
+    set:
+      statefulSet.updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 0
+    asserts:
+      - equal:
+          path: spec.updateStrategy
+          value:
+            type: RollingUpdate
+            rollingUpdate:
+              partition: 0
+  - it: shareProcessNamespace
+    template: statefulset.yaml
+    set:
+      statefulSet.shareProcessNamespace: true
+    asserts:
+      - equal:
+          path: spec.template.spec.shareProcessNamespace
+          value: true
+  - it: terminationGracePeriodSeconds
+    template: statefulset.yaml
+    set:
+      terminationGracePeriodSeconds: 30
+    asserts:
+      - equal:
+          path: spec.template.spec.terminationGracePeriodSeconds
+          value: 30
