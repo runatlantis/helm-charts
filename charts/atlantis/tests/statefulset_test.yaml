@@ -790,6 +790,16 @@ tests:
               secretKeyRef:
                 key: apisecret
                 name: atlantis-api
+  - it: command
+    template: statefulset.yaml
+    set:
+      command:
+        - printenv
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].command
+          value:
+            - printenv
   - it: commonLabels
     template: statefulset.yaml
     set:
