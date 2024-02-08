@@ -1,0 +1,89 @@
+---
+suite: test service
+templates:
+  - service.yaml
+release:
+  name: my-release
+tests:
+  - it: default values
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: apiVersion
+          value: v1
+      - equal:
+          path: metadata.name
+          value: my-release-atlantis
+      - equal:
+          path: spec
+          value:
+            ports:
+              - name: atlantis
+                port: 80
+                protocol: TCP
+                targetPort: 4141
+            selector:
+              app: atlantis
+              release: my-release
+            type: NodePort
+  - it: loadBalancerSourceRanges
+    set:
+      service:
+        loadBalancerSourceRanges:
+          - 10.0.0.0/8
+    asserts:
+      - equal:
+          path: spec.loadBalancerSourceRanges
+          value:
+            - 10.0.0.0/8
+  - it: loadBalancerIP
+    set:
+      service:
+        loadBalancerIP: 172.16.5.2
+    asserts:
+      - equal:
+          path: spec.loadBalancerIP
+          value: 172.16.5.2
+  - it: service type
+    set:
+      service:
+        type: ClusterIP
+        annotations:
+          haproxy.org/check: "true"
+        port: 8080
+        targetPort: 8181
+    asserts:
+      - equal:
+          path: metadata.annotations
+          value:
+            haproxy.org/check: "true"
+      - equal:
+          path: spec
+          value:
+            ports:
+              - name: atlantis
+                port: 8080
+                protocol: TCP
+                targetPort: 8181
+            selector:
+              app: atlantis
+              release: my-release
+            type: ClusterIP
+  - it: nodePort
+    set:
+      service:
+        type: NodePort
+        nodePort: 30000
+    asserts:
+      - equal:
+          path: spec.ports[0].nodePort
+          value: 30000
+  - it: commonLabels
+    set:
+      commonLabels:
+        team: infra
+    asserts:
+      - equal:
+          path: metadata.labels.team
+          value: infra

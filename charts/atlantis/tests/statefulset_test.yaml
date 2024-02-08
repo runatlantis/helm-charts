@@ -323,8 +323,8 @@ tests:
     template: statefulset.yaml
     set:
       serviceAccountSecrets:
-         credentials: VG9ueSBTb3ByYW5v
-         credentials-staging: Q2FybWVsYSBTb3ByYW5v
+        credentials: VG9ueSBTb3ByYW5v
+        credentials-staging: Q2FybWVsYSBTb3ByYW5v
     asserts:
       - equal:
           path: spec.template.spec.volumes
@@ -335,15 +335,16 @@ tests:
             - name: credentials-staging-volume
               secret:
                 secretName: credentials-staging
-
       - equal:
-          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "credentials-volume")]
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "credentials-volume")]
           value:
             mountPath: /etc/credentials
             name: credentials-volume
             readOnly: true
       - equal:
-          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "credentials-staging-volume")]
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "credentials-staging-volume")]
           value:
             mountPath: /etc/credentials-staging
             name: credentials-staging-volume
@@ -366,7 +367,6 @@ tests:
             - name: gcp-staging
               secret:
                 secretName: gcp-staging-secret
-
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "gcp-ci")]
           value:
@@ -386,37 +386,39 @@ tests:
         [url "https://YOUR_GH_TOKEN@github.com"]
         insteadOf = https://github.com
     asserts:
-        - equal:
-            path: spec.template.spec.volumes
-            value:
-                - name: gitconfig-volume
-                  secret:
-                    secretName: my-release-atlantis-gitconfig
-        - equal:
-            path: spec.template.spec.containers[0].volumeMounts[?(@.name == "gitconfig-volume")]
-            value:
-              mountPath: /home/atlantis/.gitconfig
-              name: gitconfig-volume
-              readOnly: true
-              subPath: gitconfig
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: gitconfig-volume
+              secret:
+                secretName: my-release-atlantis-gitconfig
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "gitconfig-volume")]
+          value:
+            mountPath: /home/atlantis/.gitconfig
+            name: gitconfig-volume
+            readOnly: true
+            subPath: gitconfig
   - it: gitconfigSecretName
     template: statefulset.yaml
     set:
-        gitconfigSecretName: 'atlantis-gitconfig'
+      gitconfigSecretName: atlantis-gitconfig
     asserts:
-        - equal:
-            path: spec.template.spec.volumes
-            value:
-                - name: gitconfig-volume
-                  secret:
-                    secretName: atlantis-gitconfig
-        - equal:
-            path: spec.template.spec.containers[0].volumeMounts[?(@.name == "gitconfig-volume")]
-            value:
-              mountPath: /home/atlantis/.gitconfig
-              name: gitconfig-volume
-              readOnly: true
-              subPath: gitconfig
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: gitconfig-volume
+              secret:
+                secretName: atlantis-gitconfig
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "gitconfig-volume")]
+          value:
+            mountPath: /home/atlantis/.gitconfig
+            name: gitconfig-volume
+            readOnly: true
+            subPath: gitconfig
   - it: netrc
     template: statefulset.yaml
     set:
@@ -424,50 +426,50 @@ tests:
         machine artifactory.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
         machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
     asserts:
-        - equal:
-            path: spec.template.spec.volumes
-            value:
-                - name: netrc-volume
-                  secret:
-                    secretName: my-release-atlantis-netrc
-        - equal:
-            path: spec.template.spec.containers[0].volumeMounts[?(@.name == "netrc-volume")]
-            value:
-              mountPath: /home/atlantis/.netrc
-              name: netrc-volume
-              readOnly: true
-              subPath: netrc
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: netrc-volume
+              secret:
+                secretName: my-release-atlantis-netrc
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "netrc-volume")]
+          value:
+            mountPath: /home/atlantis/.netrc
+            name: netrc-volume
+            readOnly: true
+            subPath: netrc
   - it: netrcSecretName
     template: statefulset.yaml
     set:
-        netrcSecretName: 'atlantis-netrc'
+      netrcSecretName: atlantis-netrc
     asserts:
-        - equal:
-            path: spec.template.spec.volumes
-            value:
-                - name: netrc-volume
-                  secret:
-                    secretName: atlantis-netrc
-        - equal:
-            path: spec.template.spec.containers[0].volumeMounts[?(@.name == "netrc-volume")]
-            value:
-              mountPath: /home/atlantis/.netrc
-              name: netrc-volume
-              readOnly: true
-              subPath: netrc
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: netrc-volume
+              secret:
+                secretName: atlantis-netrc
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "netrc-volume")]
+          value:
+            mountPath: /home/atlantis/.netrc
+            name: netrc-volume
+            readOnly: true
+            subPath: netrc
   - it: aws
     template: statefulset.yaml
     set:
       aws:
-         credentials: |
-           [default]
-           aws_access_key_id=YOUR_ACCESS_KEY_ID
-           aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
-           region=us-east-1
-         config: |
-           [profile a_role_to_assume]
-           role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
-           source_profile = default
+        credentials: |
+          [default]
+          aws_access_key_id=YOUR_ACCESS_KEY_ID
+          aws_secret_access_key=YOUR_SECRET_ACCESS_KEY
+          region=us-east-1
+        config: |
+          [profile a_role_to_assume]
+          role_arn = arn:aws:iam::123456789:role/service-role/roleToAssume
+          source_profile = default
     asserts:
       - equal:
           path: spec.template.spec.volumes
@@ -485,93 +487,93 @@ tests:
     template: statefulset.yaml
     set:
       aws:
-        directory: "/etc/aws_config"
+        directory: /etc/aws_config
     asserts:
-        - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-              name: AWS_CONFIG_FILE
-              value: /etc/aws_config/config
-        - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-              name: AWS_SHARED_CREDENTIALS_FILE
-              value: /etc/aws_config/credentials
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AWS_CONFIG_FILE
+            value: /etc/aws_config/config
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: AWS_SHARED_CREDENTIALS_FILE
+            value: /etc/aws_config/credentials
   - it: awsSecretName
     template: statefulset.yaml
     set:
-        awsSecretName: 'atlantis-aws'
+      awsSecretName: atlantis-aws
     asserts:
-        - equal:
-            path: spec.template.spec.volumes
-            value:
-                - name: aws-volume
-                  secret:
-                    secretName: atlantis-aws
-        - equal:
-            path: spec.template.spec.containers[0].volumeMounts[?(@.name == "aws-volume")]
-            value:
-              mountPath: /home/atlantis/.aws
-              name: aws-volume
-              readOnly: true
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: aws-volume
+              secret:
+                secretName: atlantis-aws
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "aws-volume")]
+          value:
+            mountPath: /home/atlantis/.aws
+            name: aws-volume
+            readOnly: true
   - it: githubApp
     template: statefulset.yaml
     set:
-     githubApp:
-       id: 123456
-       slug: foo
-       key: |
-         -----BEGIN PRIVATE KEY-----
-         ...
-         -----END PRIVATE KEY-----
-       secret: baz
+      githubApp:
+        id: 123456
+        slug: foo
+        key: |
+          -----BEGIN PRIVATE KEY-----
+          ...
+          -----END PRIVATE KEY-----
+        secret: baz
     asserts:
-        - equal:
-            path: spec.template.spec.volumes
-            value:
-              - name: github-app-key-volume
-                secret:
-                  items:
-                      - key: key.pem
-                        path: key.pem
-                  secretName: my-release-atlantis-webhook
-
-        - equal:
-            path: spec.template.spec.containers[0].volumeMounts[?(@.name == "github-app-key-volume")]
-            value:
-                mountPath: /var/github-app
-                name: github-app-key-volume
-                readOnly: true
-        - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-              name: ATLANTIS_GH_APP_ID
-              value: "123456"
-        - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-              name: ATLANTIS_GH_APP_SLUG
-              value: foo
-        - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-              name: ATLANTIS_GH_WEBHOOK_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: github_secret
-                  name: my-release-atlantis-webhook
-        - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-              name: ATLANTIS_GH_APP_KEY_FILE
-              value: /var/github-app/key.pem
+      - equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: github-app-key-volume
+              secret:
+                items:
+                  - key: key.pem
+                    path: key.pem
+                secretName: my-release-atlantis-webhook
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "github-app-key-volume")]
+          value:
+            mountPath: /var/github-app
+            name: github-app-key-volume
+            readOnly: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_APP_ID
+            value: "123456"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_APP_SLUG
+            value: foo
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: github_secret
+                name: my-release-atlantis-webhook
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_APP_KEY_FILE
+            value: /var/github-app/key.pem
   - it: githubApp vcsSecretName
     template: statefulset.yaml
     set:
-        vcsSecretName: 'atlantis-vcs'
-        githubApp:
-          id: 123456
-          slug: foo
+      vcsSecretName: atlantis-vcs
+      githubApp:
+        id: 123456
+        slug: foo
     asserts:
       - equal:
           path: spec.template.spec.volumes
@@ -582,9 +584,9 @@ tests:
                   - key: key.pem
                     path: key.pem
                 secretName: atlantis-vcs
-
       - equal:
-          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "github-app-key-volume")]
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "github-app-key-volume")]
           value:
             mountPath: /var/github-app
             name: github-app-key-volume
@@ -605,16 +607,16 @@ tests:
   - it: gitlab
     template: statefulset.yaml
     set:
-     gitlab:
-       user: foo
-       token: bar
-       secret: baz
+      gitlab:
+        user: foo
+        token: bar
+        secret: baz
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_GITLAB_USER
-            value: "foo"
+            value: foo
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -634,15 +636,15 @@ tests:
   - it: bitbucket
     template: statefulset.yaml
     set:
-     bitbucket:
-       user: foo
-       token: bar
+      bitbucket:
+        user: foo
+        token: bar
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_BITBUCKET_USER
-            value: "foo"
+            value: foo
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -654,11 +656,11 @@ tests:
   - it: bitbucket server
     template: statefulset.yaml
     set:
-     bitbucket:
-       user: foo
-       token: bar
-       secret: baz
-       baseURL: https://bitbucket.yourorganization.com
+      bitbucket:
+        user: foo
+        token: bar
+        secret: baz
+        baseURL: https://bitbucket.yourorganization.com
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
@@ -672,48 +674,48 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_BITBUCKET_BASE_URL
-            value: "https://bitbucket.yourorganization.com"
+            value: https://bitbucket.yourorganization.com
   - it: azuredevops
     template: statefulset.yaml
     set:
       azuredevops:
-         user: foo
-         token: bar
-         webhookUser: bobby
-         webhookPassword: bacala
+        user: foo
+        token: bar
+        webhookUser: bobby
+        webhookPassword: bacala
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_AZUREDEVOPS_USER
-            value: "foo"
+            value: foo
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_AZUREDEVOPS_TOKEN
             valueFrom:
-                secretKeyRef:
-                  key: azuredevops_token
-                  name: my-release-atlantis-webhook
+              secretKeyRef:
+                key: azuredevops_token
+                name: my-release-atlantis-webhook
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_AZUREDEVOPS_WEBHOOK_USER
-            value: "bobby"
+            value: bobby
       - contains:
-            path: spec.template.spec.containers[0].env
-            content:
-                name: ATLANTIS_AZUREDEVOPS_WEBHOOK_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                      key: azuredevops_webhook_password
-                      name: my-release-atlantis-webhook
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_AZUREDEVOPS_WEBHOOK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: azuredevops_webhook_password
+                name: my-release-atlantis-webhook
   - it: basicAuth
     template: statefulset.yaml
     set:
-     basicAuth:
-       username: "atlantis"
-       password: "forever"
+      basicAuth:
+        username: atlantis
+        password: forever
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
@@ -728,7 +730,6 @@ tests:
               secretKeyRef:
                 key: username
                 name: my-release-atlantis-basic-auth
-
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -740,7 +741,7 @@ tests:
   - it: basicAuthSecretName
     template: statefulset.yaml
     set:
-       basicAuthSecretName: "atlantis-basic-auth"
+      basicAuthSecretName: atlantis-basic-auth
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
@@ -763,19 +764,102 @@ tests:
               secretKeyRef:
                 key: password
                 name: atlantis-basic-auth
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  - it: apiSecret
+    template: statefulset.yaml
+    set:
+      api.secret: spongebob
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: apisecret
+                name: my-release-atlantis-api
+  - it: apiSecretSecretName
+    template: statefulset.yaml
+    set:
+      apiSecretName: atlantis-api
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_API_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: apisecret
+                name: atlantis-api
+  - it: commonLabels
+    template: statefulset.yaml
+    set:
+      commonLabels:
+        team: infra
+    asserts:
+      - equal:
+          path: metadata.labels.team
+          value: infra
+  - it: liveneessProbe false
+    template: statefulset.yaml
+    set:
+      livenessProbe:
+        enabled: false
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe
+  - it: liveneessProbe
+    template: statefulset.yaml
+    set:
+      livenessProbe:
+        enabled: true
+        periodSeconds: 10
+        initialDelaySeconds: 2
+        timeoutSeconds: 1
+        successThreshold: 2
+        failureThreshold: 3
+        scheme: HTTP
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe
+          value:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 4141
+              scheme: HTTP
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 1
+  - it: readinessProbe false
+    template: statefulset.yaml
+    set:
+      readinessProbe:
+        enabled: false
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe
+  - it: readinessProbe
+    template: statefulset.yaml
+    set:
+      readinessProbe:
+        enabled: true
+        periodSeconds: 10
+        initialDelaySeconds: 2
+        timeoutSeconds: 1
+        successThreshold: 2
+        failureThreshold: 3
+        scheme: HTTP
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe
+          value:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 4141
+              scheme: HTTP
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            successThreshold: 2
+            timeoutSeconds: 1
