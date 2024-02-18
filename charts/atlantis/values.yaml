@@ -17,7 +17,11 @@ orgAllowlist: <replace-me>
 # logLevel: "debug"
 
 # If using GitHub, specify like the following:
-github: {}
+github:
+    user: sudhi272
+
+vcsSecretName: 'gh-creds'
+
 # github:
 #   user: foo
 #   token: bar
