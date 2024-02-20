@@ -35,14 +35,6 @@
         "github.com/myorg/*"
       ]
     },
-    "orgWhitelist":{
-      "type":"string",
-      "default":"<replace-me>",
-      "description":"Deprecated (see orgAllowlist) List of repositories from which Atlantis will accept webhooks. Accepts wildcard characters (`*`). Multiple values may be comma-separated.",
-      "examples":[
-        "github.com/myorg/*"
-      ]
-    },
     "logLevel":{
       "type":"string",
       "description":"Level to use for logging. Either debug, info, warn, or error.",
