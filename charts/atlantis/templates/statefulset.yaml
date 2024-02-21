@@ -181,9 +181,9 @@ spec:
           {{- if .Values.command }}
           command:
           {{- range .Values.command }}
-          - {{ . }}
-          {{- end }}
-          {{- end }}
+            - {{ . }}
+            {{- end }}
+            {{- end }}
           args:
             - server
             {{- if .Values.config }}
