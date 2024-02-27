@@ -5,6 +5,9 @@ metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
 {{- include "atlantis.labels" . | nindent 4 }}
+  {{- with .Values.servicemonitor.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   {{- with .Values.service.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
