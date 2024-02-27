@@ -567,6 +567,8 @@ servicemonitor:
   enabled: false
   interval: "30s"
   path: /metrics
+  # Prometheus ServiceMonitor labels
+  additionalLabels: {}
   auth:
     # if auth is enabled on Atlantis, use one of the following mechanism
     basicAuth:
