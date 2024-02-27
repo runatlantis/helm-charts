@@ -90,7 +90,7 @@ github: {}
 # Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
 
 # If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
- # gitconfigSecretName: 'mygitconfigsecret'
+# gitconfigSecretName: 'mygitconfigsecret'
 
 # When referencing Terraform modules in private repositories or registries (such as Artfactory)
 # configuing a .netrc file for authentication may be required:
@@ -533,6 +533,10 @@ initConfig:
 #     ip: 10.0.0.2
 
 hostNetwork: false
+
+# these annotations will be added to all the resources
+extraAnnotations: {}
+# team: example
 
 extraArgs: []
 # extraArgs:

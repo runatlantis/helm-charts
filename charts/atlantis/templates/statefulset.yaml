@@ -3,13 +3,18 @@ kind: StatefulSet
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
-{{- include "atlantis.labels" . | nindent 4 }}
-{{- if .Values.statefulSet.labels }}
-{{ toYaml .Values.statefulSet.labels | indent 4 }}
-{{- end }}
-  {{- with .Values.statefulSet.annotations }}
+    {{- include "atlantis.labels" . | nindent 4 }}
+    {{ with .Values.statefulSet.labels }}
+    {{- toYaml .Values.statefulSet.labels | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.statefulSet.annotations .Values.extraAnnotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+    {{- with .Values.statefulSet.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   serviceName: {{ template "atlantis.fullname" . }}
@@ -23,9 +28,9 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
-{{- if .Values.podTemplate.labels }}
-{{ toYaml .Values.podTemplate.labels | indent 8 }}
-{{- end }}
+        {{- if .Values.podTemplate.labels }}
+        {{- toYaml .Values.podTemplate.labels | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-config.yaml") . | sha256sum }}
         checksum/repo-config: {{ include (print $.Template.BasePath "/configmap-repo-config.yaml") . | sha256sum }}
@@ -38,11 +43,13 @@ spec:
     spec:
       {{- if .Values.hostAliases }}
       hostAliases:
-      {{- range .Values.hostAliases }}
-        - hostnames: {{- range .hostnames }}
-          - {{ . }}{{- end }}
+        {{- range .Values.hostAliases }}
+        - hostnames:
+          {{- range .hostnames }}
+          - {{ . }}
+          {{- end }}
           ip: {{ .ip }}
-      {{- end }}
+        {{- end }}
       {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       serviceAccountName: {{ template "atlantis.serviceAccountName" . }}

@@ -8,22 +8,27 @@ metadata:
     {{- with .Values.servicemonitor.additionalLabels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
-  {{- with .Values.service.annotations }}
+  {{- if or .Values.service.annotations .Values.extraAnnotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+    {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- end }}
 spec:
   selector:
     matchLabels:
-{{- include "atlantis.labels" . | nindent 6 }}
+      {{- include "atlantis.labels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
-     - {{ .Release.Namespace }}
+      - {{ .Release.Namespace }}
   endpoints:
   - port: atlantis
     interval: {{ .Values.servicemonitor.interval }}
     path: {{ .Values.servicemonitor.path }}
-{{- if .Values.servicemonitor.auth.basicAuth.enabled }}
+    {{- if .Values.servicemonitor.auth.basicAuth.enabled }}
     basicAuth:
       username:
         key: username
@@ -31,7 +36,7 @@ spec:
       password:
         key: password
         name: {{ template "atlantis.fullname" . }}-basic-auth
-{{- else if .Values.servicemonitor.auth.externalSecret.enabled }}
+    {{- else if .Values.servicemonitor.auth.externalSecret.enabled }}
     basicAuth:
       username:
         key: {{ .Values.servicemonitor.auth.externalSecret.keys.username }}
@@ -39,5 +44,5 @@ spec:
       password:
         key: {{ .Values.servicemonitor.auth.externalSecret.keys.password }}
         name: {{ .Values.servicemonitor.auth.externalSecret.name }}
+    {{- end }}
 {{- end }}
-{{- end -}}
