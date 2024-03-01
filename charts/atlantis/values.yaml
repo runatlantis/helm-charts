@@ -260,7 +260,7 @@ statefulSet:
   labels: {}
   securityContext:
     fsGroup: 1000
-    runAsUser: 100
+    runAsUser: 1000
     fsGroupChangePolicy: "OnRootMismatch"
   priorityClassName: ""
   updateStrategy: {}
