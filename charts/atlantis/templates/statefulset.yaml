@@ -56,6 +56,11 @@ spec:
       priorityClassName: {{ .Values.statefulSet.priorityClassName }}
       {{- end }}
       volumes:
+      {{- if and .Values.volumeClaim.enabled ( not .Values.dataStorage ) }}
+      - name : atlantis-data
+        persistentVolumeClaim:
+          claimName: {{ template "atlantis.fullname" . }}-data
+      {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
         secret:

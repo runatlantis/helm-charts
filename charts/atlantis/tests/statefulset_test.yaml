@@ -80,8 +80,12 @@ tests:
             runAsUser: 100
       - notExists:
           path: spec.template.spec.priorityClassName
-      - isNullOrEmpty:
+      - equal:
           path: spec.template.spec.volumes
+          value:
+            - name: atlantis-data
+              persistentVolumeClaim:
+                claimName: my-release-atlantis-data
       - notExists:
           path: spec.template.spec.imagePullSecrets
       - notExists:
@@ -230,11 +234,11 @@ tests:
       tlsSecretName: test-tls
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: tls
-              secret:
-                secretName: test-tls
+            name: tls
+            secret:
+              secretName: test-tls
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "tls")]
           value:
@@ -258,14 +262,17 @@ tests:
         credentials-staging: Q2FybWVsYSBTb3ByYW5v
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: credentials-volume
-              secret:
-                secretName: credentials
-            - name: credentials-staging-volume
-              secret:
-                secretName: credentials-staging
+            name: credentials-volume
+            secret:
+              secretName: credentials
+      - equal:
+          path: spec.template.spec.volumes[2]
+          value:
+            name: credentials-staging-volume
+            secret:
+              secretName: credentials-staging
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
             "credentials-volume")]
@@ -290,14 +297,17 @@ tests:
           secretName: gcp-staging-secret
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: gcp-ci
-              secret:
-                secretName: gcp-ci-secret
-            - name: gcp-staging
-              secret:
-                secretName: gcp-staging-secret
+            name: gcp-ci
+            secret:
+              secretName: gcp-ci-secret
+      - equal:
+          path: spec.template.spec.volumes[2]
+          value:
+            name: gcp-staging
+            secret:
+              secretName: gcp-staging-secret
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "gcp-ci")]
           value:
@@ -318,11 +328,11 @@ tests:
         insteadOf = https://github.com
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: gitconfig-volume
-              secret:
-                secretName: my-release-atlantis-gitconfig
+            name: gitconfig-volume
+            secret:
+              secretName: my-release-atlantis-gitconfig
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
             "gitconfig-volume")]
@@ -337,11 +347,11 @@ tests:
       gitconfigSecretName: atlantis-gitconfig
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: gitconfig-volume
-              secret:
-                secretName: atlantis-gitconfig
+            name: gitconfig-volume
+            secret:
+              secretName: atlantis-gitconfig
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
             "gitconfig-volume")]
@@ -358,11 +368,11 @@ tests:
         machine bitbucket.myapp.com login YOUR_USERNAME password YOUR_PASSWORD
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: netrc-volume
-              secret:
-                secretName: my-release-atlantis-netrc
+            name: netrc-volume
+            secret:
+              secretName: my-release-atlantis-netrc
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "netrc-volume")]
           value:
@@ -376,11 +386,11 @@ tests:
       netrcSecretName: atlantis-netrc
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: netrc-volume
-              secret:
-                secretName: atlantis-netrc
+            name: netrc-volume
+            secret:
+              secretName: atlantis-netrc
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "netrc-volume")]
           value:
@@ -403,11 +413,11 @@ tests:
           source_profile = default
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: aws-volume
-              secret:
-                secretName: my-release-atlantis-aws
+            name: aws-volume
+            secret:
+              secretName: my-release-atlantis-aws
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "aws-volume")]
           value:
@@ -436,11 +446,11 @@ tests:
       awsSecretName: atlantis-aws
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: aws-volume
-              secret:
-                secretName: atlantis-aws
+            name: aws-volume
+            secret:
+              secretName: atlantis-aws
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name == "aws-volume")]
           value:
@@ -460,14 +470,14 @@ tests:
         secret: baz
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: github-app-key-volume
-              secret:
-                items:
-                  - key: key.pem
-                    path: key.pem
-                secretName: my-release-atlantis-webhook
+            name: github-app-key-volume
+            secret:
+              items:
+                - key: key.pem
+                  path: key.pem
+              secretName: my-release-atlantis-webhook
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
             "github-app-key-volume")]
@@ -507,14 +517,14 @@ tests:
         slug: foo
     asserts:
       - equal:
-          path: spec.template.spec.volumes
+          path: spec.template.spec.volumes[1]
           value:
-            - name: github-app-key-volume
-              secret:
-                items:
-                  - key: key.pem
-                    path: key.pem
-                secretName: atlantis-vcs
+            name: github-app-key-volume
+            secret:
+              items:
+                - key: key.pem
+                  path: key.pem
+              secretName: atlantis-vcs
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
             "github-app-key-volume")]
