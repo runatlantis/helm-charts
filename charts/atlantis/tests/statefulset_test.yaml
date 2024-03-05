@@ -160,17 +160,8 @@ tests:
           path: spec.template.spec.topologySpreadConstraints
       - notExists:
           path: spec.template.spec.updateStrategy
-      - equal:
+      - notExists:
           path: spec.volumeClaimTemplates
-          value:
-            - metadata:
-                name: atlantis-data
-              spec:
-                accessModes:
-                  - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 5Gi
   - it: replicaCount
     template: statefulset.yaml
     set:
