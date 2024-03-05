@@ -1,5 +1,4 @@
-{{- $usingVolumeClaimInterface := not .Values.dataStorage }}
-{{- if and .Values.volumeClaim.enabled $usingVolumeClaimInterface }}
+{{- if and .Values.volumeClaim.enabled ( not .Values.dataStorage ) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
