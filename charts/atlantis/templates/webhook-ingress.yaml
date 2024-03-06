@@ -1,4 +1,4 @@
-{{- if .Values.webhook_ingress.enabled -}}
+{{- if .Values.webhook_ingress.enabled }}
 {{- $apiVersion := .Values.webhook_ingress.apiVersion }}
 {{- if and $apiVersion (or (eq $apiVersion "networking.k8s.io/v1") (eq $apiVersion "networking.k8s.io/v1beta1") (eq $apiVersion "extensions/v1beta1")) -}}
 {{- else -}}
@@ -19,22 +19,27 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}-secondary
   labels:
-{{- include "atlantis.labels" . | nindent 4 }}
-{{- if .Values.webhook_ingress.labels }}
-{{ toYaml .Values.webhook_ingress.labels | indent 4 }}
-{{- end }}
-{{- with .Values.webhook_ingress.annotations }}
+    {{- include "atlantis.labels" . | nindent 4 }}
+    {{- with .Values.webhook_ingress.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.webhook_ingress.annotations .Values.extraAnnotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- with .Values.webhook_ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
-{{- if .Values.webhook_ingress.ingressClassName }}
+  {{- if .Values.webhook_ingress.ingressClassName }}
   ingressClassName: {{ .Values.webhook_ingress.ingressClassName }}
-{{- end }}
-{{- if .Values.webhook_ingress.tls }}
+  {{- end }}
+  {{- if .Values.webhook_ingress.tls }}
   tls:
-{{ toYaml .Values.webhook_ingress.tls | indent 4 }}
-{{- end }}
+    {{- toYaml .Values.webhook_ingress.tls | nindent 4 }}
+  {{- end }}
   rules:
     {{- if not .Values.webhook_ingress.hosts }}
     -

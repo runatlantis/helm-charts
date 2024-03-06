@@ -4,20 +4,25 @@ kind: PodMonitoring
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
-{{- include "atlantis.labels" . | nindent 4 }}
-  {{- with .Values.service.annotations }}
+    {{- include "atlantis.labels" . | nindent 4 }}
+  {{- if or .Values.service.annotations .Values.extraAnnotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-  {{- end }}  
+    {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
 spec:
   selector:
     matchLabels:
       app: {{ template "atlantis.name" . }}
       release: {{ .Release.Name }}
-{{- if .Values.podTemplate.labels }}
-{{ toYaml .Values.podTemplate.labels | indent 6 }}
-{{- end }}
+      {{- if .Values.podTemplate.labels }}
+      {{- toYaml .Values.podTemplate.labels | nindent 6 }}
+      {{- end }}
   endpoints:
   - port: atlantis
     interval: {{ .Values.podMonitor.interval }}
-{{- end -}}
+{{- end }}

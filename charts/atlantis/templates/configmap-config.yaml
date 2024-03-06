@@ -1,11 +1,15 @@
-{{- if .Values.config -}}
+{{- if .Values.config }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
-{{- include "atlantis.labels" . | nindent 4 }}
+  {{- include "atlantis.labels" . | nindent 4 }}
+  {{- with .Values.extraAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 data:
   atlantis.yaml: |
-{{ .Values.config | indent 4 }}
-{{- end -}}
+    {{- .Values.config | nindent 4 }}
+{{- end }}
