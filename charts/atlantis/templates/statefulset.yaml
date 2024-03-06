@@ -63,6 +63,11 @@ spec:
       priorityClassName: {{ .Values.statefulSet.priorityClassName }}
       {{- end }}
       volumes:
+      {{- if and .Values.volumeClaim.enabled ( not .Values.dataStorage ) }}
+      - name : atlantis-data
+        persistentVolumeClaim:
+          claimName: {{ template "atlantis.fullname" . }}-data
+      {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
         secret:
@@ -594,18 +599,4 @@ spec:
           # The biggest thing Atlantis stores is the Git repo when it checks it out.
           # It deletes the repo after the pull request is merged.
           storage: {{ .Values.dataStorage }}
-  {{- else if .Values.volumeClaim.enabled }}
-  volumeClaimTemplates:
-  - metadata:
-      name: atlantis-data
-    spec:
-      accessModes: ["ReadWriteOnce"] # Volume should not be shared by multiple nodes.
-      {{- if .Values.volumeClaim.storageClassName }}
-      storageClassName: {{ .Values.volumeClaim.storageClassName }} # Storage class of the volume
-      {{- end }}
-      resources:
-        requests:
-          # The biggest thing Atlantis stores is the Git repo when it checks it out.
-          # It deletes the repo after the pull request is merged.
-          storage: {{ .Values.volumeClaim.dataStorage }}
   {{- end }}

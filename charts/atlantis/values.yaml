@@ -359,6 +359,7 @@ volumeClaim:
   dataStorage: 5Gi
   ## Storage class name (if possible, use a resizable one)
   # storageClassName: value
+  accessModes: ["ReadWriteOnce"]
 
 ## To keep backwards compatibility
 ## DEPRECATED - Disk space for Atlantis to check out repositories
