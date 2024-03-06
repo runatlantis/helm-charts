@@ -11,5 +11,5 @@ metadata:
   {{- end }}
 data:
   repos.yaml: |
-    {{- .Values.repoConfig | indent 4 }}
+    {{- .Values.repoConfig | nindent 4 }}
 {{- end }}
