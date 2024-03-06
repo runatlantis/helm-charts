@@ -738,6 +738,14 @@
           "type":"string",
           "description":"Amount of storage available for embedded Atlantis' data directory"
         },
+        "accessModes":{
+          "type":"array",
+          "description":"Array of requested access modes for the volume.",
+          "items":{
+            "type":"string",
+            "description":"The access mode to be requested."
+          }
+        },
         "storageClassName":{
           "type":"string",
           "description":"Storage class of the embedded volume mounted for the Atlantis data directory."
