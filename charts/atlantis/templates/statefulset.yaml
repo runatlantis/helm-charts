@@ -4,8 +4,8 @@ metadata:
   name: {{ template "atlantis.fullname" . }}
   labels:
     {{- include "atlantis.labels" . | nindent 4 }}
-    {{ with .Values.statefulSet.labels }}
-    {{- toYaml .Values.statefulSet.labels | nindent 4 }}
+    {{- with .Values.statefulSet.labels }}
+    {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- if or .Values.statefulSet.annotations .Values.extraAnnotations }}
   annotations:
