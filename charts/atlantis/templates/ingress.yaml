@@ -26,10 +26,10 @@ metadata:
   {{- if or .Values.ingress.annotations .Values.extraAnnotations }}
   annotations:
     {{- with .Values.ingress.annotations }}
-    {{- toYaml . | indent 4 }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}
     {{- with .Values.extraAnnotations }}
-    {{- toYaml . | nindent 4 }}
+      {{- toYaml . | nindent 4 }}
     {{- end }}
   {{- end }}
 spec:
