@@ -1055,7 +1055,7 @@
       "type": "array",
       "description": "These annotations will be added to all the resources",
       "items": {
-        "type": "object"
+        "type": "string"
       },
       "examples": {
         "team": "example"
