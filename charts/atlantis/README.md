@@ -133,7 +133,7 @@ extraManifests:
 | initConfig.enabled | bool | `false` | Install providers/plugins into a path shared with the Atlantis pod. |
 | initConfig.image | string | `"alpine:latest"` |  |
 | initConfig.imagePullPolicy | string | `"IfNotPresent"` |  |
-| initConfig.script | string | `""` | Check values.yaml for examples. |
+| initConfig.script | string | Check values.yaml. | Script to run on the init container. |
 | initConfig.sharedDir | string | `"/plugins"` | SharedDir is set as env var INIT_SHARED_DIR. |
 | initConfig.sizeLimit | string | `"100Mi"` | Size for the shared volume. |
 | initConfig.workDir | string | `"/tmp"` |  |
