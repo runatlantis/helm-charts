@@ -79,7 +79,7 @@ extraManifests:
 | aws | object | `{}` | To specify AWS credentials to be mapped to ~/.aws or to aws.directory. Check values.yaml for examples. |
 | awsSecretName | string | `""` | To reference an already existing Secret object with AWS credentials |
 | azuredevops | object | `{}` | If using Azure DevOps, please enter your values as follows. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
-| basicAuth | string | `""` | Optionally specify an username and a password for basic authentication. Check values.yaml for examples. |
+| basicAuth | object | `{}` | Optionally specify an username and a password for basic authentication. Check values.yaml for examples. |
 | basicAuthSecretName | string | `""` | If managing secrets outside the chart for the Basic Auth secret, use this variable to reference the secret name. |
 | bitbucket | object | `{}` | If using Bitbucket, there are two approaches: Bitbucket Server, deployed in your own infrastructure and Cloud available at (https://Bitbucket.org). The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
 | command | list | `[]` | Override the command field of the Atlantis container. |
@@ -103,7 +103,7 @@ extraManifests:
 | extraManifests | list | `[]` | Optionally specify additional manifests to be created. Check values.yaml for examples. |
 | extraVolumeMounts | list | `[]` | Optionally specify additional volume mounts for the container. Check values.yaml for examples. |
 | extraVolumes | list | `[]` | Optionally specify additional volumes for the pod. Check values.yaml for examples. |
-| fullnameOverride | string | `""` | Provide a name to substitute for the full names of resources |
+| fullnameOverride | string | `""` | Provide a name to substitute for the full names of resources. |
 | gitconfig | string | `""` | When referencing Terraform modules in private repositories, it may be helpful (necessary?) to use redirection in a .gitconfig. Check values.yaml for examples. |
 | gitconfigSecretName | string | `""` | If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name |
 | github | object | `{}` | If using GitHub, please enter your values as follows. The chart will perform the base64 encoding for values that are stored in secrets. The 'hostname' key is exclusive to GitHub Enterprise installations. Check values.yaml for examples. |
@@ -149,7 +149,7 @@ extraManifests:
 | loadEnvFromSecrets | list | `[]` | Optionally specify additional Kubernetes secrets to load environment variables from. All key-value pairs within these secrets will be set as environment variables. Note that any variables set here will be ignored if also defined in the env block of the atlantis statefulset. For example, providing ATLANTIS_GH_USER here and defining a value for github.user will result in the github.user value being used. Check values.yaml for examples. |
 | lockingDbType | string | `""` | Set the desired Locking DB type Accepts boltdb or redis. |
 | logLevel | string | `""` | Specify the log level for Atlantis. Accepts: debug, info, warn, or error. |
-| nameOverride | string | `""` | Provide a name to substitute for the name of the chart |
+| nameOverride | string | `""` | Provide a name to substitute for the name of the chart. |
 | netrc | string | `""` | When referencing Terraform modules in private repositories or registries (such as Artfactory) configuing a .netrc file for authentication may be required. Check values.yaml for examples. |
 | netrcSecretName | string | `""` | If managing secrets outside the chart for the netrc file, use this variable to reference the secret name |
 | nodeSelector | object | `{}` |  |

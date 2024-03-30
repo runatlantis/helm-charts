@@ -10,12 +10,12 @@
       "additionalProperties": true
     },
     "fullnameOverride": {
-      "description": "Provide a name to substitute for the full names of resources",
+      "description": "Provide a name to substitute for the full names of resources.",
       "type": "string",
       "default": ""
     },
     "nameOverride": {
-      "description": "Override the name of the chart",
+      "description": "Provide a name to substitute for the name of the chart.",
       "type": "string",
       "default": ""
     },
@@ -29,8 +29,16 @@
     },
     "orgAllowlist": {
       "type": "string",
-      "default": "<replace-me>",
-      "description": "Allowlist of repositories from which Atlantis will accept webhooks",
+      "default": "",
+      "description": "Replace this with your own repo allowlist.",
+      "examples": [
+        "github.com/myorg/*"
+      ]
+    },
+    "orgWhitelist": {
+      "type": "string",
+      "default": "",
+      "description": "Deprecated in favor of orgAllowlist.",
       "examples": [
         "github.com/myorg/*"
       ]
@@ -39,6 +47,7 @@
       "type": "string",
       "description": "Level to use for logging. Either debug, info, warn, or error.",
       "enum": [
+        "",
         "debug",
         "info",
         "warn",
@@ -576,7 +585,10 @@
       }
     },
     "terminationGracePeriodSeconds": {
-      "type": "integer",
+      "type": [
+        "integer",
+        "null"
+        ],
       "description": "Set terminationGracePeriodSeconds for the StatefulSet."
     },
     "ingress": {
@@ -1148,8 +1160,9 @@
     "lockingDbType": {
       "type": "string",
       "description": "Locking DB type for storing plan and apply locks. Allowed values are `boltdb` and `redis`.",
-      "default": "postgres",
+      "default": "",
       "enum": [
+        "",
         "boltdb",
         "redis"
       ]

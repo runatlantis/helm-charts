@@ -2,10 +2,10 @@
 # Values to override for your instance.
 ## -------------------------- ##
 
-# -- Provide a name to substitute for the full names of resources
+# -- Provide a name to substitute for the full names of resources.
 fullnameOverride: ""
 
-# -- Provide a name to substitute for the name of the chart
+# -- Provide a name to substitute for the name of the chart.
 nameOverride: ""
 
 # -- An option to override the atlantis url,
@@ -236,7 +236,7 @@ enableDiffMarkdownFormat: false
 
 # -- Optionally specify an username and a password for basic authentication.
 # Check values.yaml for examples.
-basicAuth: ""
+basicAuth: {}
 # basicAuth:
 #  username: "atlantis"
 #  password: "atlantis"
