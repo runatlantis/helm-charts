@@ -29,7 +29,7 @@
     },
     "orgAllowlist": {
       "type": "string",
-      "default": "",
+      "default": "<replace-me>",
       "description": "Replace this with your own repo allowlist.",
       "examples": [
         "github.com/myorg/*"
@@ -37,7 +37,7 @@
     },
     "orgWhitelist": {
       "type": "string",
-      "default": "",
+      "default": "<replace-me>",
       "description": "Deprecated in favor of orgAllowlist.",
       "examples": [
         "github.com/myorg/*"
@@ -334,10 +334,6 @@
           "description": "Password for basic authentication"
         }
       },
-      "required": [
-        "username",
-        "password"
-      ],
       "additionalProperties": false
     },
     "api": {

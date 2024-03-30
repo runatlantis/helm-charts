@@ -60,7 +60,7 @@ jobs:
       - name: Install helm unittests
         if: steps.list-changed.outputs.changed == 'true'
         run: |
-          helm plugin install --version v0.3.6 https://github.com/helm-unittest/helm-unittest
+          make unit-test-install
 
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'

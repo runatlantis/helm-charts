@@ -18,6 +18,7 @@
   - [From `1.*` to `2.*`](#from-1-to-2)
 - [Testing the Deployment](#testing-the-deployment)
 - [Update documentation](#update-documentation)
+- [Run unit tests](#run-unit-tests)
 
 ## Introduction
 
@@ -142,5 +143,13 @@ To update run the follwogin (from the root path of the repository):
 
 1. If required, update `charts/atlantis/README.md.gotmpl`
 2. Run `make docs`
+
+## Run unit tests
+
+From the root of the repository, run:
+
+```sh
+make unit-test-run-atlantis
+```
 
 {{ template "helm-docs.versionFooter" . }}

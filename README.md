@@ -20,6 +20,10 @@ helm repo add runatlantis https://runatlantis.github.io/helm-charts
 
 You can then run `helm search repo runatlantis` to see the charts.
 
+## Commands
+
+Run `make help` to check available commands.
+
 ## License
 
 [Apache 2.0 License](../LICENSE).
