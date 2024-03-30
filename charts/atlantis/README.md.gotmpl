@@ -1,0 +1,146 @@
+# Atlantis
+
+[Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
+
+{{ template "chart.maintainersSection" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Links
+
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Required Configuration](#required-configuration)
+- [Additional manifests](#additional-manifests)
+- [Values](#values)
+- [Upgrading](#upgrading)
+  - [From `2.*` to `3.*`](#from-2-to-3)
+  - [From `1.*` to `2.*`](#from-1-to-2)
+- [Testing the Deployment](#testing-the-deployment)
+- [Update documentation](#update-documentation)
+
+## Introduction
+
+This chart creates a single pod in a StatefulSet running Atlantis. Atlantis persists Terraform [plan files](https://www.terraform.io/docs/commands/plan.html) and [lockfiles](https://www.terraform.io/docs/state/locking.html) to disk for the duration of a Pull/Merge Request. These files are stored in a PersistentVolumeClaim to survive Pod failures.
+
+## Prerequisites
+
+- Kubernetes 1.9+
+- PersistentVolume support
+
+## Required Configuration
+
+In order for Atlantis to start and run successfully:
+
+1. At least one of the following sets of credentials must be defined:
+    - `github`
+    - `gitlab`
+    - `bitbucket`
+    - `azuredevops`
+
+    Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
+    They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
+
+1. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
+
+## Additional manifests
+
+It is possible to add additional manifests into a deployment, to extend the chart. One of the reason is to deploy a manifest specific to a cloud provider ( BackendConfig on GKE for example ).
+
+```yaml
+extraManifests:
+  - apiVersion: cloud.google.com/v1beta1
+    kind: BackendConfig
+    metadata:
+      name: "{{ `.Release.Name` }}-test"
+    spec:
+      securityPolicy:
+        name: "gcp-cloud-armor-policy-test"
+```
+
+{{ template "chart.valuesSection" . }}
+
+## Upgrading
+
+### From `4.0.*` to `4.1.*`
+
+- The following value are deprecated:
+  - `dataStorage`
+  - `storageClassName`
+
+- In favor of the new working way:
+  - `volumeClaim.enabled`
+  - `volumeClaim.dataStorage`
+  - `volumeClaim.storageClassName`
+
+### From `2.*` to `3.*`
+
+- The following value names have been removed. They are replaced by [Server-side Repository Configuration](https://www.runatlantis.io/docs/server-side-repo-config.html)
+  - `requireApproval`
+  - `requireMergeable`
+  - `allowRepoConfig`
+
+To replicate your previous configuration, run Atlantis locally with your previous flags and Atlantis will print out the equivalent repo-config, for example:
+
+```bash
+$ atlantis server --allow-repo-config --require-approval --require-mergeable --gh-user=foo --gh-token=bar --repo-allowlist='*'
+WARNING: Flags --require-approval, --require-mergeable and --allow-repo-config have been deprecated.
+Create a --repo-config file with the following config instead:
+
+---
+repos:
+- id: /.*/
+  apply_requirements: [approved, mergeable]
+  allowed_overrides: [apply_requirements, workflow]
+  allow_custom_workflows: true
+
+or use --repo-config-json='{"repos":[{"id":"/.*/", "apply_requirements":["approved", "mergeable"], "allowed_overrides":["apply_requirements","workflow"], "allow_custom_workflows":true}]}'
+```
+
+Then use this YAML in the new repoConfig value:
+
+```yaml
+repoConfig: |
+  ---
+  repos:
+  - id: /.*/
+    apply_requirements: [approved, mergeable]
+    allowed_overrides: [apply_requirements, workflow]
+    allow_custom_workflows: true
+```
+
+### From `1.*` to `2.*`
+
+- The following value names have changed:
+  - `allow_repo_config` => `allowRepoConfig`
+  - `atlantis_data_storage` => `dataStorage` **NOTE: more than just a snake_case change**
+  - `atlantis_data_storageClass` => `storageClassName` **NOTE: more than just a snake_case change**
+  - `bitbucket.base_url` => `bitbucket.baseURL`
+
+## Testing the Deployment
+
+To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is up and running):
+
+1. Install the chart. Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
+
+    ```bash
+    helm repo add runatlantis https://runatlantis.github.io/helm-charts
+    helm install -f test-values.yaml my-atlantis runatlantis/atlantis --debug
+    ```
+
+1. Run the tests:
+
+    ```bash
+    helm test my-atlantis
+    ```
+
+## Update documentation
+
+Documentations is auto-generated using [helm-docs](https://github.com/norwoodj/helm-docs).
+
+To update run the follwogin (from the root path of the repository):
+
+1. If required, update `charts/atlantis/README.md.gotmpl`
+2. Run `make docs`
+
+{{ template "helm-docs.versionFooter" . }}
