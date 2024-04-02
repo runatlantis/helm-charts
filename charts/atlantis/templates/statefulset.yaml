@@ -287,7 +287,11 @@ spec:
           - name: ATLANTIS_DATA_DIR
             value: {{ .Values.atlantisDataDirectory }}
           - name: ATLANTIS_REPO_ALLOWLIST
-            value: {{ toYaml (coalesce .Values.orgWhitelist .Values.orgAllowlist) }}
+            {{- if .Values.orgAllowlist }}
+            value: {{ .Values.orgAllowlist | quote }}
+            {{- else }}
+            value: {{ .Values.orgWhitelist | quote }}
+            {{- end }}
           - name: ATLANTIS_PORT
             value: "4141"
           {{- if .Values.repoConfig }}
