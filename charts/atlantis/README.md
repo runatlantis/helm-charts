@@ -155,7 +155,7 @@ extraManifests:
 | netrcSecretName | string | `""` | If managing secrets outside the chart for the netrc file, use this variable to reference the secret name |
 | nodeSelector | object | `{}` |  |
 | orgAllowlist | string | `"<replace-me>"` | Replace this with your own repo allowlist. |
-| orgWhitelist | string | `"<replace-me>"` | Deprecated in favor of orgAllowlist. |
+| orgWhitelist | string | `"<deprecated>"` | Deprecated in favor of orgAllowlist. |
 | podMonitor | object | `{"enabled":false,"interval":"30s"}` | Enable this if you're using Google Managed Prometheus. |
 | podTemplate.annotations | object | `{}` | Check values.yaml for examples. |
 | podTemplate.labels | object | `{}` |  |

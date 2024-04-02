@@ -18,7 +18,7 @@ atlantisUrl: ""
 orgAllowlist: "<replace-me>"
 
 # -- Deprecated in favor of orgAllowlist.
-orgWhitelist: "<replace-me>"
+orgWhitelist: "<deprecated>"
 
 # -- Specify the log level for Atlantis.
 # Accepts: debug, info, warn, or error.
