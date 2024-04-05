@@ -183,7 +183,7 @@ spec:
               mountPath: {{ .Values.initConfig.sharedDir }}
           {{- if .Values.initConfig.containerSecurityContext }}
           securityContext: {{- toYaml .Values.initConfig.containerSecurityContext | nindent 12 }}
-          {{- end }}
+          {{- end }}
         {{- end }}
       {{- end }}
       containers:
