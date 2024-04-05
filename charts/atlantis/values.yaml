@@ -567,6 +567,8 @@ initConfig:
   workDir: /tmp
   # -- Size for the shared volume.
   sizeLimit: 100Mi
+  # -- Security context for the container.
+  securityContext: {}
   # -- Script to run on the init container.
   # @default -- Check values.yaml.
   script: |
