@@ -10,6 +10,8 @@ defaults:
   run:
     shell: bash
 
+permissions: read-all
+
 jobs:
   lint-test:
     runs-on: ubuntu-latest

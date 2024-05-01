@@ -1,0 +1,6 @@
+{
+    "ignore": [
+        "**/charts/atlantis/templates/**",
+        "**/charts/atlantis/tests/**"
+    ]
+}
