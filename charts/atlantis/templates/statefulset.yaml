@@ -86,10 +86,12 @@ spec:
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
+          defaultMode: 0660
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- else if .Values.gitconfigSecretName }}
       - name: gitconfig-volume
         secret:
+          defaultMode: 0660
           secretName: {{ .Values.gitconfigSecretName }}
       {{- end }}
       {{- if .Values.netrc }}
