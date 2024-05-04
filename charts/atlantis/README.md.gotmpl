@@ -14,6 +14,7 @@
 - [Additional manifests](#additional-manifests)
 - [Values](#values)
 - [Upgrading](#upgrading)
+  - [From `4.*` to `5.*`](#from-4-to-5)
   - [From `2.*` to `3.*`](#from-2-to-3)
   - [From `1.*` to `2.*`](#from-1-to-2)
 - [Testing the Deployment](#testing-the-deployment)
@@ -62,6 +63,87 @@ extraManifests:
 {{ template "chart.valuesSection" . }}
 
 ## Upgrading
+
+### From `4.*` to `5.*`
+
+A breaking change was merged on [#304](https://github.com/runatlantis/helm-charts/pull/304).
+This change moves the atlantis data volume to a separate PVC to allow changing the volume size without removing the statefulset.
+Unmistakingly, this change only bumped the minor version, released as `4.22.0`, instead of incrementing the major version. The release `5.0.0` addresses this issue. Please find the required upgrade manual steps below.
+
+#### Upgrade steps
+
+
+Trying to upgrade the release directly will return the following error:
+
+> Error: UPGRADE FAILED: cannot patch "atlantis" with kind StatefulSet: StatefulSet.apps "atlantis" is invalid: spec: Forbidden: updates to statefulset spec for fields other than 'replicas', 'ordinals', 'template', 'updateStrategy', 'persistentVolumeClaimRetentionPolicy' and 'minReadySeconds' are forbidden
+
+To allow the upgrade to proceed, first we need to remove the statefulset controller, copy all the data from the old volume to the new one and then cleanup.
+
+NOTE: These steps will ensure no data is lost, however during the copy process the atlantis server is unavailable and any webhooks sent to atlantis during that window are missed and won't be processed.
+
+Upgrade steps:
+
+1. For atlantis deployments managed by GitOps solutions such as ArgoCD, disabling the automatic synchronization is required
+
+1. Create a temporary helm configuration file named `migration-4-to-5.yaml`, the configuration includes the required settings to allow the atlantis data to be copied to the new volume before the atlantis server is started. The suggested configuration implies that the default command for atlantis has not been customized. If required, adjust the `persistentVolumeClaim.claimName` value.
+
+    ```yaml
+    command:
+      - sh
+      - -c
+      - 'cp -Rv /atlantis-data-old/* "${ATLANTIS_DATA_DIR}" && exec /usr/local/bin/docker-entrypoint.sh server'
+
+    extraVolumes:
+      - name: atlantis-data-old
+        persistentVolumeClaim:
+          claimName: atlantis-data-atlantis-0
+
+    extraVolumeMounts:
+      - name: atlantis-data-old
+        mountPath: /atlantis-data-old
+    ```
+
+1. Delete the current statefulset without removing the atlantis pod. This can be achieved with the parameter [--cascade=orphan](https://kubernetes.io/docs/tasks/administer-cluster/use-cascading-deletion/#set-orphan-deletion-policy):
+
+    NOTE: If required, adjust the namespace and the statefulset name.
+
+    ```sh
+    kubectl delete statefulsets.apps atlantis --namespace atlantis --cascade=orphan
+    ```
+
+1. Deploy the new atlantis version, this will recreate the statefulset and update the atlantis pod acordingly. E.g.:
+
+    ```sh
+    helm upgrade -i atlantis runatlantis/atlantis --version 5.0.0 -f my-config.yaml -f migration-4-to-5.yaml
+    ```
+
+1. Check the logs for the atlantis pod, it should show the copy process followed by start of the atlantis server. E.g.:
+
+    ```json
+    '/atlantis-data-old/atlantis.db' -> '/atlantis-data/atlantis.db'
+    '/atlantis-data-old/bin' -> '/atlantis-data/bin'
+    '/atlantis-data-old/existing-data.example' -> '/atlantis-data/existing-data.example'
+    '/atlantis-data-old/plugin-cache' -> '/atlantis-data/plugin-cache'
+    No files found in /docker-entrypoint.d/, skipping
+    {"level":"info","ts":"2024-05-01T17:17:03.406Z","caller":"server/server.go:447","msg":"Utilizing BoltDB","json":{}}
+    {"level":"info","ts":"2024-05-01T17:17:03.411Z","caller":"policy/conftest_client.go:153","msg":"failed to get default conftest version. Will attempt request scoped lazy loads DEFAULT_CONFTEST_VERSION not set","json":{}}
+    {"level":"info","ts":"2024-05-01T17:17:03.413Z","caller":"server/server.go:985","msg":"Atlantis started - listening on port 4141","json":{}}
+    {"level":"info","ts":"2024-05-01T17:17:03.413Z","caller":"scheduled/executor_service.go:51","msg":"Scheduled Executor Service started","json":{}}
+    ```
+
+1. Run a second deployment without the extra configuration file. E.g.:
+
+    ```sh
+    helm upgrade -i atlantis runatlantis/atlantis --version 5.0.0 -f my-config.yaml
+    ```
+
+1. Remove the old `persistentVolumeClaim`:
+
+    ```sh
+    kubectl delete persistentvolumeclaims atlantis-data-atlantis-0 --namespace atlantis
+    ```
+
+1. For atlantis deployments managed by GitOps solutions such as ArgoCD, the automatic synchronization can now be enabled
 
 ### From `4.0.*` to `4.1.*`
 
