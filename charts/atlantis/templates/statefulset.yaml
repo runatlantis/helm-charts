@@ -37,6 +37,9 @@ spec:
         {{- if .Values.initConfig.enabled }}
         checksum/init-config: {{ include (print $.Template.BasePath "/configmap-init-config.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.aws }}
+        checksum/aws-secret: {{ include (print $.Template.BasePath "/secret-aws.yaml") . | sha256sum }}
+        {{- end }}
         {{- if .Values.podTemplate.annotations }}
         {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
         {{- end }}
@@ -86,10 +89,12 @@ spec:
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
+          defaultMode: 0660
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- else if .Values.gitconfigSecretName }}
       - name: gitconfig-volume
         secret:
+          defaultMode: 0660
           secretName: {{ .Values.gitconfigSecretName }}
       {{- end }}
       {{- if .Values.netrc }}
@@ -526,11 +531,12 @@ spec:
             readOnly: true
             mountPath: {{ $.Values.aws.directory | default "/home/atlantis/.aws" }}/{{ $filename }}
             subPath: {{ $filename }}
-          {{- else if has $filename (list "awsSecretName") }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
-            mountPath: {{ $.Values.aws.directory | default "/home/atlantis/.aws" }}
-          {{- end }}
+            mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls
