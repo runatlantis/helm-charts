@@ -332,6 +332,7 @@ tests:
           value:
             name: gitconfig-volume
             secret:
+              defaultMode: 432
               secretName: my-release-atlantis-gitconfig
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
@@ -351,6 +352,7 @@ tests:
           value:
             name: gitconfig-volume
             secret:
+              defaultMode: 432
               secretName: atlantis-gitconfig
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
