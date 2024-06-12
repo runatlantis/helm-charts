@@ -1012,7 +1012,7 @@
         },
         "sharedDirReadOnly": {
           "type": "boolean",
-          "description": "Let you mount SharedDir in ReadWrite or ReadOnly in the main container"
+          "description": "Sets permissions level for the SharedDir in the main container to ReadWrite when true or ReadWrite when false"
         },
         "workDir": {
           "type": "string",
