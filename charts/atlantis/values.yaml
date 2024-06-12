@@ -564,6 +564,7 @@ initConfig:
   imagePullPolicy: IfNotPresent
   # -- SharedDir is set as env var INIT_SHARED_DIR.
   sharedDir: /plugins
+  sharedDirReadOnly: true
   workDir: /tmp
   # -- Size for the shared volume.
   sizeLimit: 100Mi

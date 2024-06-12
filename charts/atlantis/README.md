@@ -137,6 +137,7 @@ extraManifests:
 | initConfig.script | string | Check values.yaml. | Script to run on the init container. |
 | initConfig.securityContext | object | `{}` | Security context for the container. |
 | initConfig.sharedDir | string | `"/plugins"` | SharedDir is set as env var INIT_SHARED_DIR. |
+| initConfig.sharedDirReadOnly | bool | `true` |  |
 | initConfig.sizeLimit | string | `"100Mi"` | Size for the shared volume. |
 | initConfig.workDir | string | `"/tmp"` |  |
 | initContainers | list | `[]` | Optionally specify init containers manifests to be added to the Atlantis pod. Check values.yaml for examples. |
@@ -384,9 +385,9 @@ To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is u
 
 ## Update documentation
 
-Documentations is auto-generated using [helm-docs](https://github.com/norwoodj/helm-docs).
+Documentation is auto-generated using [helm-docs](https://github.com/norwoodj/helm-docs).
 
-To update run the follwogin (from the root path of the repository):
+To update run the following (from the root path of the repository):
 
 1. If required, update `charts/atlantis/README.md.gotmpl`
 2. Run `make docs`
