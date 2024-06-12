@@ -695,6 +695,7 @@ redis: {}
 #   insecureSkipVerify: false
 
 # -- When managing secrets outside the chart for the Redis secret, use this variable to reference the secret name.
+# Redis password (password: myRedisPassword) for the above redis configuration needs to be shared via this secret
 redisSecretName: ""
 
 # -- Set lifecycle hooks.
