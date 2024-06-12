@@ -569,7 +569,7 @@ initConfig:
   # -- Size for the shared volume.
   sizeLimit: 100Mi
   # -- Security context for the container.
-  securityContext: {}
+  containerSecurityContext: {}
   # -- Script to run on the init container.
   # @default -- Check values.yaml.
   script: |
