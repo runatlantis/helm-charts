@@ -1010,6 +1010,10 @@
           "type": "string",
           "description": "sharedDir is set as env var INIT_SHARED_DIR"
         },
+        "sharedDirReadOnly": {
+          "type": "boolean",
+          "description": "Sets permissions level for the SharedDir in the main container to ReadWrite when true or ReadWrite when false"
+        },
         "workDir": {
           "type": "string",
           "description": "Starting directory for the script"

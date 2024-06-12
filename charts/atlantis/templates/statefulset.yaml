@@ -567,7 +567,7 @@ spec:
           {{- if .Values.initConfig.enabled }}
           - name: init-shared-path
             mountPath: {{ .Values.initConfig.sharedDir }}
-            readOnly: true
+            readOnly: {{ .Values.initConfig.sharedDirReadOnly }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
