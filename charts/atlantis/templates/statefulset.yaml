@@ -41,6 +41,19 @@ spec:
         {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.dnsConfig }}
+      dnsConfig:
+        nameservers:
+        {{- range .Values.dnsConfig.nameservers }}
+          - {{ . }}
+        {{- end }}
+        {{- if .Values.dnsConfig.searches }}
+        searches:
+        {{- range .Values.dnsConfig.searches }}
+          - {{ . }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
       {{- if .Values.hostAliases }}
       hostAliases:
         {{- range .Values.hostAliases }}

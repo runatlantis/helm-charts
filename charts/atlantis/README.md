@@ -94,6 +94,7 @@ extraManifests:
 | disableApply | bool | `false` | Disables running `atlantis apply` regardless of which flags are sent with it. |
 | disableApplyAll | bool | `false` | Disables running `atlantis apply` without any flags. |
 | disableRepoLocking | bool | `false` | Stops atlantis locking projects and or workspaces when running terraform. |
+| dnsConfig | object | `{}` | Optionally specify dnsConfig for the Atlantis pod. Check values.yaml for examples. |
 | enableDiffMarkdownFormat | bool | `false` | Use Diff Markdown Format for color coding diffs. |
 | enableKubernetesBackend | bool | `false` | Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend. |
 | environment | object | `{}` | Environtment values to add to the Atlantis pod. Check values.yaml for examples. |

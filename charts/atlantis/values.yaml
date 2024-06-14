@@ -608,6 +608,15 @@ hostAliases: []
 #     - bbb.com
 #     ip: 10.0.0.2
 
+# -- Optionally specify dnsConfig for the Atlantis pod.
+# Check values.yaml for examples.
+dnsConfig: {}
+#dnsConfig:
+#  nameservers:
+#    - 8.8.8.8
+#  searches:
+#    - mydomain.com
+
 hostNetwork: false
 
 # - These annotations will be added to all the resources.

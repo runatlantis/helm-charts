@@ -584,7 +584,7 @@
       "type": [
         "integer",
         "null"
-        ],
+      ],
       "description": "Set terminationGracePeriodSeconds for the StatefulSet."
     },
     "ingress": {
@@ -1050,6 +1050,22 @@
         }
       ]
     },
+    "dnsConfig": {
+      "description": "Specify dnsConfig for Atlantis containers.",
+      "items": {
+        "$ref": "#/definitions/io.k8s.api.core.v1.DnsConfig"
+      },
+      "type": "object",
+      "default": [],
+      "examples": [
+        {
+          "nameservers": "8.8.8.8",
+          "searches": [
+            "mydomain.com"
+          ]
+        }
+      ]
+    },
     "hostNetwork": {
       "type": "boolean",
       "description": "Use the host's network namespace.",
@@ -1226,6 +1242,24 @@
         },
         "ip": {
           "description": "IP address of the host file entry.",
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "additionalProperties": false
+    },
+    "io.k8s.api.core.v1.DnsConfig": {
+      "description": "DnsConfig ",
+      "properties": {
+        "nameservers": {
+          "description": "a list of IP addresses that will be used as DNS servers for the search domain.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "searches": {
+          "description": "A list of DNS search domains for hostname lookup.",
           "type": "string"
         }
       },
