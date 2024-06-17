@@ -1050,6 +1050,17 @@
         }
       ]
     },
+    "dnsPolicy": {
+      "type": "string",
+      "default": "ClusterFirst",
+      "description": "dnsPolicy for Atlantis pods",
+      "examples": [
+        "ClusterFirst",
+        "Default",
+        "ClusterFirstWithHostNet",
+        "None"
+      ]
+    },
     "dnsConfig": {
       "description": "Specify dnsConfig for Atlantis containers.",
       "items": {
