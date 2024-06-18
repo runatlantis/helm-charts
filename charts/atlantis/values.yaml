@@ -608,6 +608,19 @@ hostAliases: []
 #     - bbb.com
 #     ip: 10.0.0.2
 
+# -- Optionally specify dnsPolicy parameter to specify a DNS policy for a pod
+# Check https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+dnsPolicy: "ClusterFirst"
+
+# -- Optionally specify dnsConfig for the Atlantis pod.
+# Check values.yaml for examples.
+dnsConfig: {}
+# dnsConfig:
+#  nameservers:
+#    - 8.8.8.8
+#  searches:
+#    - mydomain.com
+
 hostNetwork: false
 
 # - These annotations will be added to all the resources.
