@@ -41,10 +41,13 @@ spec:
         {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
         {{- end }}
     spec:
-      {{- if and .Values.dnsPolicy .Values.dnsConfig }}
+      {{- if and (or .Values.dnsPolicy (.Values.dnsPolicy and .Values.dnsConfig)) (ne .Values.dnsPolicy "ClusterFirst") }}
       dnsPolicy: {{ .Values.dnsPolicy}}
       {{- end }}
-      {{- if and .Values.dnsConfig (eq .Values.dnsPolicy "None") }}
+      {{- if or .Values.dnsConfig (eq .Values.dnsPolicy "None") }}
+      {{- if not .Values.dnsConfig }}
+      {{- fail "dnsPolicy is set to 'None', but dnsConfig is not provided" }}
+      {{- end }}
       dnsConfig:
         nameservers:
         {{- range .Values.dnsConfig.nameservers }}

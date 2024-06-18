@@ -1054,6 +1054,12 @@
       "type": "string",
       "default": "ClusterFirst",
       "description": "dnsPolicy for Atlantis pods",
+      "enum": [
+        "ClusterFirst",
+        "Default",
+        "ClusterFirstWithHostNet",
+        "None"
+      ],
       "examples": [
         "ClusterFirst",
         "Default",
