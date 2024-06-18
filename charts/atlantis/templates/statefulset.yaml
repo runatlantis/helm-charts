@@ -41,7 +41,7 @@ spec:
         {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.dnsPolicy }}
+      {{- if and .Values.dnsPolicy .Values.dnsConfig }}
       dnsPolicy: {{ .Values.dnsPolicy}}
       {{- end }}
       {{- if and .Values.dnsConfig (eq .Values.dnsPolicy "None") }}
