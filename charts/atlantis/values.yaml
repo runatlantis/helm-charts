@@ -610,7 +610,7 @@ hostAliases: []
 
 # -- Optionally specify dnsPolicy parameter to specify a DNS policy for a pod
 # Check https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
-dnsPolicy: "ClusterFirst"
+dnsPolicy: "None"
 
 # -- Optionally specify dnsConfig for the Atlantis pod.
 # Check values.yaml for examples.
