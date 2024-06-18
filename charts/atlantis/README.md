@@ -94,6 +94,8 @@ extraManifests:
 | disableApply | bool | `false` | Disables running `atlantis apply` regardless of which flags are sent with it. |
 | disableApplyAll | bool | `false` | Disables running `atlantis apply` without any flags. |
 | disableRepoLocking | bool | `false` | Stops atlantis locking projects and or workspaces when running terraform. |
+| dnsConfig | object | `{}` | Optionally specify dnsConfig for the Atlantis pod. Check values.yaml for examples. |
+| dnsPolicy | string | `"ClusterFirst"` | Optionally specify dnsPolicy parameter to specify a DNS policy for a pod Check https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
 | enableDiffMarkdownFormat | bool | `false` | Use Diff Markdown Format for color coding diffs. |
 | enableKubernetesBackend | bool | `false` | Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend. |
 | environment | object | `{}` | Environtment values to add to the Atlantis pod. Check values.yaml for examples. |
@@ -131,11 +133,11 @@ extraManifests:
 | ingress.pathType | string | `"ImplementationSpecific"` |  |
 | ingress.paths | list | `[]` | Used when several paths under the same host, with different backend services, are required. Check values.yaml for examples. |
 | ingress.tls | list | `[]` | Check values.yaml for examples. |
+| initConfig.containerSecurityContext | object | `{}` | Security context for the container. |
 | initConfig.enabled | bool | `false` | Install providers/plugins into a path shared with the Atlantis pod. |
 | initConfig.image | string | `"alpine:latest"` |  |
 | initConfig.imagePullPolicy | string | `"IfNotPresent"` |  |
 | initConfig.script | string | Check values.yaml. | Script to run on the init container. |
-| initConfig.securityContext | object | `{}` | Security context for the container. |
 | initConfig.sharedDir | string | `"/plugins"` | SharedDir is set as env var INIT_SHARED_DIR. |
 | initConfig.sharedDirReadOnly | bool | `true` |  |
 | initConfig.sizeLimit | string | `"100Mi"` | Size for the shared volume. |
