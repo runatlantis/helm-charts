@@ -615,7 +615,7 @@ dnsPolicy: "ClusterFirst"
 # -- Optionally specify dnsConfig for the Atlantis pod.
 # Check values.yaml for examples.
 dnsConfig: {}
-#dnsConfig:
+# dnsConfig:
 #  nameservers:
 #    - 8.8.8.8
 #  searches:
