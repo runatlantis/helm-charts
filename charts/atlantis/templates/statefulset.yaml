@@ -37,6 +37,9 @@ spec:
         {{- if .Values.initConfig.enabled }}
         checksum/init-config: {{ include (print $.Template.BasePath "/configmap-init-config.yaml") . | sha256sum }}
         {{- end }}
+        {{- if .Values.aws }}
+        checksum/aws-secret: {{ include (print $.Template.BasePath "/secret-aws.yaml") . | sha256sum }}
+        {{- end }}
         {{- if .Values.podTemplate.annotations }}
         {{- toYaml .Values.podTemplate.annotations | nindent 8 }}
         {{- end }}
@@ -541,10 +544,19 @@ spec:
             mountPath: /home/atlantis/.netrc
             subPath: netrc
           {{- end }}
-          {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
+          {{- if .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
             mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
+          {{- else }}
+          {{- range $filename, $_ := .Values.aws }}
+          {{- if has $filename (list "credentials" "config") }}
+          - name: aws-volume
+            readOnly: true
+            mountPath: {{ $.Values.aws.directory | default "/home/atlantis/.aws" }}/{{ $filename }}
+            subPath: {{ $filename }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls
