@@ -470,6 +470,9 @@ enableKubernetesBackend: false
 # -- TLS Secret Name for Atlantis pod.
 tlsSecretName: ""
 
+# -- Additional path (`:` separated) that will be appended to the system `PATH` environment variable.
+extraPath: ""
+
 # -- Environtment values to add to the Atlantis pod.
 # Check values.yaml for examples.
 environment: {}

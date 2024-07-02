@@ -866,6 +866,10 @@
       "type": "string",
       "description": "Name of a Secret for Atlantis' HTTPS certificate containing the following data items `tls.crt` with the public certificate and `tls.key` with the private key."
     },
+    "extraPath": {
+      "type": "string",
+      "description": "Additional paths that will be appended to the system `PATH` environment variable. These paths should be separated with `:` to match system notation."
+    },
     "environment": {
       "type": "object",
       "description": "Map of environment variables for the container.",
