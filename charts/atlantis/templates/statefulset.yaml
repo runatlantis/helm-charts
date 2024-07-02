@@ -252,8 +252,13 @@ spec:
           {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.environment }}
+          {{- if and ($.Values.initConfig.enabled) ($.Values.initConfig.sharedDir) (eq $key "PATH") }}
+          - name: PATH
+            value: {{ printf "%s:%s" $value $.Values.initConfig.sharedDir | quote}}
+          {{- else }}
           - name: {{ $key }}
             value: {{ $value | quote }}
+          {{- end }}
           {{- end }}
           {{- range .Values.environmentSecrets }}
           - name: {{ .name }}
@@ -485,8 +490,10 @@ spec:
             value: {{ .Values.aws.directory }}/config
           {{- end }}
           {{- if .Values.initConfig.enabled }}
+          {{- if not .Values.environment.PATH }}
           - name: PATH
             value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}
+          {{- end }}
           - name: INIT_SHARED_DIR
             value: {{ .Values.initConfig.sharedDir }}
           {{- end }}
