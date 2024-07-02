@@ -105,6 +105,7 @@ extraManifests:
 | extraArgs | list | `[]` | Optionally specify extra arguments for the Atlantis pod. Check values.yaml for examples. |
 | extraContainers | list | `[]` | Optionally specify extra containers for the Atlantis pod. Check values.yaml for examples. |
 | extraManifests | list | `[]` | Optionally specify additional manifests to be created. Check values.yaml for examples. |
+| extraPath | string | `""` | Additional path (`:` separated) that will be appended to the system `PATH` environment variable. |
 | extraVolumeMounts | list | `[]` | Optionally specify additional volume mounts for the container. Check values.yaml for examples. |
 | extraVolumes | list | `[]` | Optionally specify additional volumes for the pod. Check values.yaml for examples. |
 | fullnameOverride | string | `""` | Provide a name to substitute for the full names of resources. |

@@ -128,3 +128,16 @@ heritage: {{ .Release.Service }}
 {{ toYaml .Values.commonLabels }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Define PATH environment variable that will be used system-wide.
+*/}}
+{{- define "atlantis.pathEnvironmentVariable" -}}
+{{- if .Values.extraPath }}
+{{- printf "%s:" .Values.extraPath -}}
+{{- end -}}
+{{- if .Values.initConfig.sharedDir }}
+{{- printf "%s:" .Values.initConfig.sharedDir -}}
+{{- end -}}
+{{- printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" }}
+{{- end -}}

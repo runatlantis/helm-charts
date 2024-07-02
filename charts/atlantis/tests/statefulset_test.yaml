@@ -117,6 +117,8 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env
           value:
+            - name: PATH
+              value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -895,3 +897,58 @@ tests:
       - equal:
           path: spec.template.spec.terminationGracePeriodSeconds
           value: 30
+  - it: extraPath
+    template: statefulset.yaml
+    set:
+      extraPath: "/foo:/bar"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: PATH
+              value: /foo:/bar:/plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_DATA_DIR
+              value: /atlantis-data
+            - name: ATLANTIS_REPO_ALLOWLIST
+              value: <replace-me>
+            - name: ATLANTIS_PORT
+              value: "4141"
+            - name: ATLANTIS_ATLANTIS_URL
+              value: http://
+  - it: sharedDirPath
+    template: statefulset.yaml
+    set:
+      initConfig.sharedDir: "/home/atlantis"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: PATH
+              value: /home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_DATA_DIR
+              value: /atlantis-data
+            - name: ATLANTIS_REPO_ALLOWLIST
+              value: <replace-me>
+            - name: ATLANTIS_PORT
+              value: "4141"
+            - name: ATLANTIS_ATLANTIS_URL
+              value: http://
+  - it: extraPathWithSharedDirPath
+    template: statefulset.yaml
+    set:
+      initConfig.sharedDir: "/home/atlantis"
+      extraPath: "/foo:/bar"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: PATH
+              value: /foo:/bar:/home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_DATA_DIR
+              value: /atlantis-data
+            - name: ATLANTIS_REPO_ALLOWLIST
+              value: <replace-me>
+            - name: ATLANTIS_PORT
+              value: "4141"
+            - name: ATLANTIS_ATLANTIS_URL
+              value: http://
