@@ -37,10 +37,12 @@ github: {}
 
 # -- If using a GitHub App, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
+# installationId is necessary when there are multiple installs of the Github App.
 # Check values.yaml for examples.
 githubApp: {}
 # githubApp:
 #   id: 123456
+#   installationId: 1
 #   slug: foo
 #   key: |
 #     -----BEGIN PRIVATE KEY-----

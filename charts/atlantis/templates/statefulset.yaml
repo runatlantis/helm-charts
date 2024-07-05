@@ -358,6 +358,10 @@ spec:
           - name: ATLANTIS_GH_APP_ID
             value: {{ .Values.githubApp.id | quote}}
           {{- end }}
+          {{- if .Values.githubApp.installationId }}
+          - name: ATLANTIS_GH_APP_INSTALLATION_ID
+            value: {{ .Values.githubApp.installationId | quote}}
+          {{- end }}
           {{- if .Values.githubApp.slug }}
           - name: ATLANTIS_GH_APP_SLUG
             value: {{ .Values.githubApp.slug | quote}}
