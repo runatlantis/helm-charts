@@ -91,6 +91,13 @@
           ],
           "description": "GitHub app ID. If set, GitHub authentication will be performed as an [installation](https://developer.github.com/v3/apps/installations/)."
         },
+        "installationId": {
+          "type": [
+            "integer",
+            "string"
+          ],
+          "description": "GitHub app installationId. If set, GitHub authentication will be performed as an [installation](https://developer.github.com/v3/apps/installations/)."
+        },
         "slug": {
           "type": "string",
           "description": "A slugged version of GitHub app name shown in pull requests comments, etc (not Atlantis App but something like atlantis-app). Atlantis uses the value of this parameter to identify the comments it has left on GitHub pull requests. This is used for functions such as `hidePrevPlanComments`."
