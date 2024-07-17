@@ -111,6 +111,10 @@ gitconfig: ""
 #   insteadOf = ssh://git@gitlab.com
 # Source: https://stackoverflow.com/questions/42148841/github-clone-with-oauth-access-token
 
+# -- When true gitconfig file is mounted as read only.
+# When false, the gitconfig value will be copied to '/home/atlantis/.gitconfig' before starting the atlantis process instead of being mounted as a file.
+gitconfigReadOnly: true
+
 # -- If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name
 gitconfigSecretName: ""
 
