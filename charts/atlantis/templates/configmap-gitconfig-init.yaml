@@ -1,0 +1,18 @@
+{{- if not .Values.gitconfigReadOnly }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "atlantis.fullname" . }}-gitconfig-init
+  labels:
+    {{- include "atlantis.labels" . | nindent 4 }}
+  {{- with .Values.extraAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+data:
+  gitconfig-init.sh: |
+    #!/bin/sh
+    set -ex
+    cp -v /etc/.gitconfig /home/atlantis/.gitconfig
+    chown -v atlantis /home/atlantis/.gitconfig
+{{- end }}

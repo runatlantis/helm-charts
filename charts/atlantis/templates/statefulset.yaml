@@ -105,13 +105,20 @@ spec:
       {{- if .Values.gitconfig }}
       - name: gitconfig-volume
         secret:
-          defaultMode: 0660
           secretName: {{ template "atlantis.fullname" . }}-gitconfig
       {{- else if .Values.gitconfigSecretName }}
       - name: gitconfig-volume
         secret:
-          defaultMode: 0660
           secretName: {{ .Values.gitconfigSecretName }}
+      {{- end }}
+      {{- if not .Values.gitconfigReadOnly }}
+      - name: gitconfig-init
+        configMap:
+          name: {{ template "atlantis.fullname" . }}-gitconfig-init
+          items:
+            - key: gitconfig-init.sh
+              path: gitconfig-init.sh
+              mode: 0555
       {{- end }}
       {{- if .Values.netrc }}
       - name: netrc-volume
@@ -216,10 +223,10 @@ spec:
           {{- end }}
           {{- if .Values.command }}
           command:
-          {{- range .Values.command }}
+            {{- range .Values.command }}
             - {{ . }}
             {{- end }}
-            {{- end }}
+          {{- end }}
           args:
             - server
             {{- if .Values.config }}
@@ -536,8 +543,17 @@ spec:
           {{- if or .Values.gitconfig .Values.gitconfigSecretName }}
           - name: gitconfig-volume
             readOnly: true
+          {{- if .Values.gitconfigReadOnly }}
             mountPath: /home/atlantis/.gitconfig
+          {{- else }}
+            mountPath: /etc/.gitconfig
+          {{- end }}
             subPath: gitconfig
+          {{- end }}
+          {{- if not .Values.gitconfigReadOnly }}
+          - name: gitconfig-init
+            mountPath: /docker-entrypoint.d/gitconfig-init.sh
+            subPath: gitconfig-init.sh
           {{- end }}
           {{- if or .Values.netrc .Values.netrcSecretName }}
           - name: netrc-volume

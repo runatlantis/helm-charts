@@ -190,6 +190,11 @@
       "type": "string",
       "description": "Contents of a file to be mounted to `~/.gitconfig`.  Use to allow redirection for Terraform modules in private git repositories."
     },
+    "gitconfigReadOnly": {
+      "type": "boolean",
+      "default": "true",
+      "description": "When true gitconfig file is mounted as read only. When false, the gitconfig value will be copied to '/home/atlantis/.gitconfig' before starting the atlantis process instead of being mounted as a file."
+    },
     "gitconfigSecretName": {
       "type": "string",
       "description": "Name of a pre-existing Kubernetes `Secret` containing a `gitconfig` key. Use this instead of `gitconfig` (optional)"

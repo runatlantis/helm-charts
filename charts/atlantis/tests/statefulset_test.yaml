@@ -322,19 +322,19 @@ tests:
             mountPath: /var/secrets/gcp-staging
             name: gcp-staging
             readOnly: true
-  - it: gitconfig
+  - it: gitconfig-read-only
     template: statefulset.yaml
     set:
       gitconfig: |
         [url "https://YOUR_GH_TOKEN@github.com"]
         insteadOf = https://github.com
+      gitconfigReadOnly: true
     asserts:
       - equal:
           path: spec.template.spec.volumes[1]
           value:
             name: gitconfig-volume
             secret:
-              defaultMode: 432
               secretName: my-release-atlantis-gitconfig
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
@@ -344,6 +344,45 @@ tests:
             name: gitconfig-volume
             readOnly: true
             subPath: gitconfig
+  - it: gitconfig-read-write
+    template: statefulset.yaml
+    set:
+      gitconfig: |
+        [url "https://YOUR_GH_TOKEN@github.com"]
+        insteadOf = https://github.com
+      gitconfigReadOnly: false
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[?(@.name == "gitconfig-volume")]
+          value:
+            name: gitconfig-volume
+            secret:
+              secretName: my-release-atlantis-gitconfig
+      - equal:
+          path: spec.template.spec.volumes[?(@.name == "gitconfig-init")]
+          value:
+            name: gitconfig-init
+            configMap:
+              name: my-release-atlantis-gitconfig-init
+              items:
+                - key: gitconfig-init.sh
+                  path: gitconfig-init.sh
+                  mode: 0555
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "gitconfig-volume")]
+          value:
+            mountPath: /etc/.gitconfig
+            name: gitconfig-volume
+            readOnly: true
+            subPath: gitconfig
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
+            "gitconfig-init")]
+          value:
+            mountPath: /docker-entrypoint.d/gitconfig-init.sh
+            name: gitconfig-init
+            subPath: gitconfig-init.sh
   - it: gitconfigSecretName
     template: statefulset.yaml
     set:
@@ -354,7 +393,6 @@ tests:
           value:
             name: gitconfig-volume
             secret:
-              defaultMode: 432
               secretName: atlantis-gitconfig
       - equal:
           path: spec.template.spec.containers[0].volumeMounts[?(@.name ==
