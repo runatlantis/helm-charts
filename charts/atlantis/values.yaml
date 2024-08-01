@@ -603,7 +603,7 @@ initConfig:
     echo "${TAC_SHA256_SUM}  terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64.tar.gz" | sha256sum -c
     tar xf "terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64.tar.gz"
     cp -fv "terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64/terragrunt-atlantis-config_${TAC_VERSION}_linux_amd64" "${TAC_FILE}"
-    chmod 755 "${TG_FILE}"
+    chmod 755 "${TAC_FILE}"
     terragrunt-atlantis-config version
 
 # -- Optionally specify hostAliases for the Atlantis pod.
