@@ -179,6 +179,7 @@ extraManifests:
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
+| service.externalTrafficPolicy | string | `nil` |  |
 | service.loadBalancerIP | string | `nil` |  |
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.nodePort | string | `nil` |  |

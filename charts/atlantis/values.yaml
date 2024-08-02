@@ -290,6 +290,7 @@ service:
   targetPort: 4141
   loadBalancerIP: null
   loadBalancerSourceRanges: []
+  externalTrafficPolicy: null
 
 podTemplate:
   # -- Check values.yaml for examples.
