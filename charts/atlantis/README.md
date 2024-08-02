@@ -79,7 +79,7 @@ extraManifests:
 | atlantisDataDirectory | string | `"/atlantis-data"` | Path to the data directory for the volumeMount. |
 | atlantisUrl | string | `""` | An option to override the atlantis url, if not using an ingress, set it to the external IP. Check values.yaml for examples. |
 | aws | object | `{}` | To specify AWS credentials to be mapped to ~/.aws or to aws.directory. Check values.yaml for examples. |
-| awsSecretName | string | `""` | To reference an already existing Secret object with AWS credentials |
+| awsSecretName | string | `""` | To reference an already existing Secret object with AWS credentials. This has priority over the aws.config and aws.credential fields. |
 | azuredevops | object | `{}` | If using Azure DevOps, please enter your values as follows. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
 | basicAuth | object | `{"password":"","username":""}` | Optionally specify an username and a password for basic authentication. |
 | basicAuthSecretName | string | `""` | If managing secrets outside the chart for the Basic Auth secret, use this variable to reference the secret name. |
