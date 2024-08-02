@@ -514,6 +514,13 @@
           ],
           "default": 4141
         },
+        "externalTrafficPolicy": {
+          "description": "externalTrafficPolicy to set on service.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "loadBalancerIP": {
           "description": "IP address to assign to load balancer (if supported).",
           "type": [

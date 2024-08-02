@@ -27,6 +27,14 @@ tests:
               app: atlantis
               release: my-release
             type: NodePort
+  - it: externalTrafficPolicy
+    set:
+      service:
+        externalTrafficPolicy: Local
+    asserts:
+      - equal:
+          path: spec.externalTrafficPolicy
+          value: Local
   - it: loadBalancerSourceRanges
     set:
       service:
