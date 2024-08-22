@@ -498,6 +498,13 @@
           ],
           "default": 80
         },
+        "portName": {
+          "description": "Port name to expose on the service.",
+          "type": [
+            "string"
+          ],
+          "default": "atlantis"
+        },
         "nodePort": {
           "description": "Port to expose on the node when the service type is NodePort.",
           "type": [
