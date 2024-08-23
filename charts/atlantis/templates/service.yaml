@@ -32,7 +32,7 @@ spec:
       nodePort: {{ .Values.service.nodePort }}
     {{- end }}
       protocol: TCP
-      name: atlantis
+      name: {{ .Values.service.portName }}
   selector:
     app: {{ template "atlantis.name" . }}
     release: {{ .Release.Name }}

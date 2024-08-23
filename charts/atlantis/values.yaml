@@ -286,6 +286,7 @@ service:
   type: NodePort
   annotations: {}
   port: 80
+  portName: atlantis
   nodePort: null
   targetPort: 4141
   loadBalancerIP: null

@@ -184,6 +184,7 @@ extraManifests:
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.nodePort | string | `nil` |  |
 | service.port | int | `80` |  |
+| service.portName | string | `"atlantis"` |  |
 | service.targetPort | int | `4141` |  |
 | service.type | string | `"NodePort"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations for the Service Account. Check values.yaml for examples. |

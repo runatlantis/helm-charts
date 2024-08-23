@@ -35,6 +35,14 @@ tests:
       - equal:
           path: spec.externalTrafficPolicy
           value: Local
+  - it: portName
+    set:
+      service:
+        portName: http-atlantis
+    asserts:
+      - equal:
+          path: spec.ports[0].name
+          value: http-atlantis
   - it: loadBalancerSourceRanges
     set:
       service:
