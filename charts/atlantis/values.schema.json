@@ -113,6 +113,29 @@
       },
       "additionalProperties": false
     },
+    "gitea": {
+      "type": "object",
+      "description": "Gitea settings",
+      "properties": {
+        "user": {
+          "type": "string",
+          "description": "Name of the Atlantis Gitea user."
+        },
+        "token": {
+          "type": "string",
+          "description": "Token of the Atlantis Gitea user."
+        },
+        "secret": {
+          "type": "string",
+          "description": "Webhook secret for the Atlantis Gitea integration."
+        },
+        "baseURL": {
+          "type": "string",
+          "description": "Base URL of Gitea Server installation."
+        }
+      },
+      "additionalProperties": false
+    },
     "gitlab": {
       "type": "object",
       "description": "GitLab settings",

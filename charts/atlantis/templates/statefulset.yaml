@@ -387,6 +387,26 @@ spec:
             value: "/var/github-app/key.pem"
           {{- end }}
           {{- end }}
+          {{- if .Values.gitea.user }}
+          - name: ATLANTIS_GITEA_USER
+            value: {{ required "gitea.user is required if gitea configuration is specified." .Values.gitea.user }}
+          - name: ATLANTIS_GITEA_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: gitea_token
+          {{- if .Values.gitea.baseURL }}
+          - name: ATLANTIS_GITEA_BASE_URL
+            value: {{ .Values.gitea.baseURL }}
+          {{- end }}
+          {{- if .Values.gitea.secret }}
+          - name: ATLANTIS_GITEA_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: gitea_secret
+          {{- end }}
+          {{- end }}
           {{- if .Values.gitlab }}
           - name: ATLANTIS_GITLAB_USER
             value: {{ required "gitlab.user is required if gitlab configuration is specified." .Values.gitlab.user }}
