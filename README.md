@@ -4,6 +4,7 @@
 [![Lint and Test Charts](https://github.com/runatlantis/helm-charts/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/lint-test.yaml)
 [![Release Charts](https://github.com/runatlantis/helm-charts/actions/workflows/release.yaml/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/release.yaml)
 [![pages-build-deployment](https://github.com/runatlantis/helm-charts/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/runatlantis/helm-charts/actions/workflows/pages/pages-build-deployment)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frunatlantis%2Fhelm-charts.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Frunatlantis%2Fhelm-charts?ref=badge_shield)
 
 [Atlantis](https://www.runatlantis.io/) is a tool for safe collaboration on [Terraform](https://www.terraform.io/) repositories.
 
@@ -27,3 +28,6 @@ Run `make help` to check available commands.
 ## License
 
 [Apache 2.0 License](../LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frunatlantis%2Fhelm-charts.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Frunatlantis%2Fhelm-charts?ref=badge_large)
