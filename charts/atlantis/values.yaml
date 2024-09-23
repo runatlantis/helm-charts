@@ -579,7 +579,7 @@ initConfig:
   sharedDirReadOnly: true
   workDir: /tmp
   # -- Size for the shared volume.
-  sizeLimit: 100Mi
+  sizeLimit: 300Mi
   # -- Security context for the container.
   containerSecurityContext: {}
   # -- Script to run on the init container.
