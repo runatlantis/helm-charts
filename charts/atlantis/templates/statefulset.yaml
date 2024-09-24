@@ -237,7 +237,7 @@ spec:
             {{- end }}
           ports:
           - name: atlantis
-            containerPort: 4141
+            containerPort: {{ .Values.service.targetPort }}
           {{- with .Values.lifecycle }}
           lifecycle: {{ toYaml . | nindent 12 }}
           {{- end }}
@@ -326,7 +326,7 @@ spec:
             value: {{ .Values.orgWhitelist | quote }}
             {{- end }}
           - name: ATLANTIS_PORT
-            value: "4141"
+            value: {{ .Values.service.targetPort | quote }}
           {{- if .Values.repoConfig }}
           - name: ATLANTIS_REPO_CONFIG
             value: /etc/atlantis/repos.yaml
@@ -505,7 +505,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 4141
+              port: {{ .Values.service.targetPort }}
               scheme: {{ .Values.livenessProbe.scheme }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -517,7 +517,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 4141
+              port: {{ .Values.service.targetPort }}
               scheme: {{ .Values.readinessProbe.scheme }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
