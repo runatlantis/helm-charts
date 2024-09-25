@@ -142,7 +142,7 @@ extraManifests:
 | initConfig.script | string | Check values.yaml. | Script to run on the init container. |
 | initConfig.sharedDir | string | `"/plugins"` | SharedDir is set as env var INIT_SHARED_DIR. |
 | initConfig.sharedDirReadOnly | bool | `true` |  |
-| initConfig.sizeLimit | string | `"100Mi"` | Size for the shared volume. |
+| initConfig.sizeLimit | string | `"300Mi"` | Size for the shared volume. |
 | initConfig.workDir | string | `"/tmp"` |  |
 | initContainers | list | `[]` | Optionally specify init containers manifests to be added to the Atlantis pod. Check values.yaml for examples. |
 | lifecycle | object | `{}` | Set lifecycle hooks. https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/. |
