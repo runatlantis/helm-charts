@@ -228,7 +228,7 @@ hideUnchangedPlanComments: false
 defaultTFVersion: ""
 # Example: "0.12.0".
 
-### -- Sets which TF distribution to use. Can be set to terraform or opentofu.
+### -- Sets the default terraform distribution to use. Can be set to terraform or opentofu.
 defaultTFDistribution: terraform
 
 # -- Disables running `atlantis apply` regardless of which flags are sent with it.
