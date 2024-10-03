@@ -313,6 +313,10 @@
       "type": "string",
       "description": "Default Terraform version to be used by atlantis server"
     },
+    "defaultTFDistribution": {
+      "type": "string",
+      "description": "Default Atlantis distribution to be used by atlantis server. Either Opentufu or terraform"
+    },
     "disableApply": {
       "type": "boolean",
       "description": "Disables running `atlantis apply` regardless of what options are specified",

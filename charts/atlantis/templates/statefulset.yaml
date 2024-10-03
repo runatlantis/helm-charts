@@ -307,6 +307,10 @@ spec:
           - name: ATLANTIS_DEFAULT_TF_VERSION
             value: {{ .Values.defaultTFVersion }}
           {{- end }}
+          {{- if .Values.defaultTFDistribution }}
+          - name: ATLANTIS_TF_DISTRIBUTION
+            value: {{ .Values.defaultTFDistribution }}
+          {{- end }}
           {{- if .Values.logLevel }}
           - name: ATLANTIS_LOG_LEVEL
             value: {{ .Values.logLevel | quote}}

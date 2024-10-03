@@ -91,6 +91,7 @@ extraManifests:
 | customPem | string | `""` | Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one. You have to create a secret with the specified name. |
 | dataStorage | string | `""` | DEPRECATED - Disk space available to check out repositories. Example: 5Gi. |
 | defaultTFVersion | string | `""` | Sets the default terraform version to be used in atlantis server. Check values.yaml for examples. |
+| defaultTFVersion | string | `terraform` | Sets the default distribution to be used in atlantis server. Check values.yaml for examples. |
 | disableApply | bool | `false` | Disables running `atlantis apply` regardless of which flags are sent with it. |
 | disableApplyAll | bool | `false` | Disables running `atlantis apply` without any flags. |
 | disableRepoLocking | bool | `false` | Stops atlantis locking projects and or workspaces when running terraform. |
