@@ -50,6 +50,9 @@ githubApp: {}
 #     -----END PRIVATE KEY-----
 #   secret: baz
 
+gitea: {}
+
+
 # -- If using GitLab, please enter your values as follows.
 # The 'hostname' key is exclusive to GitLab Enterprise installations.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
