@@ -291,6 +291,7 @@ service:
   port: 80
   portName: atlantis
   nodePort: null
+  # -- (int) [optional] Define the port you would like atlantis to run on. Defaults to 4141.
   targetPort: 4141
   loadBalancerIP: null
   loadBalancerSourceRanges: []

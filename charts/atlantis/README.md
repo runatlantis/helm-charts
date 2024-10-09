@@ -186,7 +186,7 @@ extraManifests:
 | service.nodePort | string | `nil` |  |
 | service.port | int | `80` |  |
 | service.portName | string | `"atlantis"` |  |
-| service.targetPort | int | `4141` |  |
+| service.targetPort | int | `4141` | [optional] Define the port you would like atlantis to run on. Defaults to 4141. |
 | service.type | string | `"NodePort"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations for the Service Account. Check values.yaml for examples. |
 | serviceAccount.create | bool | `true` | Specifies whether a ServiceAccount should be created. |
