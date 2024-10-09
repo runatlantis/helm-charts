@@ -316,6 +316,7 @@
     "defaultTFDistribution": {
       "type": "string",
       "description": "Default Atlantis distribution to be used by atlantis server. Either Opentufu or terraform",
+      "default": "terraform",
       "enum": [  
         "terraform",  
         "opentofu"  
