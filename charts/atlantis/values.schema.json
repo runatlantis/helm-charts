@@ -309,10 +309,6 @@
       "description": "Allow atlantis to hide no-changes plan comments",
       "default": false
     },
-    "defaultTFVersion": {
-      "type": "string",
-      "description": "Default Terraform version to be used by atlantis server"
-    },
     "defaultTFDistribution": {
       "type": "string",
       "description": "Default Atlantis distribution to be used by atlantis server. Either opentofu or terraform",
@@ -321,6 +317,10 @@
         "terraform",  
         "opentofu"  
       ] 
+    },
+    "defaultTFVersion": {
+      "type": "string",
+      "description": "Default Terraform version to be used by atlantis server"
     },
     "disableApply": {
       "type": "boolean",

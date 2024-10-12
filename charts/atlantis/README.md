@@ -90,8 +90,8 @@ extraManifests:
 | containerSecurityContext | object | `{}` | Check values.yaml for examples. |
 | customPem | string | `""` | Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one. You have to create a secret with the specified name. |
 | dataStorage | string | `""` | DEPRECATED - Disk space available to check out repositories. Example: 5Gi. |
-| defaultTFVersion | string | `""` | Sets the default terraform version to be used in atlantis server. Check values.yaml for examples. |
 | defaultTFDistribution | string | `terraform` | Sets the default terraform distribution to use. Can be set to terraform or opentofu. |
+| defaultTFVersion | string | `""` | Sets the default terraform version to be used in atlantis server. Check values.yaml for examples. |
 | disableApply | bool | `false` | Disables running `atlantis apply` regardless of which flags are sent with it. |
 | disableApplyAll | bool | `false` | Disables running `atlantis apply` without any flags. |
 | disableRepoLocking | bool | `false` | Stops atlantis locking projects and or workspaces when running terraform. |
