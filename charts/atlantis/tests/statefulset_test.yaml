@@ -119,6 +119,8 @@ tests:
           value:
             - name: PATH
               value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -184,6 +186,8 @@ tests:
           value:
             - name: PATH
               value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -993,6 +997,8 @@ tests:
           value:
             - name: PATH
               value: /foo:/bar:/plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -1011,6 +1017,8 @@ tests:
           value:
             - name: PATH
               value: /home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -1030,6 +1038,8 @@ tests:
           value:
             - name: PATH
               value: /foo:/bar:/home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
