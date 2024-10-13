@@ -223,7 +223,7 @@ hidePrevPlanComments: false
 # -- Enables atlantis to hide no-changes plan comments from the pull request.
 hideUnchangedPlanComments: false
 
-### -- Sets the default terraform distribution to use. Can be set to terraform or opentofu.
+# -- Sets the default terraform distribution to use. Can be set to terraform or opentofu.
 defaultTFDistribution: terraform
 
 # -- Sets the default terraform version to be used in atlantis server.
