@@ -565,10 +565,22 @@ spec:
             mountPath: /home/atlantis/.netrc
             subPath: netrc
           {{- end }}
-          {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
+          {{- if .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
             mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
+          {{- else }}
+          {{- range $filename, $_ := .Values.aws }}
+          {{- if has $filename (list "credentials" "config") }}
+          - name: aws-volume
+            readOnly: true
+            mountPath: {{ $.Values.aws.directory | default "/home/atlantis/.aws" }}/{{ $filename }}
+            subPath: {{ $filename }}
+          {{- else if has $filename (list "awsSecretName") }}
+          - name: aws-volume
+            readOnly: true
+            mountPath: {{ $.Values.aws.directory | default "/home/atlantis/.aws" }}
+          {{- end }}
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls

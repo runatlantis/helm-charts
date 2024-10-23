@@ -145,7 +145,7 @@ aws: {}
 #     source_profile = default
 #   directory: "/home/atlantis/.aws"
 
-# -- To reference an already existing Secret object with AWS credentials
+# -- To reference an already existing Secret object with AWS credentials. This has priority over the aws.config and aws.credential fields.
 awsSecretName: ""
 
 # -- To keep backwards compatibility only.
