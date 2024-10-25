@@ -1217,6 +1217,12 @@
               }
             }
           }
+        },
+        "metricRelabelings": {
+          "description": "Optional metric relabelings to drop or modify metrics.",
+          "items": {},
+          "type": "array",
+          "default": []
         }
       }
     },
