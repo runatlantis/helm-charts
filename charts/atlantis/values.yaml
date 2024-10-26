@@ -700,6 +700,12 @@ servicemonitor:
       # keys:
       #   username: USERNAME
       #   password: ATLANTIS_WEB_PASSWORD
+  # -- Optional metric relabelings to drop or modify metrics.
+  metricRelabelings: []
+  # metricRelabelings:
+  #   - action: drop
+  #     regex: "atlantis_project_apply_execution_.*"
+  #     sourceLabels: [__name__]
 
 # -- Enable this if you're using Google Managed Prometheus.
 podMonitor:

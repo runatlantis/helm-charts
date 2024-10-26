@@ -201,6 +201,7 @@ extraManifests:
 | servicemonitor.auth.externalSecret.name | string | `""` |  |
 | servicemonitor.enabled | bool | `false` | To enable a Prometheus servicemonitor, set enabled to true,   and enable the metrics in this file's repoConfig   by setting a value for metrics.prometheus.endpoint. |
 | servicemonitor.interval | string | `"30s"` |  |
+| servicemonitor.metricRelabelings | list | `[]` | Optional metric relabelings to drop or modify metrics. |
 | servicemonitor.path | string | `"/metrics"` |  |
 | statefulSet.annotations | object | `{}` |  |
 | statefulSet.labels | object | `{}` |  |
