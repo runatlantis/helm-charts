@@ -25,12 +25,12 @@ jobs:
         uses: azure/setup-helm@v4
         with:
           # renovate: datasource=github-tags depName=helm packageName=helm/helm
-          version: v3.15.4
+          version: v3.16.2
 
       - uses: actions/setup-python@v5
         with:
           # renovate: datasource=docker depName=python
-          python-version: '3.12'
+          python-version: '3.13'
           check-latest: true
 
       - name: Set up chart-testing

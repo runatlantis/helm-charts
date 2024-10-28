@@ -223,6 +223,9 @@ hidePrevPlanComments: false
 # -- Enables atlantis to hide no-changes plan comments from the pull request.
 hideUnchangedPlanComments: false
 
+# -- Sets the default terraform distribution to use. Can be set to terraform or opentofu.
+defaultTFDistribution: terraform
+
 # -- Sets the default terraform version to be used in atlantis server.
 # Check values.yaml for examples.
 defaultTFVersion: ""
@@ -288,6 +291,7 @@ service:
   port: 80
   portName: atlantis
   nodePort: null
+  # -- (int) [optional] Define the port you would like atlantis to run on. Defaults to 4141.
   targetPort: 4141
   loadBalancerIP: null
   loadBalancerSourceRanges: []
@@ -696,6 +700,12 @@ servicemonitor:
       # keys:
       #   username: USERNAME
       #   password: ATLANTIS_WEB_PASSWORD
+  # -- Optional metric relabelings to drop or modify metrics.
+  metricRelabelings: []
+  # metricRelabelings:
+  #   - action: drop
+  #     regex: "atlantis_project_apply_execution_.*"
+  #     sourceLabels: [__name__]
 
 # -- Enable this if you're using Google Managed Prometheus.
 podMonitor:

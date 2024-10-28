@@ -119,6 +119,8 @@ tests:
           value:
             - name: PATH
               value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -168,6 +170,56 @@ tests:
           path: spec.template.spec.updateStrategy
       - notExists:
           path: spec.volumeClaimTemplates
+  - it: custom port values
+    template: statefulset.yaml
+    set:
+      service:
+        targetPort: 8888
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].ports
+          value:
+            - containerPort: 8888
+              name: atlantis
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: PATH
+              value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
+            - name: ATLANTIS_DATA_DIR
+              value: /atlantis-data
+            - name: ATLANTIS_REPO_ALLOWLIST
+              value: <replace-me>
+            - name: ATLANTIS_PORT
+              value: "8888"
+            - name: ATLANTIS_ATLANTIS_URL
+              value: http://
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe
+          value:
+            failureThreshold: 5
+            httpGet:
+              path: /healthz
+              port: 8888
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            successThreshold: 1
+            timeoutSeconds: 5
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe
+          value:
+            failureThreshold: 5
+            httpGet:
+              path: /healthz
+              port: 8888
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 60
+            successThreshold: 1
+            timeoutSeconds: 5
   - it: replicaCount
     template: statefulset.yaml
     set:
@@ -945,6 +997,8 @@ tests:
           value:
             - name: PATH
               value: /foo:/bar:/plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -963,6 +1017,8 @@ tests:
           value:
             - name: PATH
               value: /home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST
@@ -982,6 +1038,8 @@ tests:
           value:
             - name: PATH
               value: /foo:/bar:/home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+            - name: ATLANTIS_TF_DISTRIBUTION
+              value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
             - name: ATLANTIS_REPO_ALLOWLIST

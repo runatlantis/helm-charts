@@ -28,6 +28,10 @@ spec:
   - port: atlantis
     interval: {{ .Values.servicemonitor.interval }}
     path: {{ .Values.servicemonitor.path }}
+    {{- with .Values.servicemonitor.metricRelabelings }}
+    metricRelabelings:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     {{- if .Values.servicemonitor.auth.basicAuth.enabled }}
     basicAuth:
       username:

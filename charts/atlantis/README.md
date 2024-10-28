@@ -90,6 +90,7 @@ extraManifests:
 | containerSecurityContext | object | `{}` | Check values.yaml for examples. |
 | customPem | string | `""` | Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one. You have to create a secret with the specified name. |
 | dataStorage | string | `""` | DEPRECATED - Disk space available to check out repositories. Example: 5Gi. |
+| defaultTFDistribution | string | `"terraform"` | Sets the default terraform distribution to use. Can be set to terraform or opentofu. |
 | defaultTFVersion | string | `""` | Sets the default terraform version to be used in atlantis server. Check values.yaml for examples. |
 | disableApply | bool | `false` | Disables running `atlantis apply` regardless of which flags are sent with it. |
 | disableApplyAll | bool | `false` | Disables running `atlantis apply` without any flags. |
@@ -185,7 +186,7 @@ extraManifests:
 | service.nodePort | string | `nil` |  |
 | service.port | int | `80` |  |
 | service.portName | string | `"atlantis"` |  |
-| service.targetPort | int | `4141` |  |
+| service.targetPort | int | `4141` | [optional] Define the port you would like atlantis to run on. Defaults to 4141. |
 | service.type | string | `"NodePort"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations for the Service Account. Check values.yaml for examples. |
 | serviceAccount.create | bool | `true` | Specifies whether a ServiceAccount should be created. |
@@ -200,6 +201,7 @@ extraManifests:
 | servicemonitor.auth.externalSecret.name | string | `""` |  |
 | servicemonitor.enabled | bool | `false` | To enable a Prometheus servicemonitor, set enabled to true,   and enable the metrics in this file's repoConfig   by setting a value for metrics.prometheus.endpoint. |
 | servicemonitor.interval | string | `"30s"` |  |
+| servicemonitor.metricRelabelings | list | `[]` | Optional metric relabelings to drop or modify metrics. |
 | servicemonitor.path | string | `"/metrics"` |  |
 | statefulSet.annotations | object | `{}` |  |
 | statefulSet.labels | object | `{}` |  |

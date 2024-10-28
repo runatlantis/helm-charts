@@ -309,6 +309,15 @@
       "description": "Allow atlantis to hide no-changes plan comments",
       "default": false
     },
+    "defaultTFDistribution": {
+      "type": "string",
+      "description": "Default Atlantis distribution to be used by atlantis server. Either opentofu or terraform",
+      "default": "terraform",
+      "enum": [  
+        "terraform",  
+        "opentofu"  
+      ] 
+    },
     "defaultTFVersion": {
       "type": "string",
       "description": "Default Terraform version to be used by atlantis server"
@@ -1208,6 +1217,12 @@
               }
             }
           }
+        },
+        "metricRelabelings": {
+          "description": "Optional metric relabelings to drop or modify metrics.",
+          "items": {},
+          "type": "array",
+          "default": []
         }
       }
     },
