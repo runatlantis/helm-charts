@@ -477,7 +477,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.redisSecretName" . }}
-                key: password
+                key: {{ .Values.redisSecretPasswordKey | quote }}
           {{- end }}
           {{- if .Values.redis.port }}
           - name: ATLANTIS_REDIS_PORT

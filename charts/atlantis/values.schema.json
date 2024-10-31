@@ -1283,7 +1283,11 @@
     },
     "redisSecretName": {
       "type": "string",
-      "description": "Name of a pre-existing Kubernetes `Secret` containing a `password` key. Use this instead of `redis.password`."
+      "description": "Name of a pre-existing Kubernetes `Secret` containing the password for Redis. Use this instead of `redis.password`."
+    },
+    "redisSecretPasswordKey": {
+      "type": "string",
+      "description": "Key within the existing Redis `Secret` that contains the password value."
     },
     "lifecycle": {
       "type": "object",
