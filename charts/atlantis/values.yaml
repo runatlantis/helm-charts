@@ -732,7 +732,7 @@ redis: {}
 redisSecretName: ""
 
 # -- Key within the existing Redis secret that contains the password value.
-redisSecretPasswordKey: "password"
+redisSecretPasswordKey: password
 
 # -- Set lifecycle hooks.
 # https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/.
