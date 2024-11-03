@@ -846,7 +846,7 @@ tests:
             name: ATLANTIS_REDIS_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: atlantis-redis
+                name: my-release-atlantis-redis
                 key: password
   - it: redisSecretName
     template: statefulset.yaml
