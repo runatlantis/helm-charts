@@ -825,6 +825,96 @@ tests:
               secretKeyRef:
                 key: apisecret
                 name: atlantis-api
+  - it: redisHost
+    template: statefulset.yaml
+    set:
+      redis.host: my-redis
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_HOST
+            value: my-redis
+  - it: redisPassword
+    template: statefulset.yaml
+    set:
+      redis.password: SuperSecretPassword
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: atlantis-redis
+                key: password
+  - it: redisSecretName
+    template: statefulset.yaml
+    set:
+      redisSecretName: existing-secret
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: existing-secret
+                key: password
+  - it: redisSecretPasswordKey
+    template: statefulset.yaml
+    set:
+      redisSecretName: my-secret
+      redisSecretPasswordKey: my-password-key
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: my-password-key
+  - it: redisPort
+    template: statefulset.yaml
+    set:
+      redis.port: 1234
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_PORT
+            value: "1234"
+  - it: redisDb
+    template: statefulset.yaml
+    set:
+      redis.db: 1
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_DB
+            value: "1"
+  - it: redisTlsEnabled
+    template: statefulset.yaml
+    set:
+      redis.tlsEnabled: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_TLS_ENABLED
+            value: "true"
+  - it: redisInsecureSkipVerify
+    template: statefulset.yaml
+    set:
+      redis.insecureSkipVerify: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_REDIS_INSECURE_SKIP_VERIFY
+            value: "true"
   - it: command
     template: statefulset.yaml
     set:
