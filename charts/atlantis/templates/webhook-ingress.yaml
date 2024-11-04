@@ -18,6 +18,7 @@ apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}-secondary
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "atlantis.labels" . | nindent 4 }}
     {{- with .Values.webhook_ingress.labels }}
