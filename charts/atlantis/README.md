@@ -176,6 +176,7 @@ extraManifests:
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | redis | object | `{}` | Configure Redis Locking DB. lockingDbType value must be redis for the config to take effect. Check values.yaml for examples. |
 | redisSecretName | string | `""` | When managing secrets outside the chart for the Redis secret, use this variable to reference the secret name. |
+| redisSecretPasswordKey | string | `"password"` | Key within the existing Redis secret that contains the password value. |
 | replicaCount | int | `1` | Replica count for Atlantis pods. |
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
