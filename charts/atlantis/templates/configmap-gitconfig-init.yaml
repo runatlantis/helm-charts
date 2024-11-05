@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "atlantis.fullname" . }}-gitconfig-init
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "atlantis.labels" . | nindent 4 }}
   {{- with .Values.extraAnnotations }}

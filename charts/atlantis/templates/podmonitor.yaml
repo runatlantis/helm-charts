@@ -3,6 +3,7 @@ apiVersion: monitoring.googleapis.com/v1
 kind: PodMonitoring
 metadata:
   name: {{ template "atlantis.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "atlantis.labels" . | nindent 4 }}
   {{- if or .Values.service.annotations .Values.extraAnnotations }}
