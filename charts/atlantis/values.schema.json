@@ -113,6 +113,29 @@
       },
       "additionalProperties": false
     },
+    "gitea": {
+      "type": "object",
+      "description": "Gitea settings",
+      "properties": {
+        "user": {
+          "type": "string",
+          "description": "Name of the Atlantis Gitea user."
+        },
+        "token": {
+          "type": "string",
+          "description": "Access token of the Atlantis Gitea user."
+        },
+        "secret": {
+          "type": "string",
+          "description": "Webhook secret for the Atlantis Gitea integration. All repositories in Gitea that are to be integrated with Atlantis must share the same value."
+        },
+        "baseUrl": {
+          "type": "string",
+          "description": "Base URL of your Gitea installation."
+        }
+      },
+      "additionalProperties": false
+    },
     "gitlab": {
       "type": "object",
       "description": "GitLab settings",
