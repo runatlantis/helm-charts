@@ -43,6 +43,7 @@ In order for Atlantis to start and run successfully:
 
 1. At least one of the following sets of credentials must be defined:
     - `github`
+    - `gitea`
     - `gitlab`
     - `bitbucket`
     - `azuredevops`
@@ -113,6 +114,7 @@ extraManifests:
 | gitconfig | string | `""` | When referencing Terraform modules in private repositories, it may be helpful (necessary?) to use redirection in a .gitconfig. Check values.yaml for examples. |
 | gitconfigReadOnly | bool | `true` | When true gitconfig file is mounted as read only. When false, the gitconfig value will be copied to '/home/atlantis/.gitconfig' before starting the atlantis process, instead of being mounted as a file. |
 | gitconfigSecretName | string | `""` | If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name |
+| gitea | object | `{}` | If using Gitea, please enter your values as follows. The 'baseUrl' key is exclusive to self-hosted Gitea installations. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
 | github | object | `{}` | If using GitHub, please enter your values as follows. The chart will perform the base64 encoding for values that are stored in secrets. The 'hostname' key is exclusive to GitHub Enterprise installations. Check values.yaml for examples. |
 | githubApp | object | `{}` | If using a GitHub App, please enter your values as follows. The chart will perform the base64 encoding for you for values that are stored in secrets. installationId is necessary when there are multiple installs of the Github App. Check values.yaml for examples. |
 | gitlab | object | `{}` | If using GitLab, please enter your values as follows. The 'hostname' key is exclusive to GitLab Enterprise installations. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |

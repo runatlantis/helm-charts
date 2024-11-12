@@ -639,6 +639,35 @@ tests:
           content:
             name: ATLANTIS_GH_APP_KEY_FILE
             value: /var/github-app/key.pem
+  - it: gitea
+    template: statefulset.yaml
+    set:
+      gitea:
+        user: foo
+        token: bar
+        secret: baz
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GITEA_USER
+            value: foo
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GITEA_TOKEN
+            valueFrom:
+              secretKeyRef:
+                key: gitea_token
+                name: my-release-atlantis-webhook
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GITEA_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: gitea_secret
+                name: my-release-atlantis-webhook
   - it: gitlab
     template: statefulset.yaml
     set:
