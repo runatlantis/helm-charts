@@ -113,6 +113,29 @@
       },
       "additionalProperties": false
     },
+    "gitea": {
+      "type": "object",
+      "description": "Gitea settings",
+      "properties": {
+        "user": {
+          "type": "string",
+          "description": "Name of the Atlantis Gitea user."
+        },
+        "token": {
+          "type": "string",
+          "description": "Access token of the Atlantis Gitea user."
+        },
+        "secret": {
+          "type": "string",
+          "description": "Webhook secret for the Atlantis Gitea integration. All repositories in Gitea that are to be integrated with Atlantis must share the same value."
+        },
+        "baseUrl": {
+          "type": "string",
+          "description": "Base URL of your Gitea installation."
+        }
+      },
+      "additionalProperties": false
+    },
     "gitlab": {
       "type": "object",
       "description": "GitLab settings",
@@ -1283,7 +1306,11 @@
     },
     "redisSecretName": {
       "type": "string",
-      "description": "Name of a pre-existing Kubernetes `Secret` containing a `password` key. Use this instead of `redis.password`."
+      "description": "Name of a pre-existing Kubernetes `Secret` containing the password for Redis. Use this instead of `redis.password`."
+    },
+    "redisSecretPasswordKey": {
+      "type": "string",
+      "description": "Key within the existing Redis `Secret` that contains the password value."
     },
     "lifecycle": {
       "type": "object",

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ template "atlantis.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "atlantis.labels" . | nindent 4 }}
     {{- with .Values.statefulSet.labels }}
@@ -391,6 +392,24 @@ spec:
             value: "/var/github-app/key.pem"
           {{- end }}
           {{- end }}
+          {{- if .Values.gitea }}
+          - name: ATLANTIS_GITEA_USER
+            value: {{ required "gitea.user is required if gitea configuration is specified." .Values.gitea.user }}
+          - name: ATLANTIS_GITEA_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: gitea_token
+          - name: ATLANTIS_GITEA_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "atlantis.vcsSecretName" . }}
+                key: gitea_secret
+          {{- if .Values.gitea.baseUrl }}
+          - name: ATLANTIS_GITEA_BASE_URL
+            value: {{ .Values.gitea.baseUrl }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.gitlab }}
           - name: ATLANTIS_GITLAB_USER
             value: {{ required "gitlab.user is required if gitlab configuration is specified." .Values.gitlab.user }}
@@ -477,7 +496,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.redisSecretName" . }}
-                key: password
+                key: {{ .Values.redisSecretPasswordKey | quote }}
           {{- end }}
           {{- if .Values.redis.port }}
           - name: ATLANTIS_REDIS_PORT
