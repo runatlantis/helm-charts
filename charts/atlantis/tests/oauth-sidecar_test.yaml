@@ -1,0 +1,157 @@
+suite: test statefulset with sidecar
+templates:
+  - oauth-sidecar-configmap.yaml
+  - statefulset.yaml
+  - service.yaml
+  - configmap-config.yaml
+  - configmap-repo-config.yaml
+release:
+  name: my-release
+tests:
+  - it: default values
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: my-release-oauth2-sidecar
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: quay.io/oauth2-proxy/oauth2-proxy:v7.7.1
+      - equal:
+          path: spec.template.spec.containers[0].ports[0]
+          value:
+            containerPort: 4180
+            name: oauth-proxy
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value: ["--show-debug-on-error=true"]
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe
+          value:
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe
+          value:
+            initialDelaySeconds: 0
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+      - notExists:
+          path: spec.template.spec.containers[0].securityContext
+  - it: default service with oauth
+    template: service.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+    asserts:
+      - equal:
+          path: spec.ports[0].targetPort
+          value: oauth-proxy
+  - it: env
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        env:
+          - name: client-secret
+            valueFrom:
+              secretKeyRef:
+                name: client-secret
+                key: client-secret-key
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: client-secret
+              valueFrom:
+                secretKeyRef:
+                  name: client-secret
+                  key: client-secret-key
+  - it: envFrom
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        envFrom:
+          - secretRef:
+              name: dummy-oidc
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom
+          value:
+            - secretRef:
+                name: dummy-oidc
+  - it: volumeMount
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        volumeMounts:
+          - mountPath: dummyPath
+            name: dummyName
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - mountPath: dummyPath
+              name: dummyName
+  - it: imagePullPolicy
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        image:
+          pullPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].imagePullPolicy
+          value: Always
+  - it: securityContext
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        securityContext:
+          runAsUser: 1000
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext
+          value:
+            runAsUser: 1000
+  - it: configMap oauth2 cfg
+    template: oauth-sidecar-configmap.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        enableConfig: true
+        config: |-
+          dummy: config
+    asserts:
+      - isKind:
+          of: ConfigMap
+      - equal:
+          path: metadata.name
+          value: oauth-configuration
+      - equal:
+          path: data
+          value:
+            oauth2-proxy.cfg: |-
+              dummy: config
+  - it: configmap mounted to sidecar
+    template: statefulset.yaml
+    set:
+      oAuthSidecar:
+        enabled: true
+        enableConfig: true
+        config: |-
+          dummy: config
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: oauth-configuration
+              mountPath: /etc/oauth2-proxy

@@ -83,6 +83,11 @@ spec:
       priorityClassName: {{ .Values.statefulSet.priorityClassName }}
       {{- end }}
       volumes:
+      {{- if and .Values.oAuthSidecar.enabled .Values.oAuthSidecar.enableConfig }}
+      - name: oauth-configuration
+        configMap:
+          name: oauth-configuration
+      {{- end }}
       {{- if and .Values.volumeClaim.enabled ( not .Values.dataStorage ) }}
       - name : atlantis-data
         persistentVolumeClaim:
@@ -201,7 +206,7 @@ spec:
           workingDir: {{ .Values.initConfig.workDir }}
           env:
             - name: PATH
-              value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}
+              value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:{{ .Values.initConfig.sharedDir }}"
             - name: INIT_SHARED_DIR
               value: {{ .Values.initConfig.sharedDir }}
           volumeMounts:
@@ -216,6 +221,48 @@ spec:
         {{- end }}
       {{- end }}
       containers:
+      {{- if .Values.oAuthSidecar.enabled }}
+        - name: "{{ .Release.Name }}-oauth2-sidecar"
+          {{- with .Values.oAuthSidecar.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.oAuthSidecar.image.repository }}:{{ .Values.oAuthSidecar.image.tag }}"
+          imagePullPolicy: "{{ .Values.oAuthSidecar.image.pullPolicy }}"
+          args:
+          {{- range .Values.oAuthSidecar.args }}
+            - {{ . }}
+          {{- end }}
+          {{- with .Values.oAuthSidecar.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.oAuthSidecar.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+          {{- with .Values.oAuthSidecar.volumeMounts }}
+            {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.oAuthSidecar.enableConfig }}
+            - name: oauth-configuration
+              mountPath: /etc/oauth2-proxy
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.oAuthSidecar.containerPort }}
+              name: oauth-proxy
+          resources:
+            {{- toYaml .Values.oAuthSidecar.resources | nindent 12 }}
+          {{- if .Values.oAuthSidecar.livenessProbe }}
+          livenessProbe:
+            {{- toYaml .Values.oAuthSidecar.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if .Values.oAuthSidecar.readinessProbe }}
+          readinessProbe:
+            {{- toYaml .Values.oAuthSidecar.readinessProbe | nindent 12 }}
+          {{- end }}
+      {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

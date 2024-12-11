@@ -164,6 +164,21 @@ extraManifests:
 | netrc | string | `""` | When referencing Terraform modules in private repositories or registries (such as Artfactory) configuing a .netrc file for authentication may be required. Check values.yaml for examples. |
 | netrcSecretName | string | `""` | If managing secrets outside the chart for the netrc file, use this variable to reference the secret name |
 | nodeSelector | object | `{}` |  |
+| oAuthSidecar.args | list | `["--show-debug-on-error=true"]` | Additional arguments for OAuth-Proxy Check values.yaml for example with config |
+| oAuthSidecar.containerPort | int | `4180` | Container port for OAuth-Proxy |
+| oAuthSidecar.enableConfig | bool | `false` | Enable CM Config for OAuth-Proxy Check values.yaml for example. |
+| oAuthSidecar.enabled | bool | `false` | Enable Oauth-proxy sidecar for Atlantis |
+| oAuthSidecar.env | list | `[]` | Env for OAuth-Proxy Check values.yaml for example with config |
+| oAuthSidecar.envFrom | list | `[]` | EnvFrom for OAuth-Proxy |
+| oAuthSidecar.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
+| oAuthSidecar.image.pullSecrets | list | `[]` | Image pull secrets |
+| oAuthSidecar.image.repository | string | `"quay.io/oauth2-proxy/oauth2-proxy"` | Docker registry for OAuth-Proxy image |
+| oAuthSidecar.image.tag | string | `"v7.7.1"` | Tag for OAuth-Proxy image |
+| oAuthSidecar.livenessProbe | object | `{"initialDelaySeconds":0,"timeoutSeconds":1}` | Liveness probe configuration for OAuth-Proxy |
+| oAuthSidecar.readinessProbe | object | `{"initialDelaySeconds":0,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5}` | Readiness probe configuration for OAuth-Proxy |
+| oAuthSidecar.resources | object | `{}` | Resources for OAuth-Proxy Check values.yaml for examples. |
+| oAuthSidecar.securityContext | object | `{}` | Container security context for OAuth-Proxy |
+| oAuthSidecar.volumeMounts | list | `[]` | Volume mounts for OAuth-Proxy |
 | orgAllowlist | string | `"<replace-me>"` | Replace this with your own repo allowlist. |
 | orgWhitelist | string | `"<deprecated>"` | Deprecated in favor of orgAllowlist. |
 | podMonitor | object | `{"enabled":false,"interval":"30s"}` | Enable this if you're using Google Managed Prometheus. |
