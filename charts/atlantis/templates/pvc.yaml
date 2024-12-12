@@ -21,6 +21,8 @@ spec:
   accessModes: {{ .Values.volumeClaim.accessModes | toYaml | nindent 2 }}
   resources:
     requests:
+      # The biggest thing Atlantis stores is the Git repo when it checks it out.
+      # It deletes the repo after the pull request is merged.
       storage: {{ .Values.volumeClaim.dataStorage }}
   {{- if .Values.volumeClaim.storageClassName }}
   storageClassName: {{ .Values.volumeClaim.storageClassName }}
