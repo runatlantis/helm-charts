@@ -1,4 +1,11 @@
 {{- if and .Values.volumeClaim.enabled ( not .Values.dataStorage ) }}
+{{- if .Values.volumeClaim.existingClaim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.volumeClaim.existingClaim }}
+  namespace: {{ .Release.Namespace }}
+{{- else }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -11,13 +18,12 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  accessModes: {{ .Values.volumeClaim.accessModes| toYaml | nindent 2 }}
+  accessModes: {{ .Values.volumeClaim.accessModes | toYaml | nindent 2 }}
   resources:
     requests:
-      # The biggest thing Atlantis stores is the Git repo when it checks it out.
-      # It deletes the repo after the pull request is merged.
       storage: {{ .Values.volumeClaim.dataStorage }}
   {{- if .Values.volumeClaim.storageClassName }}
   storageClassName: {{ .Values.volumeClaim.storageClassName }}
   {{- end }}
+{{- end }}
 {{- end }}
