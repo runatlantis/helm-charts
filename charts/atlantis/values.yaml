@@ -748,3 +748,88 @@ redisSecretPasswordKey: password
 # -- Set lifecycle hooks.
 # https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/.
 lifecycle: {}
+
+oAuthSidecar:
+  # -- Enable Oauth-proxy sidecar for Atlantis
+  enabled: false
+
+  # -- Resources for OAuth-Proxy
+  # Check values.yaml for examples.
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 256m
+  #   memory: 128Mi
+
+  image:
+    # -- Docker registry for OAuth-Proxy image
+    repository: quay.io/oauth2-proxy/oauth2-proxy
+
+    # -- Tag for OAuth-Proxy image
+    tag: v7.7.1
+
+    # -- Image pull policy
+    pullPolicy: IfNotPresent
+
+    # -- Image pull secrets
+    pullSecrets: []
+
+  # -- Container port for OAuth-Proxy
+  containerPort: 4180
+
+  # -- Additional arguments for OAuth-Proxy
+  # Check values.yaml for example with config
+  args:
+    - --show-debug-on-error=true
+  # - --config
+  # - /etc/oauth2-proxy/oauth2-proxy.cfg
+  # - --client-secret
+  # - "$(client-secret)"
+
+  # -- Env for OAuth-Proxy
+  # Check values.yaml for example with config
+  env: []
+  # - name: client-secret
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: client-secret
+  #       key: client-secret-key
+
+  # -- EnvFrom for OAuth-Proxy
+  envFrom: []
+
+  # -- Volume mounts for OAuth-Proxy
+  volumeMounts: []
+
+  # -- Enable CM Config for OAuth-Proxy
+  # Check values.yaml for example.
+  enableConfig: false
+  # config: |-
+  #   provider = "oidc"
+  #   https_address = ":4180"
+  #   upstreams = ["http://localhost:16686"]
+  #   redirect_url = "https://atlantis.exmaple.com/oauth2/callback"
+  #   client_id = "jaeger"
+  #   oidc_issuer_url = "https://keyclock.example.domain/realms/Default"
+  #   cookie_secure = "true"
+  #   email_domains = "*"
+  #   oidc_groups_claim = "groups"
+  #   user_id_claim = "preferred_username"
+  #   skip_provider_button = "true"
+
+  # -- Container security context for OAuth-Proxy
+  securityContext: {}
+
+  # -- Liveness probe configuration for OAuth-Proxy
+  livenessProbe:
+    initialDelaySeconds: 0
+    timeoutSeconds: 1
+
+  # -- Readiness probe configuration for OAuth-Proxy
+  readinessProbe:
+    initialDelaySeconds: 0
+    timeoutSeconds: 5
+    periodSeconds: 10
+    successThreshold: 1

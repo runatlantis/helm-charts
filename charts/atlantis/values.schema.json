@@ -1316,8 +1316,139 @@
       "type": "object",
       "description": "Configure pod container lifecycle hooks. See [Kubernetes docs](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/) for details.",
       "$ref": "#/definitions/io.k8s.api.core.v1.Lifecycle"
+    },
+    "oAuthSidecar": {
+      "type": "object",
+      "description": "Configuration for OAuth sidecar for Atlantis",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable OAuth proxy sidecar for Atlantis.",
+          "default": false
+        },
+        "resources": {
+          "$ref": "#/definitions/io.k8s.api.core.v1.ResourceRequirements",
+          "description": "Resources for OAuth proxy sidecar."
+        },
+        "image": {
+          "type": "object",
+          "description": "Image configuration for OAuth proxy",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "description": "Repository for OAuth proxy image",
+              "default": "quay.io/oauth2-proxy/oauth2-proxy"
+            },
+            "tag": {
+              "type": "string",
+              "description": "Tag for OAuth proxy image",
+              "default": "v7.7.1"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "description": "Image pull policy",
+              "enum": ["Always", "IfNotPresent", "Never"],
+              "default": "IfNotPresent"
+            },
+            "pullSecrets": {
+              "type": "array",
+              "description": "Image pull secrets",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "additionalProperties": false
+        },
+        "containerPort": {
+          "type": "integer",
+          "description": "Container port for OAuth proxy",
+          "default": 4180
+        },
+        "args": {
+          "type": "array",
+          "description": "Additional arguments for OAuth proxy",
+          "default": ["--show-debug-on-error=true"],
+          "items": {
+            "type": "string"
+          },
+          "example": [
+            "--config",
+            "/etc/oauth2-proxy/oauth.conf",
+            "show-debug-on-error=true"
+          ]
+        },
+        "env": {
+          "description": "Environment variables for OAuth proxy",
+          "items": {
+            "$ref": "#/definitions/io.k8s.api.core.v1.EnvVar"
+          },
+          "type": "array",
+          "x-kubernetes-patch-merge-key": "name",
+          "x-kubernetes-patch-strategy": "merge"
+        },
+        "envFrom": {
+          "description": "Environment variables from sources for OAuth proxy",
+          "items": {
+            "$ref": "#/definitions/io.k8s.api.core.v1.EnvFromSource"
+          },
+          "type": "array"
+        },
+        "volumeMounts": {
+          "description": "Additional volume mounts for OAuth proxy",
+          "type": "array",
+          "default": [],
+          "items": {
+            "$ref": "#/definitions/io.k8s.api.core.v1.VolumeMount"
+          }
+        },
+        "enableConfig": {
+          "type": "boolean",
+          "description": "Enable ConfigMap configuration for OAuth proxy.",
+          "default": false
+        },
+        "config": {
+          "type": "string",
+          "description": "Configuration for OAuth proxy",
+          "default": ""
+        },
+        "securityContext": {
+          "$ref": "#/definitions/io.k8s.api.core.v1.SecurityContext",
+          "description": "Container security context for OAuth proxy"
+        },
+        "livenessProbe": {
+          "$ref": "#/definitions/io.k8s.api.core.v1.Probe",
+          "description": "Liveness probe configuration for OAuth proxy"
+        },
+        "readinessProbe": {
+          "$ref": "#/definitions/io.k8s.api.core.v1.Probe",
+          "description": "Readiness probe configuration for OAuth proxy"
+        }
+      },
+      "dependencies": {
+        "enableConfig": {
+          "oneOf": [
+            {
+              "properties": { "enableConfig": { "const": false } }
+            },
+            {
+              "properties": {
+                "enableConfig": { "const": true },
+                "config": {
+                  "type": "string",
+                  "minLength": 1,
+                  "errorMessage": "OAuth sidecar config cannot be empty if enableConfig is true."
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   },
+
   "definitions": {
     "io.k8s.api.core.v1.HostAlias": {
       "description": "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the pod's hosts file.",
