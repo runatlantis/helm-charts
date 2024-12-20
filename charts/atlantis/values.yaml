@@ -172,6 +172,10 @@ serviceAccountSecrets: {}
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
 
+# -- When set, ignores the port specified by the Service's targetPort attribute.
+# This is relevant when another container is injected into the same Pod.
+containerPort:
+
 image:
   repository: ghcr.io/runatlantis/atlantis
   # -- If not set appVersion field from Chart.yaml is used
@@ -497,7 +501,7 @@ tlsSecretName: ""
 # -- Additional path (`:` separated) that will be appended to the system `PATH` environment variable.
 extraPath: ""
 
-# -- Environtment values to add to the Atlantis pod.
+# -- Environment values to add to the Atlantis pod.
 # Check values.yaml for examples.
 environment: {}
 # environment:
