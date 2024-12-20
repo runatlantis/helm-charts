@@ -238,7 +238,7 @@ spec:
             {{- end }}
           ports:
           - name: atlantis
-            containerPort: {{ .Values.service.targetPort }}
+            containerPort: {{ include "atlantis.containerPort" . }}
           {{- with .Values.lifecycle }}
           lifecycle: {{ toYaml . | nindent 12 }}
           {{- end }}
@@ -331,7 +331,7 @@ spec:
             value: {{ .Values.orgWhitelist | quote }}
             {{- end }}
           - name: ATLANTIS_PORT
-            value: {{ .Values.service.targetPort | quote }}
+            value: {{ include "atlantis.containerPort" . | quote }}
           {{- if .Values.repoConfig }}
           - name: ATLANTIS_REPO_CONFIG
             value: /etc/atlantis/repos.yaml
@@ -528,7 +528,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: {{ .Values.service.targetPort }}
+              port: {{ include "atlantis.containerPort" . }}
               scheme: {{ .Values.livenessProbe.scheme }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -540,7 +540,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: {{ .Values.service.targetPort }}
+              port: {{ include "atlantis.containerPort" . }}
               scheme: {{ .Values.readinessProbe.scheme }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}

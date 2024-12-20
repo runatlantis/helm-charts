@@ -88,6 +88,7 @@ extraManifests:
 | command | list | `[]` | Override the command field of the Atlantis container. |
 | commonLabels | object | `{}` | Common Labels for all resources created by this chart. |
 | config | string | `""` | Override atlantis main configuration by config map, ref: https://www.runatlantis.io/docs/using-slack-hooks.html#configuring-atlantis. Check values.yaml for examples. |
+| containerPort | string | `nil` | When set, ignores the port specified by the Service's targetPort attribute. This is relevant when another container is injected into the same Pod. |
 | containerSecurityContext | object | `{}` | Check values.yaml for examples. |
 | customPem | string | `""` | Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one. You have to create a secret with the specified name. |
 | dataStorage | string | `""` | DEPRECATED - Disk space available to check out repositories. Example: 5Gi. |
@@ -100,7 +101,7 @@ extraManifests:
 | dnsPolicy | string | `"ClusterFirst"` | Optionally specify dnsPolicy parameter to specify a DNS policy for a pod Check https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
 | enableDiffMarkdownFormat | bool | `false` | Use Diff Markdown Format for color coding diffs. |
 | enableKubernetesBackend | bool | `false` | Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend. |
-| environment | object | `{}` | Environtment values to add to the Atlantis pod. Check values.yaml for examples. |
+| environment | object | `{}` | Environment values to add to the Atlantis pod. Check values.yaml for examples. |
 | environmentRaw | list | `[]` | Optionally specify additional environment variables in raw yaml format. Useful to specify variables refering to k8s objects. Check values.yaml for examples. |
 | environmentSecrets | list | `[]` | Optionally specify additional environment variables to be populated from Kubernetes secrets. Useful for passing in TF_VAR_foo or other secret environment variables from Kubernetes secrets. Check values.yaml for examples. |
 | extraAnnotations | object | `{}` |  |
