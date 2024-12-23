@@ -88,7 +88,7 @@ extraManifests:
 | command | list | `[]` | Override the command field of the Atlantis container. |
 | commonLabels | object | `{}` | Common Labels for all resources created by this chart. |
 | config | string | `""` | Override atlantis main configuration by config map, ref: https://www.runatlantis.io/docs/using-slack-hooks.html#configuring-atlantis. Check values.yaml for examples. |
-| containerPort | string | `nil` | When set, ignores the port specified by the Service's targetPort attribute. This is relevant when another container is injected into the same Pod. |
+| containerPort | int | `0` | [optional] Define the port you would like atlantis to run on. Defaults to 4141. |
 | containerSecurityContext | object | `{}` | Check values.yaml for examples. |
 | customPem | string | `""` | Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one. You have to create a secret with the specified name. |
 | dataStorage | string | `""` | DEPRECATED - Disk space available to check out repositories. Example: 5Gi. |

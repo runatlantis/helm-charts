@@ -172,9 +172,8 @@ serviceAccountSecrets: {}
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
 
-# -- When set, ignores the port specified by the Service's targetPort attribute.
-# This is relevant when another container is injected into the same Pod.
-containerPort:
+# -- (int) [optional] Define the port you would like atlantis to run on. Defaults to 4141.
+containerPort: 0
 
 image:
   repository: ghcr.io/runatlantis/atlantis
@@ -182,7 +181,7 @@ image:
   tag: ""
   pullPolicy: Always
 
-# --  Optionally specify an array of imagePullSecrets.
+# -- Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/.
 # Check values.yaml for examples.
