@@ -270,11 +270,9 @@
     "containerPort": {
       "description": "Port for the Atlantis container, when necessary specify a value different from the Service's targetPort",
       "type": [
-        "string",
-        "integer",
-        "null"
+        "integer"
       ],
-      "default": null
+      "default": 0
     },
     "image": {
       "type": "object",

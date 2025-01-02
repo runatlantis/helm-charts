@@ -172,7 +172,7 @@ serviceAccountSecrets: {}
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
 
-# -- (int) [optional] Define the port you would like atlantis to run on. Defaults to 4141.
+# -- (int) [optional] Define the port you would like atlantis to run on. When 0, the value of service.targetPort is used.
 containerPort: 0
 
 image:
