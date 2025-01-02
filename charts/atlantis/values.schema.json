@@ -267,6 +267,13 @@
         }
       }
     },
+    "containerPort": {
+      "description": "Port for the Atlantis container, when necessary specify a value different from the Service's targetPort",
+      "type": [
+        "integer"
+      ],
+      "default": 0
+    },
     "image": {
       "type": "object",
       "description": "Atlantis image configuration.",
@@ -336,10 +343,10 @@
       "type": "string",
       "description": "Default Atlantis distribution to be used by atlantis server. Either opentofu or terraform",
       "default": "terraform",
-      "enum": [  
-        "terraform",  
-        "opentofu"  
-      ] 
+      "enum": [
+        "terraform",
+        "opentofu"
+      ]
     },
     "defaultTFVersion": {
       "type": "string",

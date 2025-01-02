@@ -141,3 +141,10 @@ Define PATH environment variable that will be used system-wide.
 {{- end -}}
 {{- printf "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" }}
 {{- end -}}
+
+{{/*
+Sets the container port based on the defined values.
+*/}}
+{{- define "atlantis.containerPort" -}}
+{{- default .Values.service.targetPort .Values.containerPort  }}
+{{- end -}}

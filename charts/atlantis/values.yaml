@@ -172,13 +172,16 @@ serviceAccountSecrets: {}
 # Default values for atlantis (override as needed).
 ## -------------------------- ##
 
+# -- (int) [optional] Define the port you would like atlantis to run on. When 0, the value of service.targetPort is used.
+containerPort: 0
+
 image:
   repository: ghcr.io/runatlantis/atlantis
   # -- If not set appVersion field from Chart.yaml is used
   tag: ""
   pullPolicy: Always
 
-# --  Optionally specify an array of imagePullSecrets.
+# -- Optionally specify an array of imagePullSecrets.
 # Secrets must be manually created in the namespace.
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/.
 # Check values.yaml for examples.
@@ -497,7 +500,7 @@ tlsSecretName: ""
 # -- Additional path (`:` separated) that will be appended to the system `PATH` environment variable.
 extraPath: ""
 
-# -- Environtment values to add to the Atlantis pod.
+# -- Environment values to add to the Atlantis pod.
 # Check values.yaml for examples.
 environment: {}
 # environment:
