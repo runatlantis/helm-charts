@@ -28,7 +28,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
+      {{- if .Values.oAuthSidecar.enabled }}
+      targetPort: "oauth-proxy"
+      {{- else }}
       targetPort: {{ .Values.service.targetPort }}
+      {{- end }}
     {{- if .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
     {{- end }}

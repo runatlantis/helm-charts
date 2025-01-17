@@ -1,0 +1,12 @@
+{{- if and .Values.oAuthSidecar.enabled .Values.oAuthSidecar.enableConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth-configuration
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "atlantis.labels" . | nindent 4 }}
+data:
+  oauth2-proxy.cfg: |-
+{{ tpl .Values.oAuthSidecar.config . | indent 4 }}
+{{- end }}
