@@ -170,6 +170,8 @@ tests:
           path: spec.template.spec.updateStrategy
       - notExists:
           path: spec.volumeClaimTemplates
+      - notExists:
+          path: spec.containers[1]
   - it: custom port values
     template: statefulset.yaml
     set:

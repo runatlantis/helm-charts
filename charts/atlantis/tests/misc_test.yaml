@@ -35,11 +35,15 @@ tests:
       webhook_ingress:
         enabled: true
       extraManifests:
-      - apiVersion: v1
-        kind: Pod
-        metadata:
-          name: dummy
-          namespace: "my-namespace"
+        - apiVersion: v1
+          kind: Pod
+          metadata:
+            name: dummy
+            namespace: "my-namespace"
+      oAuthSidecar:
+        enabled: true
+        enableConfig: true
+        config: dummy
 
     asserts:
       - equal:
