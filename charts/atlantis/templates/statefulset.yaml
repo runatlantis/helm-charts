@@ -309,7 +309,7 @@ spec:
             value: {{ .Values.defaultTFVersion }}
           {{- end }}
           {{- if .Values.defaultTFDistribution }}
-          - name: ATLANTIS_TF_DISTRIBUTION
+          - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
             value: {{ .Values.defaultTFDistribution }}
           {{- end }}
           {{- if .Values.logLevel }}
