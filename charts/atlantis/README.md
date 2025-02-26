@@ -183,7 +183,7 @@ extraManifests:
 | replicaCount | int | `1` | Replica count for Atlantis pods. |
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
-| secretAnnotations | object | `{}` | These annotations will be added to secrets. Check values.yaml for examples. |
+| secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
 | service.loadBalancerIP | string | `nil` |  |
