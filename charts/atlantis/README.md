@@ -104,7 +104,7 @@ extraManifests:
 | environment | object | `{}` | Environment values to add to the Atlantis pod. Check values.yaml for examples. |
 | environmentRaw | list | `[]` | Optionally specify additional environment variables in raw yaml format. Useful to specify variables refering to k8s objects. Check values.yaml for examples. |
 | environmentSecrets | list | `[]` | Optionally specify additional environment variables to be populated from Kubernetes secrets. Useful for passing in TF_VAR_foo or other secret environment variables from Kubernetes secrets. Check values.yaml for examples. |
-| extraAnnotations | object | `{}` |  |
+| extraAnnotations | object | `{}` | These annotations will be added to all the resources. Check values.yaml for examples. |
 | extraArgs | list | `[]` | Optionally specify extra arguments for the Atlantis pod. Check values.yaml for examples. |
 | extraContainers | list | `[]` | Optionally specify extra containers for the Atlantis pod. Check values.yaml for examples. |
 | extraManifests | list | `[]` | Optionally specify additional manifests to be created. Check values.yaml for examples. |
@@ -183,6 +183,7 @@ extraManifests:
 | replicaCount | int | `1` | Replica count for Atlantis pods. |
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
+| secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
 | service.loadBalancerIP | string | `nil` |  |

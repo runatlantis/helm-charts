@@ -652,7 +652,15 @@ dnsConfig: {}
 
 hostNetwork: false
 
-# - These annotations will be added to all the resources.
+secret:
+  # -- Annotations for the Secrets.
+  # Check values.yaml for examples.
+  annotations: {}
+  # annotations:
+  #   annotation1: value
+  #   annotation2: value
+
+# -- These annotations will be added to all the resources.
 # Check values.yaml for examples.
 extraAnnotations: {}
 # extraAnnotations:
