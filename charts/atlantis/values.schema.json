@@ -1196,12 +1196,13 @@
     "secret": {
       "type": "object",
       "description": "Secret configuration for atlantis.",
-      "propeties": {
+      "properties": {
         "annotations": {
           "type": "object",
           "description": "Additional Secret annotations",
           "additionalProperties": {
             "type": "string"
+          }
         }
       }
     },
