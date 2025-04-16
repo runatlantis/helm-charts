@@ -271,7 +271,7 @@ api: {}
 # api:
 #   secret: "s3cr3t"
 
-# -- If managing secrets outside the chart for the API secret, use this variable to reference the secret name.
+# -- If managing secrets outside the chart for the API secret, use this variable to reference the secret name. The key containing the secret must be called 'apisecret'.
 apiSecretName: ""
 
 # -- Override the command field of the Atlantis container.
