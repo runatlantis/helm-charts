@@ -111,7 +111,7 @@ tests:
             - containerPort: 4141
               name: atlantis
       - notExists:
-          path: spec.template.spec.containers[0].lifeCycle
+          path: spec.template.spec.containers[0].lifecycle
       - notExists:
           path: spec.template.spec.containers[0].envFrom
       - equal:
@@ -119,7 +119,7 @@ tests:
           value:
             - name: PATH
               value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-            - name: ATLANTIS_TF_DISTRIBUTION
+            - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
               value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
@@ -186,7 +186,7 @@ tests:
           value:
             - name: PATH
               value: /plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-            - name: ATLANTIS_TF_DISTRIBUTION
+            - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
               value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
@@ -1116,7 +1116,7 @@ tests:
           value:
             - name: PATH
               value: /foo:/bar:/plugins:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-            - name: ATLANTIS_TF_DISTRIBUTION
+            - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
               value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
@@ -1136,7 +1136,7 @@ tests:
           value:
             - name: PATH
               value: /home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-            - name: ATLANTIS_TF_DISTRIBUTION
+            - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
               value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
@@ -1157,7 +1157,7 @@ tests:
           value:
             - name: PATH
               value: /foo:/bar:/home/atlantis:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-            - name: ATLANTIS_TF_DISTRIBUTION
+            - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
               value: terraform
             - name: ATLANTIS_DATA_DIR
               value: /atlantis-data
@@ -1167,3 +1167,23 @@ tests:
               value: "4141"
             - name: ATLANTIS_ATLANTIS_URL
               value: http://
+  - it: lifecycle
+    template: statefulset.yaml
+    set:
+      lifecycle:
+        preStop:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - while pgrep -x "terraform|tofu|terragrunt" > /dev/null; do sleep 1; done
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].lifecycle
+          value:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - while pgrep -x "terraform|tofu|terragrunt" > /dev/null; do sleep 1; done

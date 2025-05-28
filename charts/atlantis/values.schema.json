@@ -1193,6 +1193,19 @@
       "description": "SecurityContext configuration for atlantis containers.",
       "$ref": "#/definitions/io.k8s.api.core.v1.SecurityContext"
     },
+    "secret": {
+      "type": "object",
+      "description": "Secret configuration for atlantis.",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "description": "Additional Secret annotations",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "servicemonitor": {
       "type": "object",
       "description": "ServiceMonitor configuration for atlantis containers.",
