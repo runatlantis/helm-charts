@@ -243,6 +243,11 @@ extraManifests:
 
 ## Upgrading
 
+### From `5.*` to `6.*`
+
+[Labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/#labels) have been updated according to Kubernetes' standard ones.
+This changes some resources.selector.matchLabels such: StatefulSet, Service, PodMonitor, so that all labels are aligned. The downside is that modifying those fields will cause a pod restart.
+
 ### From `4.*` to `5.*`
 
 A breaking change was merged on [#304](https://github.com/runatlantis/helm-charts/pull/304).

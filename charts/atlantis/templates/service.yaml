@@ -35,5 +35,5 @@ spec:
       protocol: TCP
       name: {{ .Values.service.portName }}
   selector:
-    app: {{ template "atlantis.name" . }}
-    release: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ template "atlantis.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
