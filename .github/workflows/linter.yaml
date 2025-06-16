@@ -26,6 +26,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_YAML: false
           VALIDATE_KUBERNETES_KUBEVAL: false
+          VALIDATE_CHECKOV: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_GITLEAKS: false
