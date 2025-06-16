@@ -271,7 +271,7 @@ api: {}
 # api:
 #   secret: "s3cr3t"
 
-# -- If managing secrets outside the chart for the API secret, use this variable to reference the secret name.
+# -- If managing secrets outside the chart for the API secret, use this variable to reference the secret name. The key containing the secret must be called 'apisecret'.
 apiSecretName: ""
 
 # -- Override the command field of the Atlantis container.
@@ -330,10 +330,6 @@ statefulSet:
   updateStrategy: {}
   # -- Option to share process namespace with atlantis container.
   shareProcessNamespace: false
-
-# -- (int) Optionally customize the termination grace period in seconds.
-# @default -- default depends on the kubernetes version.
-terminationGracePeriodSeconds:
 
 ingress:
   enabled: true
@@ -756,6 +752,18 @@ redisSecretName: ""
 # -- Key within the existing Redis secret that contains the password value.
 redisSecretPasswordKey: password
 
+# -- (int) Optionally customize the termination grace period in seconds.
+# @default -- default depends on the kubernetes version.
+terminationGracePeriodSeconds:
+# terminationGracePeriodSeconds: 300
+
 # -- Set lifecycle hooks.
 # https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/.
 lifecycle: {}
+# lifecycle:
+#   preStop:
+#     exec:
+#       command:
+#         - /bin/sh
+#         - -c
+#         - while pgrep -x "terraform|tofu|terragrunt" > /dev/null; do sleep 1; done

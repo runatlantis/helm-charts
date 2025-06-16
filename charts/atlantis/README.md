@@ -76,7 +76,7 @@ extraManifests:
 | allowDraftPRs | bool | `false` | Enables atlantis to run on a draft Pull Requests. |
 | allowForkPRs | bool | `false` | Enables atlantis to run on a fork Pull Requests. |
 | api | object | `{}` | Optionally specify an API secret to enable the API. Check values.yaml for examples. |
-| apiSecretName | string | `""` | If managing secrets outside the chart for the API secret, use this variable to reference the secret name. |
+| apiSecretName | string | `""` | If managing secrets outside the chart for the API secret, use this variable to reference the secret name. The key containing the secret must be called 'apisecret'. |
 | atlantisDataDirectory | string | `"/atlantis-data"` | Path to the data directory for the volumeMount. |
 | atlantisUrl | string | `""` | An option to override the atlantis url, if not using an ingress, set it to the external IP. Check values.yaml for examples. |
 | aws | object | `{}` | To specify AWS credentials to be mapped to ~/.aws or to aws.directory. Check values.yaml for examples. |
