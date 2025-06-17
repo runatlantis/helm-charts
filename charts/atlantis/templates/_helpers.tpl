@@ -119,11 +119,13 @@ Generates Redis Secret name
 Common labels
 */}}
 {{- define "atlantis.labels" -}}
-app: {{ template "atlantis.name" . }}
-chart: {{ template "atlantis.chart" . }}
+app.kubernetes.io/name: {{ template "atlantis.name" . }}
 helm.sh/chart: {{ template "atlantis.chart" . }}
-release: {{ .Release.Name }}
-heritage: {{ .Release.Service }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+{{- end }}
 {{- if .Values.commonLabels}}
 {{ toYaml .Values.commonLabels }}
 {{- end }}

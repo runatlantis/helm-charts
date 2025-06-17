@@ -44,8 +44,8 @@ tests:
           path: spec.selector
           value:
             matchLabels:
-              app: atlantis
-              release: my-release
+              app.kubernetes.io/name: atlantis
+              app.kubernetes.io/instance: my-release
       - equal:
           path: spec.template.metadata.labels
           value:
