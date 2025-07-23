@@ -32,7 +32,7 @@ In order for Atlantis to start and run successfully:
     - `bitbucket`
     - `azuredevops`
 
-    Refer to [values.yaml](/charts/atlantis/values.yaml) for detailed examples.
+    Refer to [values.yaml](https://github.com/runatlantis/helm-charts/blob/main/charts/atlantis/values.yaml) for detailed examples.
     They can also be provided directly through a Kubernetes `Secret`, use the variable `vcsSecretName` to reference it.
 
 1. Supply a value for `orgAllowlist`, e.g. `github.com/myorg/*`.
@@ -53,7 +53,7 @@ extraManifests:
 ```
 
 ## Customization
-The following options are supported. See [values.yaml](/charts/atlantis/values.yaml) for more detailed documentation and examples:
+The following options are supported. See [values.yaml](https://github.com/runatlantis/helm-charts/blob/main/charts/atlantis/values.yaml) for more detailed documentation and examples:
 
 | Parameter                                           | Description                                                                                                                                                                                                                                                                                                 | Default               |
 |-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|
