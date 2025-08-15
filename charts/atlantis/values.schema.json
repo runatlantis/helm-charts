@@ -1159,26 +1159,25 @@
     },
     "extraAnnotations": {
       "type": "object",
-      "description": "Add additional annotations to all ",
-      "items": {
-        "type": "object"
-      },
-      "examples": [
-        [
-          "--disable-autoplan",
-          "--disable-repo-locking"
-        ]
-      ]
-    },
-    "extraArgs": {
-      "type": "array",
       "description": "These annotations will be added to all the resources",
       "items": {
-        "type": "string"
+        "type": "object"
       },
       "examples": {
         "team": "example"
       }
+    },
+    "extraArgs": {
+      "type": "array",
+      "description": "Optionally specify extra arguments for the Atlantis pod.",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "examples": [
+        "--disable-autoplan",
+        "--disable-repo-locking"
+      ]
     },
     "extraContainers": {
       "description": "Additional containers to use and depends of use cases.",
