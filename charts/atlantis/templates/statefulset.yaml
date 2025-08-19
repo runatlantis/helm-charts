@@ -130,6 +130,10 @@ spec:
         secret:
           secretName: {{ .Values.netrcSecretName }}
       {{- end }}
+      {{- if or .Values.aws.credentials .Values.aws.config }}
+      - name: aws-dir
+        emptyDir: {}
+      {{- end }}
       {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
       - name: aws-volume
         secret:
@@ -584,10 +588,23 @@ spec:
             mountPath: /home/atlantis/.netrc
             subPath: netrc
           {{- end }}
-          {{- if or .Values.aws.credentials .Values.aws.config .Values.awsSecretName }}
+          {{- if .Values.awsSecretName }}
           - name: aws-volume
             readOnly: true
             mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
+          {{- else if or .Values.aws.credentials .Values.aws.config }}
+          - name: aws-dir
+            mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}
+          {{- end }}
+          {{- if .Values.aws.credentials }}
+          - name: aws-volume
+            mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}/credentials
+            subPath: credentials
+          {{- end }}
+          {{- if .Values.aws.config }}
+          - name: aws-volume
+            mountPath: {{ .Values.aws.directory | default "/home/atlantis/.aws" }}/config
+            subPath: config
           {{- end }}
           {{- if .Values.tlsSecretName }}
           - name: tls
