@@ -26,7 +26,7 @@ spec:
     matchNames:
       - {{ .Release.Namespace }}
   endpoints:
-  - port: atlantis
+  - port: {{ .Values.service.portName }}
     interval: {{ .Values.servicemonitor.interval }}
     path: {{ .Values.servicemonitor.path }}
     {{- with .Values.servicemonitor.metricRelabelings }}
