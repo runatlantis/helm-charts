@@ -1163,9 +1163,9 @@
       "items": {
         "type": "object"
       },
-      "examples": {
-        "team": "example"
-      }
+      "examples": [
+        {"team": "example"}
+      ]
     },
     "extraArgs": {
       "type": "array",
