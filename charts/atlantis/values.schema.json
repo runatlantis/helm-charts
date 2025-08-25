@@ -278,10 +278,15 @@
       "type": "object",
       "description": "Atlantis image configuration.",
       "properties": {
+        "registry": {
+          "description": "image registry.",
+          "type": "string",
+          "default": "ghcr.io/"
+        },
         "repository": {
           "description": "image repository.",
           "type": "string",
-          "default": "ghcr.io/runatlantis/atlantis"
+          "default": "runatlantis/atlantis"
         },
         "tag": {
           "description": "image tag. if not set appVersion field from Chart.yaml is used",

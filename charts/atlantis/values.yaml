@@ -176,7 +176,8 @@ serviceAccountSecrets: {}
 containerPort: 0
 
 image:
-  repository: ghcr.io/runatlantis/atlantis
+  registry: ghcr.io/
+  repository: runatlantis/atlantis
   # -- If not set appVersion field from Chart.yaml is used
   tag: ""
   pullPolicy: Always
