@@ -125,7 +125,8 @@ extraManifests:
 | hostAliases | list | `[]` | Optionally specify hostAliases for the Atlantis pod. Check values.yaml for examples. |
 | hostNetwork | bool | `false` |  |
 | image.pullPolicy | string | `"Always"` |  |
-| image.repository | string | `"ghcr.io/runatlantis/atlantis"` |  |
+| image.registry | string | `"ghcr.io/"` |  |
+| image.repository | string | `"runatlantis/atlantis"` |  |
 | image.tag | string | `""` | If not set appVersion field from Chart.yaml is used |
 | imagePullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/. Check values.yaml for examples. |
 | ingress.annotations | object | `{}` | Check values.yaml for examples. |
