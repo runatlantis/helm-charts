@@ -1,0 +1,98 @@
+suite: test podmonitoring
+templates:
+  - "podmonitor.yaml"
+chart:
+  appVersion: test-appVersion
+release:
+  name: my-release
+  namespace: my-namespace
+tests:
+  - it: does not render when disabled
+    set:
+      podMonitor:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders with defaults
+    set:
+      podMonitor:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: PodMonitoring
+      - equal:
+          path: metadata.name
+          value: my-release-atlantis
+      - equal:
+          path: metadata.namespace
+          value: my-namespace
+      - equal:
+          path: spec.endpoints[0].interval
+          value: "30s"
+
+  - it: allows overriding interval
+    set:
+      podMonitor:
+        enabled: true
+        interval: "15s"
+    asserts:
+      - equal:
+          path: spec.endpoints[0].interval
+          value: "15s"
+
+  - it: applies metricRelabeling - replace
+    set:
+      podMonitor:
+        enabled: true
+        metricRelabeling:
+          - action: replace
+            separator: "_"
+            sourceLabels: ["atlantis_metric"]
+            targetLabel: atlantis_metric_custom
+    asserts:
+      - lengthEqual:
+          path: spec.endpoints[0].metricRelabeling
+          count: 1
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].action
+          value: replace
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].separator
+          value: "_"
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].sourceLabels
+          value: ["atlantis_metric"]
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].targetLabel
+          value: atlantis_metric_custom
+
+  - it: renders a complex keep regex (multiline → single-line)
+    set:
+      podMonitor:
+        enabled: true
+        metricRelabeling:
+          - action: keep
+            sourceLabels: ["__name__"]
+            regex: |
+              (
+                atlantis_(.+)
+                |one_(.+)
+                |two_(.+)
+              )
+    asserts:
+      - lengthEqual:
+          path: spec.endpoints[0].metricRelabeling
+          count: 1
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].action
+          value: keep
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].sourceLabels
+          value: ["__name__"]
+      - equal:
+          path: spec.endpoints[0].metricRelabeling[0].regex
+          value: "(atlantis_(.+)|one_(.+)|two_(.+))"

@@ -25,5 +25,23 @@ spec:
       {{- end }}
   endpoints:
   - port: atlantis
-    interval: {{ .Values.podMonitor.interval }}
+    {{- with .Values.podMonitor }}
+    interval: {{ .interval }}
+    {{- if .metricRelabeling }}
+    metricRelabeling:
+    {{- range .metricRelabeling }}
+    - action: {{ default "replace" .action }}
+      {{- if .regex }}
+      # To ensure metrics are scraped correctly, we need to use >-
+      # or keep the regex on a single line. If the regex is split across multiple lines,
+      # it must be handled explicitly. Using toYaml will prevent the metrics from being scraped.
+      regex: {{ .regex | replace "\n" "" | replace " " "" | quote }}
+      {{- end }}
+      {{- $extraParams := omit . "regex" "action" }}
+      {{- if $extraParams }}
+      {{- $extraParams | toYaml | nindent 6 }}
+      {{- end }}
+    {{- end }}
+    {{- end }}
+    {{- end }}
 {{- end }}
