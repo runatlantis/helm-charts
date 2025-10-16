@@ -313,11 +313,9 @@ service:
   # -- (string) [optional] Internal traffic policy for the Service. One of: Cluster, Local.
   internalTrafficPolicy: null
   # -- (string) [optional] Kubernetes Service sessionAffinity setting. One of: ClientIP, None.
-  # sessionAffinity: ClientIP
+  sessionAffinity: null
   # -- (object) [optional] Kubernetes Service sessionAffinityConfig. Only applicable when sessionAffinity=ClientIP.
-  # sessionAffinityConfig:
-  #   clientIP:
-  #     timeoutSeconds: 10800
+  sessionAffinityConfig: null
 
 podTemplate:
   # -- Check values.yaml for examples.

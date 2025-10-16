@@ -95,7 +95,7 @@ extraManifests:
     kind: XBackendTrafficPolicy
     metadata:
       name: atlantis-session-persistence
-      namespace: "{{ .Release.Namespace }}"
+      namespace: "{{ `.Release.Namespace` }}"
     spec:
       targetRefs:
         - group: ""
