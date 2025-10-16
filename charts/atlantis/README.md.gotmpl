@@ -61,6 +61,57 @@ extraManifests:
         name: "gcp-cloud-armor-policy-test"
 ```
 
+## High Availability and Sticky Sessions
+
+When running multiple replicas, enable sticky sessions to keep the browser session (including WebSocket upgrades) routed to the same Atlantis pod.
+
+- Service-level stickiness (ClientIP):
+
+```yaml
+service:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+```
+
+- If using NGINX Ingress, consider cookie-based affinity and longer WS timeouts:
+
+```yaml
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+```
+
+- If using Gateway API, you can enable cookie persistence via an extra manifest (controller support required):
+
+```yaml
+extraManifests:
+  - apiVersion: gateway.networking.x-k8s.io/v1alpha1
+    kind: XBackendTrafficPolicy
+    metadata:
+      name: atlantis-session-persistence
+      namespace: "{{ .Release.Namespace }}"
+    spec:
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: atlantis
+      sessionPersistence:
+        type: Cookie
+        sessionName: atlantis-session
+        idleTimeout: 1h
+        absoluteTimeout: 24h
+        cookieConfig:
+          lifetimeType: Session
+```
+
+Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on your environment and how you want internal routing handled.
+
 {{ template "chart.valuesSection" . }}
 
 ## Upgrading

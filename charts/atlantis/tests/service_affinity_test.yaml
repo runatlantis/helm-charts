@@ -1,0 +1,39 @@
+suite: test service session affinity
+templates:
+  - templates/service.yaml
+
+# Validate that new Service fields render only when configured and match values
+
+tests:
+  - it: does not render affinity or internalTrafficPolicy by default
+    asserts:
+      - notExists:
+          path: spec.sessionAffinity
+      - notExists:
+          path: spec.sessionAffinityConfig
+      - notExists:
+          path: spec.internalTrafficPolicy
+
+  - it: renders sessionAffinity ClientIP and sessionAffinityConfig when set
+    set:
+      service:
+        sessionAffinity: ClientIP
+        sessionAffinityConfig:
+          clientIP:
+            timeoutSeconds: 10800
+    asserts:
+      - equal:
+          path: spec.sessionAffinity
+          value: ClientIP
+      - equal:
+          path: spec.sessionAffinityConfig.clientIP.timeoutSeconds
+          value: 10800
+
+  - it: renders internalTrafficPolicy when set
+    set:
+      service:
+        internalTrafficPolicy: Local
+    asserts:
+      - equal:
+          path: spec.internalTrafficPolicy
+          value: Local
