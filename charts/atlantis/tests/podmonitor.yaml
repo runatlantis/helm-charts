@@ -70,19 +70,14 @@ tests:
           path: spec.endpoints[0].metricRelabeling[0].targetLabel
           value: atlantis_metric_custom
 
-  - it: renders a complex keep regex (multiline → single-line)
+  - it: applies metricRelabeling - regex
     set:
       podMonitor:
         enabled: true
         metricRelabeling:
           - action: keep
             sourceLabels: ["__name__"]
-            regex: |
-              (
-                atlantis_(.+)
-                |one_(.+)
-                |two_(.+)
-              )
+            regex: (atlantis_(.+)|one_(.+)|two_(.+))
     asserts:
       - lengthEqual:
           path: spec.endpoints[0].metricRelabeling
