@@ -729,6 +729,7 @@ servicemonitor:
 podMonitor:
   enabled: false
   interval: "30s"
+  metricRelabeling: []
 
 # -- Set the desired Locking DB type
 # Accepts boltdb or redis.
