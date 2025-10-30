@@ -1281,6 +1281,12 @@
         "interval": {
           "type": "string",
           "description": "The interval at which to scrape the metrics"
+        },
+        "metricRelabeling": {
+          "description": "Optional metric relabeling to keep, drop or modify metrics.",
+          "type": "array",
+          "default": [],
+          "items": {}
         }
       }
     },

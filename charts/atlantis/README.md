@@ -167,7 +167,7 @@ extraManifests:
 | nodeSelector | object | `{}` |  |
 | orgAllowlist | string | `"<replace-me>"` | Replace this with your own repo allowlist. |
 | orgWhitelist | string | `"<deprecated>"` | Deprecated in favor of orgAllowlist. |
-| podMonitor | object | `{"enabled":false,"interval":"30s"}` | Enable this if you're using Google Managed Prometheus. |
+| podMonitor | object | `{"enabled":false,"interval":"30s","metricRelabeling":[]}` | Enable this if you're using Google Managed Prometheus. |
 | podTemplate.annotations | object | `{}` | Check values.yaml for examples. |
 | podTemplate.labels | object | `{}` |  |
 | readinessProbe.enabled | bool | `true` |  |
