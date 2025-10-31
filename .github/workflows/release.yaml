@@ -50,4 +50,4 @@ jobs:
       - name: Push chart to GHCR
         run: |
           helm package charts/atlantis
-          helm push atlantis-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/charts
+          helm push atlantis-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts
