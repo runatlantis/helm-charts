@@ -21,6 +21,8 @@ helm repo add runatlantis https://runatlantis.github.io/helm-charts
 
 You can then run `helm search repo runatlantis` to see the charts.
 
+OCI artifacts of all Atlantis Helm charts are available in [ghcr.io](https://github.com/orgs/runatlantis/packages?repo_name=charts).
+
 ## Commands
 
 Run `make help` to check available commands.
