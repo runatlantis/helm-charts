@@ -669,11 +669,6 @@
           "default": null,
           "description": "Name of the ingress class to use for the Ingress."
         },
-        "apiVersion": {
-          "type": "string",
-          "description": "The Kubernetes API version used for configuring ingress. If not specified, Helm tries to automatically determine a compatible version based on the cluster's capabilities. The default value is \"\" and is only accepted if it is one of the supported versions: `networking.k8s.io/v1`, `networking.k8s.io/v1beta1`, or `extensions/v1beta1`. In cases where Helm can't determine the cluster's capabilities automatically, this value can be used to override the API version. Setting an unsupported value will result in an error during the Helm chart installation.",
-          "default": ""
-        },
         "annotations": {
           "type": "object",
           "description": "Additional annotations to use for the Ingress.",
