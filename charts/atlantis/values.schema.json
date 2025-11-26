@@ -1046,6 +1046,18 @@
         "type": "object"
       }
     },
+    "extraSecretManifests": {
+      "type": "array",
+      "description": "Add additional secret manifests to deploy",
+      "items": {
+        "type": "object"
+      }
+    },
+    "sops": {
+      "type": "object",
+      "description": "SOPS metadata for extra secret manifests",
+      "default": {}
+    },
     "initContainers": {
       "description": "Containers used to initialize context for Atlantis pods",
       "items": {
