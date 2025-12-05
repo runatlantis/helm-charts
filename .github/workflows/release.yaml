@@ -16,6 +16,7 @@ jobs:
       contents: write # to push chart release and create a release (helm/chart-releaser-action)
       packages: write # needed for ghcr access
       id-token: write # needed for keyless signing
+      attestations: write # needed for artifact attestation
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
@@ -49,6 +50,20 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push chart to GHCR
+        id: push-chart
         run: |
           helm package charts/atlantis
-          helm push atlantis-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts
+
+          # Push and capture output to get the OCI digest
+          PUSH_OUTPUT=$(helm push atlantis-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts 2>&1)
+                    
+          # Extract the OCI digest from helm push output
+          DIGEST=$(echo "${PUSH_OUTPUT}" | grep -o 'sha256:[a-f0-9]\{64\}')
+          echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
+
+      - name: Attest chart OCI artifact
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/charts/atlantis
+          subject-digest: ${{ steps.push-chart.outputs.digest }}
+          push-to-registry: true
