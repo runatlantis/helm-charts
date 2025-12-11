@@ -3,8 +3,8 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
-      - 'charts/atlantis/**'
-      - 'ct.yaml'
+      - "charts/atlantis/**"
+      - "ct.yaml"
 
 defaults:
   run:
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6
         with:
           # renovate: datasource=docker depName=python
-          python-version: '3.14'
+          python-version: "3.14"
           check-latest: true
 
       - name: Set up chart-testing
@@ -61,10 +61,45 @@ jobs:
             echo "Documentation is up to date." >&2
           fi
 
-      - name: Install helm unittests
+      # - name: Install helm unittests
+      #   if: steps.list-changed.outputs.changed == 'true'
+      #   run: |
+      #     make unit-test-install
+
+      # Required until https://github.com/helm-unittest/helm-unittest/issues/777 is fixed
+      - name: Install helm-unittest plugin with checksum validation
         if: steps.list-changed.outputs.changed == 'true'
+        shell: bash
         run: |
-          make unit-test-install
+          set -euo pipefail
+
+          VERSION="1.0.3" # without v
+          ARCH="$(uname -m)"
+
+          case "${ARCH}" in
+            x86_64)
+              ARCH=amd64
+              SUM="12a9ef198e21166fe5f7487544903d91355b4ea08b1d59220f1543234caf4371"
+            ;;
+            aarch64|arm64)
+              ARCH=arm64
+              SUM="540aec896945e0e26f443b0d1976d556ce0a3bfa7b10255ed1beecc8d2f7a1cc"
+            ;;
+            *)
+              echo "Unsupported arch: ${ARCH}"
+              exit 1
+            ;;
+          esac
+
+          ASSET="helm-unittest-linux-${ARCH}-${VERSION}.tgz"
+
+          wget "https://github.com/helm-unittest/helm-unittest/releases/download/v${VERSION}/${ASSET}"
+          echo "${SUM}  ${ASSET}" | sha256sum -c
+
+          mkdir -p "$(helm env HELM_PLUGINS)/${ASSET%.*}"
+          tar -xzf "${ASSET}" -C "$(helm env HELM_PLUGINS)/${ASSET%.*}"
+
+          helm plugin list
 
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
@@ -72,7 +107,6 @@ jobs:
           ct lint \
             --config ct.yaml \
             --target-branch ${{ github.event.repository.default_branch }}
-
 
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'

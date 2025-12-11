@@ -11,7 +11,7 @@ docs: ## Build helm chart documentation
 
 .PHONY: unit-test-install
 unit-test-install:
-	@helm plugin list | grep unittest || helm plugin install --version v0.3.6 https://github.com/helm-unittest/helm-unittest
+	@helm plugin list | grep unittest || helm plugin install --version v1.0.3 https://github.com/helm-unittest/helm-unittest
 
 .PHONY: unit-test-run-atlantis
 unit-test-run-atlantis: unit-test-install ## Run unit tests for Atlantis
