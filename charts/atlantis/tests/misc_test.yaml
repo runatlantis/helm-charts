@@ -9,37 +9,43 @@ release:
 tests:
   - it: ensure namespaces are specified in all resources
     set:
-      config: "dummy"
+      config: dummy
       gitconfigReadOnly: false
-      gitconfig: "dummy"
+      gitconfig: dummy
       initConfig:
         enabled: true
-      repoConfig: "dummy"
+      repoConfig: dummy
       podMonitor:
         enabled: true
       servicemonitor:
         enabled: true
       enableKubernetesBackend: true
       api:
-        secret: "dummy"
+        secret: dummy
       aws:
-        config: "dummy"
+        config: dummy
       basicAuth:
-        username: "dummy"
-        password: "dummy"
-      netrc: "dummy"
+        username: dummy
+        password: dummy
+      netrc: dummy
       redis:
-        password: "dummy"
+        password: dummy
       serviceAccountSecrets:
-        credentials: "dummy"
+        credentials: dummy
       webhook_ingress:
         enabled: true
       extraManifests:
-      - apiVersion: v1
-        kind: Pod
-        metadata:
-          name: dummy
-          namespace: "my-namespace"
+        - apiVersion: v1
+          kind: Pod
+          metadata:
+            name: dummy-manifest
+            namespace: my-namespace
+      extraSecretManifests:
+        - apiVersion: v1
+          kind: Pod
+          metadata:
+            name: dummy-secret
+            namespace: my-namespace
 
     asserts:
       - equal:
