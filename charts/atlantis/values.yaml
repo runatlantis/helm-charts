@@ -334,7 +334,6 @@ statefulSet:
 ingress:
   enabled: true
   ingressClassName:
-  apiVersion: ""
   labels: {}
   # -- Check values.yaml for examples.
   annotations: {}
@@ -373,7 +372,6 @@ webhook_ingress:
   # -- When true creates a secondary webhook.
   enabled: false
   ingressClassName:
-  apiVersion: ""
   # -- Check values.yaml for examples.
   annotations: {}
   # annotations:

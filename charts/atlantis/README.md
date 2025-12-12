@@ -146,7 +146,6 @@ extraManifests:
 | image.tag | string | `""` | If not set appVersion field from Chart.yaml is used |
 | imagePullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/. Check values.yaml for examples. |
 | ingress.annotations | object | `{}` | Check values.yaml for examples. |
-| ingress.apiVersion | string | `""` |  |
 | ingress.enabled | bool | `true` |  |
 | ingress.host | string | `""` |  |
 | ingress.hosts | list | `[]` | Used when several hosts are required. Check values.yaml for examples. |
@@ -248,7 +247,6 @@ extraManifests:
 | volumeClaim.enabled | bool | `true` |  |
 | volumeClaim.storageClassName | string | `""` | Storage class name (if possible, use a resizable one). |
 | webhook_ingress.annotations | object | `{}` | Check values.yaml for examples. |
-| webhook_ingress.apiVersion | string | `""` |  |
 | webhook_ingress.enabled | bool | `false` | When true creates a secondary webhook. |
 | webhook_ingress.host | string | `""` |  |
 | webhook_ingress.hosts | list | `[]` | Used when several hosts are required. Check values.yaml for examples. |
