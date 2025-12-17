@@ -679,6 +679,7 @@
           "description": "Additional annotations to use for the Ingress.",
           "additionalProperties": {
             "type": "string"
+            }
           },
           "labels": {
             "type": "object",
