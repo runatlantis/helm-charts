@@ -1046,6 +1046,18 @@
         "type": "object"
       }
     },
+    "extraSecretManifests": {
+      "type": "array",
+      "description": "Add additional secret manifests to deploy",
+      "items": {
+        "type": "object"
+      }
+    },
+    "sops": {
+      "type": "object",
+      "description": "SOPS metadata for extra secret manifests",
+      "default": {}
+    },
     "initContainers": {
       "description": "Containers used to initialize context for Atlantis pods",
       "items": {
@@ -1159,26 +1171,27 @@
     },
     "extraAnnotations": {
       "type": "object",
-      "description": "Add additional annotations to all ",
+      "description": "These annotations will be added to all the resources",
       "items": {
         "type": "object"
       },
       "examples": [
-        [
-          "--disable-autoplan",
-          "--disable-repo-locking"
-        ]
+        {
+          "team": "example"
+        }
       ]
     },
     "extraArgs": {
       "type": "array",
-      "description": "These annotations will be added to all the resources",
+      "description": "Optionally specify extra arguments for the Atlantis pod.",
       "items": {
         "type": "string"
       },
-      "examples": {
-        "team": "example"
-      }
+      "default": [],
+      "examples": [
+        "--disable-autoplan",
+        "--disable-repo-locking"
+      ]
     },
     "extraContainers": {
       "description": "Additional containers to use and depends of use cases.",
@@ -1280,6 +1293,12 @@
         "interval": {
           "type": "string",
           "description": "The interval at which to scrape the metrics"
+        },
+        "metricRelabeling": {
+          "description": "Optional metric relabeling to keep, drop or modify metrics.",
+          "type": "array",
+          "default": [],
+          "items": {}
         }
       }
     },

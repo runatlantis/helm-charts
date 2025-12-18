@@ -10,6 +10,8 @@
 
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
+- [Usage](#usage)
+  - [Install Helm Chart](#install-helm-chart)
 - [Required Configuration](#required-configuration)
 - [Additional manifests](#additional-manifests)
 - [Values](#values)
@@ -29,6 +31,21 @@ This chart creates a single pod in a StatefulSet running Atlantis. Atlantis pers
 
 - Kubernetes 1.9+
 - PersistentVolume support
+
+## Usage
+
+The chart is distributed as an [OCI Artifact](https://helm.sh/docs/topics/registries/) as well as via a traditional [Helm Repository](https://helm.sh/docs/topics/chart_repository/).
+
+- OCI Artifact: `oci://ghcr.io/runatlantis/charts/atlantis`
+- Helm Repository: `https://runatlantis.github.io/helm-charts` with chart `atlantis`
+
+The installation instructions use the OCI registry. Refer to the [`helm repo`](https://helm.sh/docs/helm/helm_repo/) command documentation for information on installing charts via the traditional repository.
+
+### Install Helm Chart
+
+```console
+helm install [RELEASE_NAME] oci://ghcr.io/runatlantis/charts/atlantis
+```
 
 ## Required Configuration
 
@@ -208,8 +225,7 @@ To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is u
 1. Install the chart. Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
 
     ```bash
-    helm repo add runatlantis https://runatlantis.github.io/helm-charts
-    helm install -f test-values.yaml my-atlantis runatlantis/atlantis --debug
+    helm install -f test-values.yaml my-atlantis oci://ghcr.io/runatlantis/charts/atlantis --debug
     ```
 
 1. Run the tests:

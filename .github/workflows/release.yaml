@@ -13,10 +13,13 @@ jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # to push chart release and create a release (helm/chart-releaser-action)
+      packages: write # needed for ghcr access
+      id-token: write # needed for keyless signing
+      attestations: write # needed for artifact attestation
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
         with:
           fetch-depth: 0
 
@@ -26,14 +29,41 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4
         with:
           # renovate: datasource=github-tags depName=helm packageName=helm/helm
-          version: v3.18.2
+          version: v4.0.4
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.7.0
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_SKIP_EXISTING: true
           CR_GENERATE_RELEASE_NOTES: true
+
+      # see https://github.com/helm/chart-releaser/issues/183
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push chart to GHCR
+        id: push-chart
+        run: |
+          helm package charts/atlantis
+
+          # Push and capture output to get the OCI digest
+          PUSH_OUTPUT=$(helm push atlantis-*.tgz oci://ghcr.io/${GITHUB_REPOSITORY_OWNER}/charts 2>&1)
+                    
+          # Extract the OCI digest from helm push output
+          DIGEST=$(echo "${PUSH_OUTPUT}" | grep -o 'sha256:[a-f0-9]\{64\}')
+          echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
+
+      - name: Attest chart OCI artifact
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/charts/atlantis
+          subject-digest: ${{ steps.push-chart.outputs.digest }}
+          push-to-registry: true
