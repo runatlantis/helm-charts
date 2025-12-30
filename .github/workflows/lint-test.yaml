@@ -73,17 +73,17 @@ jobs:
         run: |
           set -euo pipefail
 
-          VERSION="1.0.3" # without v
+          VERSION="1.0.2" # without v
           ARCH="$(uname -m)"
 
           case "${ARCH}" in
             x86_64)
               ARCH=amd64
-              SUM="12a9ef198e21166fe5f7487544903d91355b4ea08b1d59220f1543234caf4371"
+              SUM="c3fa443e21860549120cc43455e7fe517f80e5878aff4aa3fee8f8b803eb00fa"
             ;;
             aarch64|arm64)
               ARCH=arm64
-              SUM="540aec896945e0e26f443b0d1976d556ce0a3bfa7b10255ed1beecc8d2f7a1cc"
+              SUM="f543a40777e45a63aaf2808a3395e72027a53d3daef10520a9aba65dbf13ff91"
             ;;
             *)
               echo "Unsupported arch: ${ARCH}"
