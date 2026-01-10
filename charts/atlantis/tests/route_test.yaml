@@ -1,0 +1,132 @@
+---
+suite: test route
+templates:
+  - route.yaml
+release:
+  name: my-release
+  namespace: default
+tests:
+  - it: should not create route when disabled
+    set:
+      route:
+        main:
+          enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should create HTTPRoute with default values
+    set:
+      route:
+        main:
+          enabled: true
+    asserts:
+      - isKind:
+          of: HTTPRoute
+      - equal:
+          path: apiVersion
+          value: gateway.networking.k8s.io/v1
+      - equal:
+          path: kind
+          value: HTTPRoute
+      - equal:
+          path: metadata.name
+          value: my-release-atlantis
+      - equal:
+          path: metadata.namespace
+          value: default
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: my-release-atlantis
+      - equal:
+          path: spec.rules[0].backendRefs[0].port
+          value: 80
+  - it: should create HTTPRoute with custom apiVersion and kind
+    set:
+      route:
+        main:
+          enabled: true
+          apiVersion: gateway.networking.k8s.io/v1alpha2
+          kind: HTTPRoute
+    asserts:
+      - equal:
+          path: apiVersion
+          value: gateway.networking.k8s.io/v1alpha2
+  - it: should create HTTPRoute with hostnames
+    set:
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - atlantis.example.com
+    asserts:
+      - equal:
+          path: spec.hostnames
+          value:
+            - atlantis.example.com
+  - it: should create HTTPRoute with parentRefs
+    set:
+      route:
+        main:
+          enabled: true
+          parentRefs:
+            - name: my-gateway
+    asserts:
+      - equal:
+          path: spec.parentRefs
+          value:
+            - name: my-gateway
+  - it: should create HTTPRoute with https redirect
+    set:
+      route:
+        main:
+          enabled: true
+          httpsRedirect: true
+    asserts:
+      - equal:
+          path: spec.rules[0].filters[0].type
+          value: RequestRedirect
+      - equal:
+          path: spec.rules[0].filters[0].requestRedirect.scheme
+          value: https
+      - equal:
+          path: spec.rules[0].filters[0].requestRedirect.statusCode
+          value: 301
+  - it: should create HTTPRoute with additional rules
+    set:
+      route:
+        main:
+          enabled: true
+          additionalRules:
+            - matches:
+                - path:
+                    type: Exact
+                    value: /health
+              backendRefs:
+                - name: health-service
+                  port: 8080
+    asserts:
+      - equal:
+          path: spec.rules[0].matches[0].path.type
+          value: Exact
+      - equal:
+          path: spec.rules[0].matches[0].path.value
+          value: /health
+      - equal:
+          path: spec.rules[0].backendRefs[0].name
+          value: health-service
+  - it: should add labels and annotations
+    set:
+      route:
+        main:
+          enabled: true
+          labels:
+            custom-label: value
+          annotations:
+            custom-annotation: value
+    asserts:
+      - equal:
+          path: metadata.labels.custom-label
+          value: value
+      - equal:
+          path: metadata.annotations.custom-annotation
+          value: value

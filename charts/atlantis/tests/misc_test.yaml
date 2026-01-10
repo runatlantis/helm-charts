@@ -34,6 +34,9 @@ tests:
         credentials: dummy
       webhook_ingress:
         enabled: true
+      route:
+        main:
+          enabled: true
       extraManifests:
         - apiVersion: v1
           kind: Pod
