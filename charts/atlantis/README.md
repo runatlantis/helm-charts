@@ -200,6 +200,18 @@ extraManifests:
 | replicaCount | int | `1` | Replica count for Atlantis pods. |
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
+| route.main.additionalRules | list | `[]` |  |
+| route.main.annotations | object | `{}` |  |
+| route.main.apiVersion | string | `"gateway.networking.k8s.io/v1"` | Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2 |
+| route.main.enabled | bool | `false` | Enables or disables the route |
+| route.main.filters | list | `[]` |  |
+| route.main.hostnames | list | `[]` |  |
+| route.main.httpsRedirect | bool | `false` |  |
+| route.main.kind | string | `"HTTPRoute"` | Set the route kind |
+| route.main.labels | object | `{}` |  |
+| route.main.matches[0].path.type | string | `"PathPrefix"` |  |
+| route.main.matches[0].path.value | string | `"/"` |  |
+| route.main.parentRefs | list | `[]` |  |
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
