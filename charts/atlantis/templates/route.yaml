@@ -1,6 +1,5 @@
 {{- $fullName := include "atlantis.fullname" . }}
 {{- $namespace := .Release.Namespace -}}
-{{- $svcPort := .Values.service.port -}}
 {{- range $name, $route := .Values.route }}
 {{- if $route.enabled }}
 ---
@@ -40,7 +39,7 @@ spec:
     {{- else }}
     - backendRefs:
         - name: {{ $fullName }}
-          port: {{ $svcPort }}
+          port: {{ $.Values.service.port }}
           group: ''
           kind: Service
           weight: 1
