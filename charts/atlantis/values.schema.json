@@ -171,6 +171,10 @@
           "type": "string",
           "description": "Personal access token for the Atlantis Bitbucket user."
         },
+        "apiUser": {
+          "type": "string",
+          "description": "API user for Bitbucket Cloud when using API tokens. May differ from the user field for API token authentication."
+        },
         "secret": {
           "type": "string",
           "description": "Webhook secret for Bitbucket repositories (Bitbucket Server only)."
