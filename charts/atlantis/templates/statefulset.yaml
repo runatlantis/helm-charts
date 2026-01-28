@@ -431,6 +431,10 @@ spec:
           {{- if .Values.bitbucket }}
           - name: ATLANTIS_BITBUCKET_USER
             value: {{ required "bitbucket.user is required if bitbucket configuration is specified." .Values.bitbucket.user }}
+          {{- if .Values.bitbucket.apiUser }}
+          - name: ATLANTIS_BITBUCKET_API_USER
+            value: {{ .Values.bitbucket.apiUser }}
+          {{- end }}
           - name: ATLANTIS_BITBUCKET_TOKEN
             valueFrom:
               secretKeyRef:

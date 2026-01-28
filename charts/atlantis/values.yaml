@@ -90,9 +90,11 @@ bitbucket: {}
 # The recommendation is to genarate a service user on your cloud environment, but you can live on the edge using your own user :).
 # Create an APP PASSWORD to the user for the token value.
 # Base URL are not needed here, but keep in mind to provide an IP Whitelist as the Atlantis documentation.
+# For API token authentication (recommended over app passwords), specify apiUser which may differ from the user field.
 # bitbucket:
 #   user: foo
 #   token: bar
+#   apiUser: foo@example.com  # Optional: specify if using API tokens and the API user differs from user
 
 # -- If using Azure DevOps, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
