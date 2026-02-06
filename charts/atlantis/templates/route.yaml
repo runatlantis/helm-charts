@@ -3,8 +3,10 @@
 {{- range $name, $route := .Values.route }}
 {{- if $route.enabled }}
 ---
-apiVersion: {{ $route.apiVersion | default "gateway.networking.k8s.io/v1" }}
-kind: {{ $route.kind | default "HTTPRoute" }}
+{{- $apiVersion := $route.apiVersion | default "gateway.networking.k8s.io/v1" }}
+{{- $kind := $route.kind | default "HTTPRoute" }}
+apiVersion: {{ $apiVersion }}
+kind: {{ $kind }}
 metadata:
   name: {{ $fullName }}{{ if ne $name "main" }}-{{ $name }}{{ end }}
   namespace: {{ $namespace }}
@@ -18,6 +20,51 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
+  {{- if eq $apiVersion "route.openshift.io/v1" }}
+  {{- /* OpenShift Route spec */ -}}
+  {{- with $route.host }}
+  host: {{ . }}
+  {{- end }}
+  {{- with $route.path }}
+  path: {{ . }}
+  {{- end }}
+  to:
+    kind: Service
+    name: {{ $fullName }}
+    weight: {{ $route.weight | default 100 }}
+  {{- if $route.targetPort }}
+  port:
+    targetPort: {{ $route.targetPort }}
+  {{- else }}
+  port:
+    targetPort: {{ $.Values.service.targetPort | default $.Values.service.port }}
+  {{- end }}
+  {{- with $route.tls }}
+  tls:
+    {{- with .termination }}
+    termination: {{ . }}
+    {{- end }}
+    {{- with .certificate }}
+    certificate: {{ . }}
+    {{- end }}
+    {{- with .key }}
+    key: {{ . }}
+    {{- end }}
+    {{- with .caCertificate }}
+    caCertificate: {{ . }}
+    {{- end }}
+    {{- with .destinationCACertificate }}
+    destinationCACertificate: {{ . }}
+    {{- end }}
+    {{- with .insecureEdgeTerminationPolicy }}
+    insecureEdgeTerminationPolicy: {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- with $route.wildcardPolicy }}
+  wildcardPolicy: {{ . }}
+  {{- end }}
+  {{- else }}
+  {{- /* Gateway API HTTPRoute spec */ -}}
   {{- with $route.parentRefs }}
   parentRefs:
     {{- toYaml . | nindent 4 }}
@@ -52,5 +99,6 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+  {{- end }}
 {{- end }}
 {{- end }}

@@ -1,0 +1,44 @@
+# Example OpenShift Route with reencrypt termination
+# This provides end-to-end encryption: TLS at router and re-encrypted to backend
+orgAllowlist: github.com/example/*
+
+route:
+  main:
+    enabled: true
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    
+    # Hostname for the route
+    host: atlantis-secure.apps.openshift.example.com
+    
+    # Full TLS configuration with reencrypt termination
+    tls:
+      # Termination type: reencrypt (TLS at router, re-encrypted to pod)
+      termination: reencrypt
+      
+      # Router certificate (PEM encoded) - replace with your actual certificate
+      certificate: ""
+      
+      # Router private key (PEM encoded) - replace with your actual private key  
+      key: ""
+      
+      # Destination CA certificate (validates backend service certificate)
+      destinationCACertificate: ""
+      
+      # Redirect HTTP to HTTPS
+      insecureEdgeTerminationPolicy: Redirect
+    
+    wildcardPolicy: None
+    weight: 100
+    targetPort: https
+    
+    annotations:
+      haproxy.router.openshift.io/timeout: 120s
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 4141
+
+# Note: For reencrypt to work, your Atlantis pod must also serve HTTPS
+# You'll need to configure Atlantis with TLS certificates

@@ -57,6 +57,18 @@
         "debug"
       ]
     },
+    "openshift": {
+      "type": "object",
+      "description": "OpenShift specific configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable OpenShift specific configuration",
+          "default": false
+        }
+      },
+      "additionalProperties": false
+    },
     "github": {
       "type": "object",
       "description": "GitHub settings",
@@ -847,6 +859,60 @@
             "type": "object",
             "description": "Annotations specific to this route",
             "additionalProperties": { "type": "string" }
+          },
+          "host": {
+            "type": "string",
+            "description": "Host for OpenShift Route"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path for OpenShift Route"
+          },
+          "tls": {
+            "type": "object",
+            "description": "TLS configuration for OpenShift Route",
+            "properties": {
+              "termination": {
+                "type": "string",
+                "description": "TLS termination type: edge, passthrough, or reencrypt",
+                "enum": ["edge", "passthrough", "reencrypt"]
+              },
+              "certificate": {
+                "type": "string",
+                "description": "Certificate contents"
+              },
+              "key": {
+                "type": "string",
+                "description": "Private key contents"
+              },
+              "caCertificate": {
+                "type": "string",
+                "description": "CA certificate contents"
+              },
+              "destinationCACertificate": {
+                "type": "string",
+                "description": "Destination CA certificate for reencrypt termination"
+              },
+              "insecureEdgeTerminationPolicy": {
+                "type": "string",
+                "description": "Policy for redirecting insecure traffic",
+                "enum": ["None", "Allow", "Redirect"]
+              }
+            },
+            "additionalProperties": false
+          },
+          "wildcardPolicy": {
+            "type": "string",
+            "description": "Wildcard policy for OpenShift Route",
+            "enum": ["None", "Subdomain"]
+          },
+          "weight": {
+            "type": "integer",
+            "description": "Weight of the route for A/B deployments"
+          },
+          "targetPort": {
+            "type": ["string", "integer"],
+            "description": "Target port name or number for OpenShift Route"
           }
         },
         "additionalProperties": true
