@@ -8,6 +8,10 @@ fullnameOverride: ""
 # -- Provide a name to substitute for the name of the chart.
 nameOverride: ""
 
+# -- Enable OpenShift specific configuration
+openshift:
+  enabled: false
+
 # -- An option to override the atlantis url,
 # if not using an ingress, set it to the external IP.
 # Check values.yaml for examples.
@@ -416,14 +420,15 @@ route:
     # -- Enables or disables the route
     enabled: false
 
-    # -- Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2
+    # -- Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or route.openshift.io/v1
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Set the route kind
+    # -- Set the route kind (HTTPRoute for Gateway API, Route for OpenShift)
     kind: HTTPRoute
 
     annotations: {}
     labels: {}
 
+    # -- For Gateway API (HTTPRoute)
     hostnames: []
     # - atlantis.example.com
     parentRefs: []
@@ -442,6 +447,32 @@ route:
 
     ## httpsRedirect adds a filter for redirecting to https (HTTP 301 Moved Permanently).
     httpsRedirect: false
+
+    # -- OpenShift Route configuration (only used when apiVersion: route.openshift.io/v1 and kind: Route)
+    # -- Set the hostname for the route
+    host: ""
+    # -- Path that the router watches for to route traffic to the service
+    path: ""
+    # -- TLS configuration for the route
+    tls:
+      # -- TLS termination type: edge, passthrough, or reencrypt
+      termination: edge
+      # -- Certificate contents
+      certificate: ""
+      # -- Private key contents
+      key: ""
+      # -- CA certificate contents
+      caCertificate: ""
+      # -- Destination CA certificate for reencrypt termination
+      destinationCACertificate: ""
+      # -- Policy for redirecting insecure traffic: None, Allow, or Redirect
+      insecureEdgeTerminationPolicy: Redirect
+    # -- Wildcard policy: None or Subdomain
+    wildcardPolicy: None
+    # -- Weight of the route (for A/B deployments)
+    weight: 100
+    # -- Target port name (defaults to the service port)
+    targetPort: ""
 
 # -- Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one.
 # You have to create a secret with the specified name.
