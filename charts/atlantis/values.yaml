@@ -90,9 +90,11 @@ bitbucket: {}
 # The recommendation is to genarate a service user on your cloud environment, but you can live on the edge using your own user :).
 # Create an APP PASSWORD to the user for the token value.
 # Base URL are not needed here, but keep in mind to provide an IP Whitelist as the Atlantis documentation.
+# For API token authentication (recommended over app passwords), specify apiUser which may differ from the user field.
 # bitbucket:
 #   user: foo
 #   token: bar
+#   apiUser: foo@example.com  # Optional: specify if using API tokens and the API user differs from user
 
 # -- If using Azure DevOps, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
@@ -415,6 +417,38 @@ webhook_ingress:
   #      - chart-example.local
   labels: {}
 
+route:
+  main:
+    # -- Enables or disables the route
+    enabled: false
+
+    # -- Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Set the route kind
+    kind: HTTPRoute
+
+    annotations: {}
+    labels: {}
+
+    hostnames: []
+    # - atlantis.example.com
+    parentRefs: []
+    # - name: gateway
+
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+
+    ## Filters define the filters that are applied to requests that match this rule.
+    filters: []
+
+    ## Additional custom rules that can be added to the route
+    additionalRules: []
+
+    ## httpsRedirect adds a filter for redirecting to https (HTTP 301 Moved Permanently).
+    httpsRedirect: false
+
 # -- Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one.
 # You have to create a secret with the specified name.
 customPem: ""
@@ -735,6 +769,7 @@ servicemonitor:
 podMonitor:
   enabled: false
   interval: "30s"
+  metricRelabeling: []
 
 # -- Set the desired Locking DB type
 # Accepts boltdb or redis.

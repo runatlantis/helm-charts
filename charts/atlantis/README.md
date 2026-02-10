@@ -17,6 +17,8 @@
 
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
+- [Usage](#usage)
+  - [Install Helm Chart](#install-helm-chart)
 - [Required Configuration](#required-configuration)
 - [Additional manifests](#additional-manifests)
 - [Values](#values)
@@ -36,6 +38,21 @@ This chart creates a single pod in a StatefulSet running Atlantis. Atlantis pers
 
 - Kubernetes 1.9+
 - PersistentVolume support
+
+## Usage
+
+The chart is distributed as an [OCI Artifact](https://helm.sh/docs/topics/registries/) as well as via a traditional [Helm Repository](https://helm.sh/docs/topics/chart_repository/).
+
+- OCI Artifact: `oci://ghcr.io/runatlantis/charts/atlantis`
+- Helm Repository: `https://runatlantis.github.io/helm-charts` with chart `atlantis`
+
+The installation instructions use the OCI registry. Refer to the [`helm repo`](https://helm.sh/docs/helm/helm_repo/) command documentation for information on installing charts via the traditional repository.
+
+### Install Helm Chart
+
+```console
+helm install [RELEASE_NAME] oci://ghcr.io/runatlantis/charts/atlantis
+```
 
 ## Required Configuration
 
@@ -218,7 +235,7 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | nodeSelector | object | `{}` |  |
 | orgAllowlist | string | `"<replace-me>"` | Replace this with your own repo allowlist. |
 | orgWhitelist | string | `"<deprecated>"` | Deprecated in favor of orgAllowlist. |
-| podMonitor | object | `{"enabled":false,"interval":"30s"}` | Enable this if you're using Google Managed Prometheus. |
+| podMonitor | object | `{"enabled":false,"interval":"30s","metricRelabeling":[]}` | Enable this if you're using Google Managed Prometheus. |
 | podTemplate.annotations | object | `{}` | Check values.yaml for examples. |
 | podTemplate.labels | object | `{}` |  |
 | readinessProbe.enabled | bool | `true` |  |
@@ -234,6 +251,18 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | replicaCount | int | `1` | Replica count for Atlantis pods. |
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
+| route.main.additionalRules | list | `[]` |  |
+| route.main.annotations | object | `{}` |  |
+| route.main.apiVersion | string | `"gateway.networking.k8s.io/v1"` | Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2 |
+| route.main.enabled | bool | `false` | Enables or disables the route |
+| route.main.filters | list | `[]` |  |
+| route.main.hostnames | list | `[]` |  |
+| route.main.httpsRedirect | bool | `false` |  |
+| route.main.kind | string | `"HTTPRoute"` | Set the route kind |
+| route.main.labels | object | `{}` |  |
+| route.main.matches[0].path.type | string | `"PathPrefix"` |  |
+| route.main.matches[0].path.value | string | `"/"` |  |
+| route.main.parentRefs | list | `[]` |  |
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
@@ -440,8 +469,7 @@ To perform a smoke test of the deployment (i.e. ensure that the Atlantis UI is u
 1. Install the chart. Supply your own values file or use `test-values.yaml`, which has a minimal set of values required in order for Atlantis to start.
 
     ```bash
-    helm repo add runatlantis https://runatlantis.github.io/helm-charts
-    helm install -f test-values.yaml my-atlantis runatlantis/atlantis --debug
+    helm install -f test-values.yaml my-atlantis oci://ghcr.io/runatlantis/charts/atlantis --debug
     ```
 
 1. Run the tests:

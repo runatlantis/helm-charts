@@ -25,5 +25,11 @@ spec:
       {{- end }}
   endpoints:
   - port: atlantis
-    interval: {{ .Values.podMonitor.interval }}
+    {{- with .Values.podMonitor }}
+    interval: {{ .interval }}
+    {{- with .metricRelabeling }}
+    metricRelabeling: 
+      {{- toYaml . | nindent 4 }} 
+    {{- end }}
+    {{- end }}
 {{- end }}

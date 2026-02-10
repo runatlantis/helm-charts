@@ -3,8 +3,8 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
-      - 'charts/atlantis/**'
-      - 'ct.yaml'
+      - "charts/atlantis/**"
+      - "ct.yaml"
 
 defaults:
   run:
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
@@ -25,16 +25,18 @@ jobs:
         uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4
         with:
           # renovate: datasource=github-tags depName=helm packageName=helm/helm
-          version: v3.18.4
+          version: v4.1.0
 
-      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           # renovate: datasource=docker depName=python
-          python-version: '3.13'
+          python-version: "3.14"
           check-latest: true
 
       - name: Set up chart-testing
-        uses: helm/chart-testing-action@0d28d3144d3a25ea2cc349d6e59901c4ff469b3b # v2.7.0
+        uses: helm/chart-testing-action@6ec842c01de15ebb84c8627d2744a0c2f2755c9f # v2.8.0
+        with:
+          yamale_version: "6.0.0"
 
       - name: Run chart-testing (list-changed)
         id: list-changed
@@ -59,10 +61,45 @@ jobs:
             echo "Documentation is up to date." >&2
           fi
 
-      - name: Install helm unittests
+      # - name: Install helm unittests
+      #   if: steps.list-changed.outputs.changed == 'true'
+      #   run: |
+      #     make unit-test-install
+
+      # Required until https://github.com/helm-unittest/helm-unittest/issues/777 is fixed
+      - name: Install helm-unittest plugin with checksum validation
         if: steps.list-changed.outputs.changed == 'true'
+        shell: bash
         run: |
-          make unit-test-install
+          set -euo pipefail
+
+          VERSION="1.0.2" # without v
+          ARCH="$(uname -m)"
+
+          case "${ARCH}" in
+            x86_64)
+              ARCH=amd64
+              SUM="c3fa443e21860549120cc43455e7fe517f80e5878aff4aa3fee8f8b803eb00fa"
+            ;;
+            aarch64|arm64)
+              ARCH=arm64
+              SUM="f543a40777e45a63aaf2808a3395e72027a53d3daef10520a9aba65dbf13ff91"
+            ;;
+            *)
+              echo "Unsupported arch: ${ARCH}"
+              exit 1
+            ;;
+          esac
+
+          ASSET="helm-unittest-linux-${ARCH}-${VERSION}.tgz"
+
+          wget "https://github.com/helm-unittest/helm-unittest/releases/download/v${VERSION}/${ASSET}"
+          echo "${SUM}  ${ASSET}" | sha256sum -c
+
+          mkdir -p "$(helm env HELM_PLUGINS)/${ASSET%.*}"
+          tar -xzf "${ASSET}" -C "$(helm env HELM_PLUGINS)/${ASSET%.*}"
+
+          helm plugin list
 
       - name: Run chart-testing (lint)
         if: steps.list-changed.outputs.changed == 'true'
@@ -71,10 +108,9 @@ jobs:
             --config ct.yaml \
             --target-branch ${{ github.event.repository.default_branch }}
 
-
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
-        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
+        uses: helm/kind-action@92086f6be054225fa813e0a4b13787fc9088faab # v1.13.0
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
