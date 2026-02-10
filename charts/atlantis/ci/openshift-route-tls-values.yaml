@@ -1,0 +1,57 @@
+# Example OpenShift Route configuration with full TLS settings
+# This shows edge termination with custom certificates
+orgAllowlist: github.com/example/*
+
+route:
+  main:
+    enabled: true
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    
+    # Hostname for the route
+    host: atlantis.apps.openshift.example.com
+    
+    # Optional path (empty for root)
+    path: ""
+    
+    # Full TLS configuration with edge termination
+    tls:
+      # Termination type: edge (TLS terminates at router)
+      termination: edge
+      
+      # Your SSL certificate (PEM encoded) - replace with actual certificate content
+      certificate: ""
+      
+      # Your private key (PEM encoded) - replace with actual private key content
+      key: ""
+      
+      # Optional: CA certificate chain - replace with actual CA certificate content
+      caCertificate: ""
+      
+      # Redirect HTTP to HTTPS
+      insecureEdgeTerminationPolicy: Redirect
+    
+    # No wildcard support
+    wildcardPolicy: None
+    
+    # Weight for load balancing (useful for blue/green deployments)
+    weight: 100
+    
+    # Target port (if different from service port)
+    targetPort: http
+    
+    # OpenShift-specific annotations
+    annotations:
+      # Router timeout
+      haproxy.router.openshift.io/timeout: 90s
+      # Balance algorithm
+      haproxy.router.openshift.io/balance: roundrobin
+    
+    labels:
+      environment: production
+      team: platform
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4141
