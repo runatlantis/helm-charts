@@ -571,6 +571,51 @@
             "null"
           ]
         },
+        "internalTrafficPolicy": {
+          "description": "internalTrafficPolicy to set on service.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "Cluster",
+            "Local"
+          ]
+        },
+        "sessionAffinity": {
+          "description": "Kubernetes Service sessionAffinity. Set to ClientIP to enable stickiness.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "ClientIP",
+            "None"
+          ]
+        },
+        "sessionAffinityConfig": {
+          "description": "Kubernetes Service sessionAffinityConfig. Only applicable when sessionAffinity=ClientIP.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "clientIP": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "timeoutSeconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Specifies the seconds of ClientIP session sticky time."
+                }
+              }
+            }
+          }
+        },
         "loadBalancerIP": {
           "description": "IP address to assign to load balancer (if supported).",
           "type": [
