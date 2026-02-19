@@ -303,6 +303,7 @@ readinessProbe:
 
 service:
   type: NodePort
+  labels: {}
   annotations: {}
   port: 80
   portName: atlantis
@@ -436,9 +437,9 @@ route:
     # - name: gateway
 
     matches:
-      - path:
-          type: PathPrefix
-          value: /
+    - path:
+        type: PathPrefix
+        value: /
 
     ## Filters define the filters that are applied to requests that match this rule.
     filters: []
@@ -473,7 +474,7 @@ volumeClaim:
   dataStorage: 5Gi
   # -- Storage class name (if possible, use a resizable one).
   storageClassName: ""
-  accessModes: ["ReadWriteOnce"]
+  accessModes: [ "ReadWriteOnce" ]
 
 # -- DEPRECATED - Disk space available to check out repositories.
 # Example: 5Gi.
@@ -527,7 +528,7 @@ serviceAccount:
   # annotations:
   #   eks.amazonaws.com/role-arn: role-arn
 
-# -- Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend.
+  # -- Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend.
 enableKubernetesBackend: false
 
 # -- TLS Secret Name for Atlantis pod.
@@ -696,8 +697,8 @@ secret:
   #   annotation1: value
   #   annotation2: value
 
-# -- These annotations will be added to all the resources.
-# Check values.yaml for examples.
+  # -- These annotations will be added to all the resources.
+  # Check values.yaml for examples.
 extraAnnotations: {}
 # extraAnnotations:
 #   team: example
@@ -758,14 +759,14 @@ servicemonitor:
       # keys:
       #   username: USERNAME
       #   password: ATLANTIS_WEB_PASSWORD
-  # -- Optional metric relabelings to drop or modify metrics.
+      # -- Optional metric relabelings to drop or modify metrics.
   metricRelabelings: []
   # metricRelabelings:
   #   - action: drop
   #     regex: "atlantis_project_apply_execution_.*"
   #     sourceLabels: [__name__]
 
-# -- Enable this if you're using Google Managed Prometheus.
+  # -- Enable this if you're using Google Managed Prometheus.
 podMonitor:
   enabled: false
   interval: "30s"
@@ -795,12 +796,12 @@ redisSecretPasswordKey: password
 
 # -- (int) Optionally customize the termination grace period in seconds.
 # @default -- default depends on the kubernetes version.
-terminationGracePeriodSeconds:
-# terminationGracePeriodSeconds: 300
+terminationGracePeriodSeconds: # terminationGracePeriodSeconds: 300
 
 # -- Set lifecycle hooks.
 # https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/.
 lifecycle: {}
+
 # lifecycle:
 #   preStop:
 #     exec:

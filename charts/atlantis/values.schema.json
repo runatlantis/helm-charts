@@ -526,6 +526,13 @@
             "LoadBalancer"
           ]
         },
+        "labels": {
+          "description": "Labels to add to the service.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
         "annotations": {
           "description": "Annotations to add to the service.",
           "type": "object",
@@ -857,17 +864,23 @@
           "parentRefs": {
             "type": "array",
             "description": "parentRefs for the route (see Gateway API)",
-            "items": { "type": "object" }
+            "items": {
+              "type": "object"
+            }
           },
           "hostnames": {
             "type": "array",
             "description": "Hostnames for the route",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
           "additionalRules": {
             "type": "array",
             "description": "Additional rules to append to `spec.rules`",
-            "items": { "type": "object" }
+            "items": {
+              "type": "object"
+            }
           },
           "httpsRedirect": {
             "type": "boolean",
@@ -876,22 +889,30 @@
           "filters": {
             "type": "array",
             "description": "List of route filters",
-            "items": { "type": "object" }
+            "items": {
+              "type": "object"
+            }
           },
           "matches": {
             "type": "array",
             "description": "List of match rules",
-            "items": { "type": "object" }
+            "items": {
+              "type": "object"
+            }
           },
           "labels": {
             "type": "object",
             "description": "Labels specific to this route",
-            "additionalProperties": { "type": "string" }
+            "additionalProperties": {
+              "type": "string"
+            }
           },
           "annotations": {
             "type": "object",
             "description": "Annotations specific to this route",
-            "additionalProperties": { "type": "string" }
+            "additionalProperties": {
+              "type": "string"
+            }
           }
         },
         "additionalProperties": true
@@ -900,12 +921,16 @@
         "labels": {
           "type": "object",
           "description": "Labels to add to all route resources",
-          "additionalProperties": { "type": "string" }
+          "additionalProperties": {
+            "type": "string"
+          }
         },
         "annotations": {
           "type": "object",
           "description": "Annotations to add to all route resources",
-          "additionalProperties": { "type": "string" }
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       }
     },
