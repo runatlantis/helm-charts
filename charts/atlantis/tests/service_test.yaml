@@ -103,3 +103,16 @@ tests:
       - equal:
           path: metadata.labels.team
           value: infra
+  - it: labels
+    set:
+      service:
+        labels:
+          serviceLabel1: value1
+          serviceLabel2: value2
+    asserts:
+      - equal:
+          path: metadata.labels.serviceLabel1
+          value: value1
+      - equal:
+          path: metadata.labels.serviceLabel2
+          value: value2

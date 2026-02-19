@@ -11,6 +11,9 @@ service:
   annotations:
     serviceAnnotation1: value1
     serviceAnnotation2: value2
+  labels:
+    serviceLabel1: value1
+    serviceLabel2: value2
 
 podTemplate:
   annotations:
