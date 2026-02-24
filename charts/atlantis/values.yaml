@@ -303,6 +303,7 @@ readinessProbe:
 
 service:
   type: NodePort
+  labels: {}
   annotations: {}
   port: 80
   portName: atlantis
