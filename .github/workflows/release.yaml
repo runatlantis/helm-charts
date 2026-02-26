@@ -62,7 +62,7 @@ jobs:
           echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
 
       - name: Attest chart OCI artifact
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-name: ghcr.io/${{ github.repository_owner }}/charts/atlantis
           subject-digest: ${{ steps.push-chart.outputs.digest }}
