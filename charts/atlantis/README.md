@@ -264,6 +264,7 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | route.main.matches[0].path.value | string | `"/"` |  |
 | route.main.parentRefs | list | `[]` |  |
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
+| service.labels | object | `{}` | |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
 | service.internalTrafficPolicy | string | `nil` | [optional] Internal traffic policy for the Service. One of: Cluster, Local. |

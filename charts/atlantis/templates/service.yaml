@@ -5,6 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "atlantis.labels" . | nindent 4 }}
+    {{- with .Values.service.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   {{- if or .Values.service.annotations .Values.extraAnnotations }}
   annotations:
     {{- with .Values.service.annotations }}
