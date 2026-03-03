@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
@@ -25,9 +25,9 @@ jobs:
         uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4
         with:
           # renovate: datasource=github-tags depName=helm packageName=helm/helm
-          version: v4.0.2
+          version: v4.1.0
 
-      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6
         with:
           # renovate: datasource=docker depName=python
           python-version: "3.14"
@@ -73,17 +73,17 @@ jobs:
         run: |
           set -euo pipefail
 
-          VERSION="1.0.3" # without v
+          VERSION="1.0.2" # without v
           ARCH="$(uname -m)"
 
           case "${ARCH}" in
             x86_64)
               ARCH=amd64
-              SUM="12a9ef198e21166fe5f7487544903d91355b4ea08b1d59220f1543234caf4371"
+              SUM="c3fa443e21860549120cc43455e7fe517f80e5878aff4aa3fee8f8b803eb00fa"
             ;;
             aarch64|arm64)
               ARCH=arm64
-              SUM="540aec896945e0e26f443b0d1976d556ce0a3bfa7b10255ed1beecc8d2f7a1cc"
+              SUM="f543a40777e45a63aaf2808a3395e72027a53d3daef10520a9aba65dbf13ff91"
             ;;
             *)
               echo "Unsupported arch: ${ARCH}"
@@ -110,7 +110,7 @@ jobs:
 
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
-        uses: helm/kind-action@92086f6be054225fa813e0a4b13787fc9088faab # v1.13.0
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'

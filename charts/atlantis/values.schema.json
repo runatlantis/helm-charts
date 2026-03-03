@@ -171,6 +171,10 @@
           "type": "string",
           "description": "Personal access token for the Atlantis Bitbucket user."
         },
+        "apiUser": {
+          "type": "string",
+          "description": "API user for Bitbucket Cloud when using API tokens. May differ from the user field for API token authentication."
+        },
         "secret": {
           "type": "string",
           "description": "Webhook secret for Bitbucket repositories (Bitbucket Server only)."
@@ -567,6 +571,51 @@
             "null"
           ]
         },
+        "internalTrafficPolicy": {
+          "description": "internalTrafficPolicy to set on service.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "Cluster",
+            "Local"
+          ]
+        },
+        "sessionAffinity": {
+          "description": "Kubernetes Service sessionAffinity. Set to ClientIP to enable stickiness.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "ClientIP",
+            "None"
+          ]
+        },
+        "sessionAffinityConfig": {
+          "description": "Kubernetes Service sessionAffinityConfig. Only applicable when sessionAffinity=ClientIP.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "clientIP": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "timeoutSeconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Specifies the seconds of ClientIP session sticky time."
+                }
+              }
+            }
+          }
+        },
         "loadBalancerIP": {
           "description": "IP address to assign to load balancer (if supported).",
           "type": [
@@ -777,6 +826,83 @@
     },
     "webhook_ingress": {
       "$ref": "#/properties/ingress"
+    },
+    "route": {
+      "type": "object",
+      "description": "Route configuration (gateway API). Keys are route names; top-level `labels` and `annotations` apply to all routes.",
+      "additionalProperties": {
+        "type": "object",
+        "description": "Per-route configuration",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this route is enabled",
+            "default": true
+          },
+          "apiVersion": {
+            "type": "string",
+            "description": "Kubernetes API version for the route",
+            "default": "gateway.networking.k8s.io/v1"
+          },
+          "kind": {
+            "type": "string",
+            "description": "Kubernetes resource kind for the route",
+            "default": "HTTPRoute"
+          },
+          "parentRefs": {
+            "type": "array",
+            "description": "parentRefs for the route (see Gateway API)",
+            "items": { "type": "object" }
+          },
+          "hostnames": {
+            "type": "array",
+            "description": "Hostnames for the route",
+            "items": { "type": "string" }
+          },
+          "additionalRules": {
+            "type": "array",
+            "description": "Additional rules to append to `spec.rules`",
+            "items": { "type": "object" }
+          },
+          "httpsRedirect": {
+            "type": "boolean",
+            "description": "If true, add an HTTPS redirect filter"
+          },
+          "filters": {
+            "type": "array",
+            "description": "List of route filters",
+            "items": { "type": "object" }
+          },
+          "matches": {
+            "type": "array",
+            "description": "List of match rules",
+            "items": { "type": "object" }
+          },
+          "labels": {
+            "type": "object",
+            "description": "Labels specific to this route",
+            "additionalProperties": { "type": "string" }
+          },
+          "annotations": {
+            "type": "object",
+            "description": "Annotations specific to this route",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "additionalProperties": true
+      },
+      "properties": {
+        "labels": {
+          "type": "object",
+          "description": "Labels to add to all route resources",
+          "additionalProperties": { "type": "string" }
+        },
+        "annotations": {
+          "type": "object",
+          "description": "Annotations to add to all route resources",
+          "additionalProperties": { "type": "string" }
+        }
+      }
     },
     "customPem": {
       "type": "string",
