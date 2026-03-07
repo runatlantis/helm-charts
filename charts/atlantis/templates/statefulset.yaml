@@ -254,6 +254,10 @@ spec:
           {{- end }}
           {{- end }}
           env:
+          {{- if .Values.openshift.enabled }}
+          - name: HOME
+            value: /home/atlantis
+          {{- end }}
           {{- if .Values.environmentRaw }}
           {{- with .Values.environmentRaw }}
           {{- toYaml . | nindent 10 }}
