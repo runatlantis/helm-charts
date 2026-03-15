@@ -85,6 +85,57 @@ extraManifests:
         name: "gcp-cloud-armor-policy-test"
 ```
 
+## High Availability and Sticky Sessions
+
+When running multiple replicas, enable sticky sessions to keep the browser session (including WebSocket upgrades) routed to the same Atlantis pod.
+
+- Service-level stickiness (ClientIP):
+
+```yaml
+service:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+```
+
+- If using NGINX Ingress, consider cookie-based affinity and longer WS timeouts:
+
+```yaml
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+```
+
+- If using Gateway API, you can enable cookie persistence via an extra manifest (controller support required):
+
+```yaml
+extraManifests:
+  - apiVersion: gateway.networking.x-k8s.io/v1alpha1
+    kind: XBackendTrafficPolicy
+    metadata:
+      name: atlantis-session-persistence
+      namespace: ".Release.Namespace"
+    spec:
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: atlantis
+      sessionPersistence:
+        type: Cookie
+        sessionName: atlantis-session
+        idleTimeout: 1h
+        absoluteTimeout: 24h
+        cookieConfig:
+          lifetimeType: Session
+```
+
+Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on your environment and how you want internal routing handled.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -146,7 +197,6 @@ extraManifests:
 | image.tag | string | `""` | If not set appVersion field from Chart.yaml is used |
 | imagePullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/. Check values.yaml for examples. |
 | ingress.annotations | object | `{}` | Check values.yaml for examples. |
-| ingress.apiVersion | string | `""` |  |
 | ingress.enabled | bool | `true` |  |
 | ingress.host | string | `""` |  |
 | ingress.hosts | list | `[]` | Used when several hosts are required. Check values.yaml for examples. |
@@ -228,11 +278,14 @@ extraManifests:
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
+| service.internalTrafficPolicy | string | `nil` | [optional] Internal traffic policy for the Service. One of: Cluster, Local. |
 | service.loadBalancerIP | string | `nil` |  |
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.nodePort | string | `nil` |  |
 | service.port | int | `80` |  |
 | service.portName | string | `"atlantis"` |  |
+| service.sessionAffinity | string | `nil` | [optional] Kubernetes Service sessionAffinity setting. One of: ClientIP, None. |
+| service.sessionAffinityConfig | object | `nil` | [optional] Kubernetes Service sessionAffinityConfig. Only applicable when sessionAffinity=ClientIP. |
 | service.targetPort | int | `4141` | [optional] Define the port you would like atlantis to run on. Defaults to 4141. |
 | service.type | string | `"NodePort"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations for the Service Account. Check values.yaml for examples. |
@@ -273,7 +326,6 @@ extraManifests:
 | volumeClaim.enabled | bool | `true` |  |
 | volumeClaim.storageClassName | string | `""` | Storage class name (if possible, use a resizable one). |
 | webhook_ingress.annotations | object | `{}` | Check values.yaml for examples. |
-| webhook_ingress.apiVersion | string | `""` |  |
 | webhook_ingress.enabled | bool | `false` | When true creates a secondary webhook. |
 | webhook_ingress.host | string | `""` |  |
 | webhook_ingress.hosts | list | `[]` | Used when several hosts are required. Check values.yaml for examples. |
