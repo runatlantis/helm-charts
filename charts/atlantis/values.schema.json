@@ -76,6 +76,10 @@
         "hostname": {
           "type": "string",
           "description": "Hostname of your GitHub Enterprise installation."
+        },
+        "org": {
+          "type": "string",
+          "description": "GitHub organization to restrict Atlantis to."
         }
       },
       "additionalProperties": false

@@ -365,6 +365,10 @@ spec:
           - name: ATLANTIS_GH_HOSTNAME
             value: {{ .Values.github.hostname }}
           {{- end }}
+          {{- if .Values.github.org }}
+          - name: ATLANTIS_GH_ORG
+            value: {{ .Values.github.org }}
+          {{- end }}
           {{- if .Values.githubApp }}
           {{- if .Values.githubApp.id }}
           - name: ATLANTIS_GH_APP_ID

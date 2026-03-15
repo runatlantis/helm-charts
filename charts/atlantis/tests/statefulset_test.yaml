@@ -551,6 +551,17 @@ tests:
             mountPath: /home/atlantis/.aws
             name: aws-volume
             readOnly: true
+  - it: github org
+    template: statefulset.yaml
+    set:
+      github:
+        org: my-org
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_ORG
+            value: my-org
   - it: githubApp
     template: statefulset.yaml
     set:
