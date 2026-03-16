@@ -27,6 +27,7 @@ logLevel: ""
 # -- If using GitHub, please enter your values as follows.
 # The chart will perform the base64 encoding for values that are stored in secrets.
 # The 'hostname' key is exclusive to GitHub Enterprise installations.
+# The 'org' key is used to restrict which GitHub org Atlantis will respond to.
 # Check values.yaml for examples.
 github: {}
 # github:
@@ -34,6 +35,7 @@ github: {}
 #   token: bar
 #   secret: baz
 #   hostname: github.your.org
+#   org: your-org
 
 # -- If using a GitHub App, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
