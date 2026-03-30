@@ -232,6 +232,7 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | netrc | string | `""` | When referencing Terraform modules in private repositories or registries (such as Artfactory) configuing a .netrc file for authentication may be required. Check values.yaml for examples. |
 | netrcSecretName | string | `""` | If managing secrets outside the chart for the netrc file, use this variable to reference the secret name |
 | nodeSelector | object | `{}` |  |
+| openshift | object | `{"enabled":false}` | Enable OpenShift specific configuration |
 | orgAllowlist | string | `"<replace-me>"` | Replace this with your own repo allowlist. |
 | orgWhitelist | string | `"<deprecated>"` | Deprecated in favor of orgAllowlist. |
 | podMonitor | object | `{"enabled":false,"interval":"30s","metricRelabeling":[]}` | Enable this if you're using Google Managed Prometheus. |
@@ -252,16 +253,28 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
 | route.main.additionalRules | list | `[]` |  |
 | route.main.annotations | object | `{}` |  |
-| route.main.apiVersion | string | `"gateway.networking.k8s.io/v1"` | Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2 |
+| route.main.apiVersion | string | `"gateway.networking.k8s.io/v1"` | Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or route.openshift.io/v1 |
 | route.main.enabled | bool | `false` | Enables or disables the route |
 | route.main.filters | list | `[]` |  |
-| route.main.hostnames | list | `[]` |  |
+| route.main.host | string | `""` | Set the hostname for the route |
+| route.main.hostnames | list | `[]` | For Gateway API (HTTPRoute) |
 | route.main.httpsRedirect | bool | `false` |  |
-| route.main.kind | string | `"HTTPRoute"` | Set the route kind |
+| route.main.kind | string | `"HTTPRoute"` | Set the route kind (HTTPRoute for Gateway API, Route for OpenShift) |
 | route.main.labels | object | `{}` |  |
 | route.main.matches[0].path.type | string | `"PathPrefix"` |  |
 | route.main.matches[0].path.value | string | `"/"` |  |
 | route.main.parentRefs | list | `[]` |  |
+| route.main.path | string | `""` | Path that the router watches for to route traffic to the service |
+| route.main.targetPort | string | `""` | Target port name (defaults to the service port) |
+| route.main.tls | object | `{"caCertificate":"","certificate":"","destinationCACertificate":"","insecureEdgeTerminationPolicy":"Redirect","key":"","termination":"edge"}` | TLS configuration for the route |
+| route.main.tls.caCertificate | string | `""` | CA certificate contents |
+| route.main.tls.certificate | string | `""` | Certificate contents |
+| route.main.tls.destinationCACertificate | string | `""` | Destination CA certificate for reencrypt termination |
+| route.main.tls.insecureEdgeTerminationPolicy | string | `"Redirect"` | Policy for redirecting insecure traffic: None, Allow, or Redirect |
+| route.main.tls.key | string | `""` | Private key contents |
+| route.main.tls.termination | string | `"edge"` | TLS termination type: edge, passthrough, or reencrypt |
+| route.main.weight | int | `100` | Weight of the route (for A/B deployments) |
+| route.main.wildcardPolicy | string | `"None"` | Wildcard policy: None or Subdomain |
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |

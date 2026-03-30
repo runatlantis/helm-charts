@@ -1,0 +1,39 @@
+# Example configuration for OpenShift Route (route.openshift.io/v1)
+orgAllowlist: github.com/example/*
+
+route:
+  main:
+    enabled: true
+    apiVersion: route.openshift.io/v1
+    kind: Route
+    
+    # OpenShift Route specific configuration
+    host: atlantis.example.com
+    path: ""
+    
+    # TLS configuration
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    
+    # Wildcard policy
+    wildcardPolicy: None
+    
+    # Weight for A/B deployments
+    weight: 100
+    
+    # Optional: specify target port name
+    # targetPort: http
+    
+    # Optional: annotations for route
+    annotations:
+      haproxy.router.openshift.io/timeout: 60s
+    
+    # Optional: labels for route
+    labels:
+      route-type: external
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 4141
