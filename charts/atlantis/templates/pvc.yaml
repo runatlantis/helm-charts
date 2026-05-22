@@ -20,4 +20,7 @@ spec:
   {{- if .Values.volumeClaim.storageClassName }}
   storageClassName: {{ .Values.volumeClaim.storageClassName }}
   {{- end }}
+  {{- if .Values.volumeClaim.volumeAttributesClassName }}
+  volumeAttributesClassName: {{ .Values.volumeClaim.volumeAttributesClassName }}
+  {{- end }}
 {{- end }}
