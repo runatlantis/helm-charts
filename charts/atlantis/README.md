@@ -312,6 +312,7 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | volumeClaim.dataStorage | string | `"5Gi"` | Disk space available to check out repositories. |
 | volumeClaim.enabled | bool | `true` |  |
 | volumeClaim.storageClassName | string | `""` | Storage class name (if possible, use a resizable one). |
+| volumeClaim.volumeAttributesClassName | string | `""` | Volume attributes class name. |
 | webhook_ingress.annotations | object | `{}` | Check values.yaml for examples. |
 | webhook_ingress.enabled | bool | `false` | When true creates a secondary webhook. |
 | webhook_ingress.host | string | `""` |  |
