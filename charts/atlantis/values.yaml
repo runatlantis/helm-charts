@@ -473,6 +473,8 @@ volumeClaim:
   dataStorage: 5Gi
   # -- Storage class name (if possible, use a resizable one).
   storageClassName: ""
+  # -- Volume attributes class name.
+  volumeAttributesClassName: ""
   accessModes: ["ReadWriteOnce"]
 
 # -- DEPRECATED - Disk space available to check out repositories.

@@ -44,3 +44,13 @@ tests:
       - equal:
           path: spec.resources.requests.storage
           value: 10Gi
+
+  - it: volumeAttributesClassName
+    template: pvc.yaml
+    set:
+      volumeClaim:
+        volumeAttributesClassName: "test-volume-attributes-class"
+    asserts:
+      - equal:
+          path: spec.volumeAttributesClassName
+          value: test-volume-attributes-class
