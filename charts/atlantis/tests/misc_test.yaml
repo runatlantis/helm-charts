@@ -12,6 +12,11 @@ tests:
       config: dummy
       gitconfigReadOnly: false
       gitconfig: dummy
+      azuredevops:
+        user: foo
+        token: bar
+        webhookUser: foo
+        webhookPassword: baz
       initConfig:
         enabled: true
       repoConfig: dummy
