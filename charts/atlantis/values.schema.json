@@ -568,6 +568,14 @@
           ],
           "default": 4141
         },
+        "extraPorts": {
+          "description": "Additional ports to expose on the service, e.g. for an auth proxy sidecar.",
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
         "externalTrafficPolicy": {
           "description": "externalTrafficPolicy to set on service.",
           "type": [

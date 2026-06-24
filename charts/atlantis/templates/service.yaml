@@ -44,6 +44,9 @@ spec:
     {{- end }}
       protocol: TCP
       name: {{ .Values.service.portName }}
+    {{- with .Values.service.extraPorts }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   selector:
     app: {{ template "atlantis.name" . }}
     release: {{ .Release.Name }}

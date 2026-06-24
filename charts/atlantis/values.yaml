@@ -311,6 +311,8 @@ service:
   nodePort: null
   # -- (int) [optional] Define the port you would like atlantis to run on. Defaults to 4141.
   targetPort: 4141
+  # -- (list) [optional] Additional ports to expose on the service, e.g. for an auth proxy sidecar. Each entry is a standard Service port object.
+  extraPorts: []
   loadBalancerIP: null
   loadBalancerSourceRanges: []
   externalTrafficPolicy: null
