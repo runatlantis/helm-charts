@@ -265,6 +265,7 @@ Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
+| service.extraPorts | list | `[]` | [optional] Additional ports to expose on the service, e.g. for an auth proxy sidecar. Each entry is a standard Service port object. |
 | service.internalTrafficPolicy | string | `nil` | [optional] Internal traffic policy for the Service. One of: Cluster, Local. |
 | service.loadBalancerIP | string | `nil` |  |
 | service.loadBalancerSourceRanges | list | `[]` |  |
