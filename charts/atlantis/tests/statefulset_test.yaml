@@ -258,6 +258,20 @@ tests:
       - equal:
           path: spec.template.spec.hostNetwork
           value: true
+  - it: native sidecar via initContainers restartPolicy
+    template: statefulset.yaml
+    set:
+      initContainers:
+        - name: sidecar
+          image: busybox:latest
+          restartPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: sidecar
+      - equal:
+          path: spec.template.spec.initContainers[0].restartPolicy
+          value: Always
   - it: serviceAccountName
     template: statefulset.yaml
     set:
