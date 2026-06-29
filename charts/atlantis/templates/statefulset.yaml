@@ -50,17 +50,8 @@ spec:
       {{- fail "dnsPolicy is set to 'None', but dnsConfig is not provided" }}
       {{- end }}
       dnsConfig:
-        nameservers:
-        {{- range .Values.dnsConfig.nameservers }}
-          - {{ . }}
-        {{- end }}
-        {{- if .Values.dnsConfig.searches }}
-        searches:
-        {{- range .Values.dnsConfig.searches }}
-          - {{ . }}
-        {{- end }}
-        {{- end }}
-        {{- end }}
+        {{- toYaml .Values.dnsConfig | nindent 8 }}
+      {{- end }}
       {{- if .Values.hostAliases }}
       hostAliases:
         {{- range .Values.hostAliases }}

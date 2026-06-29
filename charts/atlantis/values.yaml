@@ -689,6 +689,9 @@ dnsConfig: {}
 #    - 8.8.8.8
 #  searches:
 #    - mydomain.com
+#  options:
+#    - name: ndots
+#      value: "3"
 
 hostNetwork: false
 

@@ -1521,7 +1521,25 @@
         },
         "searches": {
           "description": "A list of DNS search domains for hostname lookup.",
-          "type": "string"
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "options": {
+          "description": "A list of DNS resolver options (e.g. ndots).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "type": "array"
         }
       },
       "type": "object",
