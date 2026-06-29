@@ -129,6 +129,107 @@ extraManifests:
 
 Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on your environment and how you want internal routing handled.
 
+## Authenticating the Web UI with OIDC
+
+Atlantis itself only ships HTTP Basic Auth (`basicAuth`) for the web UI. To put the UI behind an OIDC identity provider (Okta, Google, Entra ID, Keycloak, ...) you have two common options.
+
+### Option 1: OIDC at the ingress / load balancer
+
+If your ingress controller can perform OIDC itself, this is the least moving parts. For example, the AWS Load Balancer Controller can authenticate directly on the ALB via the `alb.ingress.kubernetes.io/auth-*` annotations. A full ALB IngressGroup example (one Ingress for the VCS webhooks, one for the OIDC-protected UI) is in [#346](https://github.com/runatlantis/helm-charts/issues/346).
+
+### Option 2: An [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) sidecar
+
+This is portable across ingress controllers and clouds. The proxy runs alongside Atlantis, terminates the OIDC flow, and forwards authenticated requests to Atlantis on `localhost`.
+
+The key thing to get right is that **VCS webhooks must not go through the auth proxy** — the webhook sender cannot complete an interactive login. So:
+
+- Keep the default `service` port pointed at Atlantis (`targetPort: 4141`) and send webhooks there directly.
+- Add an extra service port that targets the proxy, and route only the browser-facing UI host/path to it.
+
+Run the proxy as a native sidecar (`initContainers` with `restartPolicy: Always`, supported since the chart version that allows `restartPolicy` on containers) so it shares the Pod lifecycle, or as a plain `extraContainers` entry on older versions:
+
+```yaml
+# Expose the proxy on a second service port; webhooks keep using the default port -> 4141.
+service:
+  extraPorts:
+    - name: atlantis-ui
+      port: 8080
+      protocol: TCP
+      targetPort: oauth2-proxy
+
+# Native sidecar (requires restartPolicy support). Use extraContainers instead on older charts.
+initContainers:
+  - name: oauth2-proxy
+    # renovate: image=oauth2-proxy/oauth2-proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3-alpine
+    restartPolicy: Always
+    args:
+      - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
+    env:
+      - name: OAUTH2_PROXY_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: atlantis-oidc
+            key: client-id
+      - name: OAUTH2_PROXY_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: atlantis-oidc
+            key: client-secret
+      # 32-byte cookie secret, e.g. `openssl rand -base64 32 | head -c 32 | base64`
+      - name: OAUTH2_PROXY_COOKIE_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: atlantis-oidc
+            key: cookie-secret
+    ports:
+      - name: oauth2-proxy
+        containerPort: 4180
+        protocol: TCP
+    volumeMounts:
+      - name: oauth2-proxy-config
+        mountPath: /etc/oauth2-proxy
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      capabilities:
+        drop: [ALL]
+
+extraVolumes:
+  - name: oauth2-proxy-config
+    configMap:
+      name: oauth2-proxy-config
+```
+
+Provide the proxy config via your own ConfigMap (here through `extraManifests`). The example below targets Okta; swap `oidc_issuer_url` for your provider:
+
+```yaml
+extraManifests:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: oauth2-proxy-config
+    data:
+      oauth2-proxy.cfg: |
+        provider="oidc"
+        oidc_issuer_url="https://<your-org>.okta.com"
+        # Atlantis listens on the service targetPort (4141 by default).
+        upstreams=["http://localhost:4141"]
+        http_address=":4180"
+        redirect_url="https://atlantis.example.com/oauth2/callback"
+        email_domains="*"
+        cookie_secure="true"
+        reverse_proxy="true"
+        skip_provider_button="true"
+        code_challenge_method="S256"
+        # Optionally restrict access to specific IdP groups:
+        # oidc_groups_claim="groups"
+        # allowed_groups=["atlantis-admins"]
+```
+
+Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8080`) while the webhook URL configured in your VCS continues to hit the default port. If you prefer a single port instead, route everything through the proxy and let webhooks bypass auth with `skip_auth_routes=["POST=^/events$"]`.
+
 {{ template "chart.valuesSection" . }}
 
 ## Upgrading
