@@ -1,0 +1,116 @@
+---
+suite: test additionalCaCerts
+templates:
+  - configmap-config.yaml
+  - configmap-repo-config.yaml
+  - statefulset.yaml
+chart:
+  appVersion: test-appVersion
+release:
+  name: my-release
+tests:
+  - it: disabled by default renders nothing
+    template: statefulset.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.initContainers
+      - notExists:
+          path: spec.template.spec.volumes[?(@.name=="additional-ca-certs")]
+      - notExists:
+          path: spec.template.spec.volumes[?(@.name=="ca-certs-bundle")]
+      - notExists:
+          path: spec.template.spec.containers[0].env[?(@.name=="SSL_CERT_FILE")]
+
+  - it: enabled renders init container, volumes, env vars and mount
+    template: statefulset.yaml
+    set:
+      additionalCaCerts:
+        enabled: true
+        secretName: my-ca
+    asserts:
+      # Secret volume referencing the provided secret
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: additional-ca-certs
+            secret:
+              secretName: my-ca
+      # Shared emptyDir for the merged bundle
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: ca-certs-bundle
+            emptyDir: {}
+      # Init container builds the merged bundle
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: build-ca-bundle
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: ghcr.io/runatlantis/atlantis:test-appVersion
+      - contains:
+          path: spec.template.spec.initContainers[0].volumeMounts
+          content:
+            name: additional-ca-certs
+            mountPath: /custom-ca-certs
+            readOnly: true
+      - contains:
+          path: spec.template.spec.initContainers[0].volumeMounts
+          content:
+            name: ca-certs-bundle
+            mountPath: /ca-certs
+      # Core trust env vars on the main container, pointing at the merged bundle
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SSL_CERT_FILE
+            value: /ca-certs/ca-certificates.crt
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_SSL_CAINFO
+            value: /ca-certs/ca-certificates.crt
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CURL_CA_BUNDLE
+            value: /ca-certs/ca-certificates.crt
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REQUESTS_CA_BUNDLE
+            value: /ca-certs/ca-certificates.crt
+      # Merged bundle mounted read-only into the main container
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: ca-certs-bundle
+            mountPath: /ca-certs
+            readOnly: true
+
+  - it: honours a custom init container image
+    template: statefulset.yaml
+    set:
+      additionalCaCerts:
+        enabled: true
+        secretName: my-ca
+        image: example.com/ca-builder:1.0.0
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: example.com/ca-builder:1.0.0
+
+  - it: appends extraEnvVars in addition to core env vars
+    template: statefulset.yaml
+    set:
+      additionalCaCerts:
+        enabled: true
+        secretName: my-ca
+        extraEnvVars:
+          - NODE_EXTRA_CA_CERTS
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NODE_EXTRA_CA_CERTS
+            value: /ca-certs/ca-certificates.crt

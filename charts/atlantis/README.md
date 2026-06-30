@@ -241,6 +241,12 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| additionalCaCerts.enabled | bool | `false` | Enable appending custom CA certificate(s) to the system trust bundle. |
+| additionalCaCerts.envVars | list | `["SSL_CERT_FILE","GIT_SSL_CAINFO","CURL_CA_BUNDLE","REQUESTS_CA_BUNDLE"]` | Core env vars set on the Atlantis container, pointed at the merged bundle. Covers Go (atlantis, terraform), OpenSSL/C (curl, wget), git and Python requests-based tooling (e.g. checkov, az). |
+| additionalCaCerts.extraEnvVars | list | `[]` | Additional env vars to point at the merged bundle, for extra runtimes that ship in custom images (e.g. NODE_EXTRA_CA_CERTS, AWS_CA_BUNDLE, CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE). Harmless if the tool is absent. |
+| additionalCaCerts.image | string | `""` | Image used by the init container that builds the merged CA bundle. Defaults to the Atlantis image so the system CA set matches the app exactly and no extra image needs to be pulled/mirrored. |
+| additionalCaCerts.mountPath | string | `"/ca-certs/ca-certificates.crt"` | Path the merged CA bundle is written to (inside a shared emptyDir). |
+| additionalCaCerts.secretName | string | `""` | Name of a secret containing one or more `*.crt` PEM files to trust. The secret has to be created manually. Every key ending in `.crt` is appended. |
 | affinity | object | `{}` |  |
 | allowDraftPRs | bool | `false` | Enables atlantis to run on a draft Pull Requests. |
 | allowForkPRs | bool | `false` | Enables atlantis to run on a fork Pull Requests. |

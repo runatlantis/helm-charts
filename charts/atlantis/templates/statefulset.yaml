@@ -157,6 +157,13 @@ spec:
         secret:
           secretName: {{ .Values.customPem }}
       {{- end }}
+      {{- if .Values.additionalCaCerts.enabled }}
+      - name: additional-ca-certs
+        secret:
+          secretName: {{ .Values.additionalCaCerts.secretName }}
+      - name: ca-certs-bundle
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.extraVolumes }}
       {{- toYaml .Values.extraVolumes | nindent 6 }}
       {{- end }}
@@ -178,10 +185,39 @@ spec:
       - name: {{ . }}
       {{- end }}
       {{- end }}
-      {{- if or .Values.initContainers .Values.initConfig.enabled }}
+      {{- if or .Values.initContainers .Values.initConfig.enabled .Values.additionalCaCerts.enabled }}
       initContainers:
         {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if .Values.additionalCaCerts.enabled }}
+        - name: build-ca-bundle
+          image: "{{ .Values.additionalCaCerts.image | default (printf "%s:%s" .Values.image.repository (.Values.image.tag | default .Chart.AppVersion)) }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              dest="{{ .Values.additionalCaCerts.mountPath }}"
+              mkdir -p "$(dirname "$dest")"
+              # Start from the image's system CA bundle so public CAs are preserved.
+              cat /etc/ssl/certs/ca-certificates.crt > "$dest"
+              # Append every custom CA certificate provided via the secret.
+              for crt in /custom-ca-certs/*.crt; do
+                [ -e "$crt" ] || continue
+                printf '\n' >> "$dest"
+                cat "$crt" >> "$dest"
+              done
+          volumeMounts:
+            - name: additional-ca-certs
+              mountPath: /custom-ca-certs
+              readOnly: true
+            - name: ca-certs-bundle
+              mountPath: {{ dir .Values.additionalCaCerts.mountPath }}
+          {{- if .Values.containerSecurityContext }}
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- end }}
         {{- end }}
         {{- if .Values.initConfig.enabled }}
         - name: init-config
@@ -245,6 +281,12 @@ spec:
           {{- end }}
           {{- end }}
           env:
+          {{- if .Values.additionalCaCerts.enabled }}
+          {{- range concat .Values.additionalCaCerts.envVars .Values.additionalCaCerts.extraEnvVars }}
+          - name: {{ . }}
+            value: {{ $.Values.additionalCaCerts.mountPath | quote }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.environmentRaw }}
           {{- with .Values.environmentRaw }}
           {{- toYaml . | nindent 10 }}
@@ -621,6 +663,11 @@ spec:
           - name: additional-trust-certs
             mountPath: /etc/ssl/certs/ca-certificates.crt
             subPath: ca-certificates.crt
+          {{- end }}
+          {{- if .Values.additionalCaCerts.enabled }}
+          - name: ca-certs-bundle
+            mountPath: {{ dir .Values.additionalCaCerts.mountPath }}
+            readOnly: true
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
           {{- toYaml .Values.extraVolumeMounts | nindent 10 }}

@@ -920,6 +920,43 @@
       "type": "string",
       "description": "SecretName of the custom `ca-certificates.cert` to override the `/etc/ssl/certs/ca-certificates.crt` with your custom one (self-signed certificates)<br>Secret has to be created manually and shall contain `ca-certificates.crt: PEM`"
     },
+    "additionalCaCerts": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Append custom CA certificate(s) to the system trust bundle (instead of replacing it as `customPem` does) via a non-root init container and trust-related env vars.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable appending custom CA certificate(s) to the system trust bundle."
+        },
+        "secretName": {
+          "type": "string",
+          "description": "Name of a manually-created secret containing one or more `*.crt` PEM files to trust."
+        },
+        "image": {
+          "type": "string",
+          "description": "Image used by the init container that builds the merged CA bundle. Defaults to the Atlantis image."
+        },
+        "mountPath": {
+          "type": "string",
+          "description": "Path the merged CA bundle is written to inside a shared emptyDir."
+        },
+        "envVars": {
+          "type": "array",
+          "description": "Core trust env vars set on the Atlantis container, pointed at the merged bundle.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "extraEnvVars": {
+          "type": "array",
+          "description": "Additional env vars to point at the merged bundle for extra runtimes shipped in custom images.",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "resources": {
       "type": "object",
       "description": "Resource configuration for atlantis containers.",
