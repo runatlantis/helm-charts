@@ -229,6 +229,9 @@ repoConfig: ""
 #     prometheus:
 #       endpoint: /metrics
 
+# -- Set default auto merge method, only works with GitHub.
+automergeMethod: merge
+
 # -- Enables atlantis to run on a fork Pull Requests.
 allowForkPRs: false
 
