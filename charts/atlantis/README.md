@@ -341,7 +341,7 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.failureThreshold | int | `5` |  |
 | readinessProbe.initialDelaySeconds | int | `5` |  |
-| readinessProbe.periodSeconds | int | `60` |  |
+| readinessProbe.periodSeconds | int | `10` | Probe readiness frequently: the server typically listens within seconds of start, but with a 60s period the first tick after the initial-delay miss lands at ~65s, leaving a healthy pod unready (and its Service endpointless) for most of a minute on every restart. /healthz is unauthenticated and cheap. Liveness keeps the lazy 60s cadence: it only gates restarts, where a false positive can kill an in-flight apply. |
 | readinessProbe.scheme | string | `"HTTP"` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |

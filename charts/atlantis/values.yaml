@@ -296,7 +296,13 @@ livenessProbe:
 
 readinessProbe:
   enabled: true
-  periodSeconds: 60
+  # -- Probe readiness frequently: the server typically listens within seconds
+  # of start, but with a 60s period the first tick after the initial-delay miss
+  # lands at ~65s, leaving a healthy pod unready (and its Service endpointless)
+  # for most of a minute on every restart. /healthz is unauthenticated and
+  # cheap. Liveness keeps the lazy 60s cadence: it only gates restarts, where a
+  # false positive can kill an in-flight apply.
+  periodSeconds: 10
   initialDelaySeconds: 5
   timeoutSeconds: 5
   successThreshold: 1
