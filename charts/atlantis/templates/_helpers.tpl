@@ -148,3 +148,14 @@ Sets the container port based on the defined values.
 {{- define "atlantis.containerPort" -}}
 {{- default .Values.service.targetPort .Values.containerPort  }}
 {{- end -}}
+
+{{/*
+Render an Ingress service backend port as either a named port or a numbered port.
+*/}}
+{{- define "atlantis.ingressServicePort" -}}
+{{- if kindIs "string" . -}}
+name: {{ . | quote }}
+{{- else -}}
+number: {{ . }}
+{{- end -}}
+{{- end -}}
