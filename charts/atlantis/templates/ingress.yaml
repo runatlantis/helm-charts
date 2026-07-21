@@ -45,7 +45,7 @@ spec:
               service:
                 name: {{ .service }}
                 port:
-                  number: {{ .port }}
+                  {{ include "atlantis.ingressServicePort" .port }}
           {{- end }}
         {{ else }}
           - path: {{ .Values.ingress.path }}
@@ -54,7 +54,7 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ .Values.service.port }}
+                  {{ include "atlantis.ingressServicePort" $svcPort }}
         {{- end }}
     {{ else }}
     {{- range $k := .Values.ingress.hosts }}
@@ -75,7 +75,7 @@ spec:
                 name: {{ $fullName }}
                 {{- end }}
                 port:
-                  number: {{ $svcPort }}
+                  {{ include "atlantis.ingressServicePort" $svcPort }}
         {{- end }}
     {{- end }}
     {{- end }}
