@@ -1,0 +1,31 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "atlantis.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "atlantis.labels" . | nindent 4 }}
+    {{- with .Values.podDisruptionBudget.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.podDisruptionBudget.annotations .Values.extraAnnotations }}
+  annotations:
+    {{- with .Values.podDisruptionBudget.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- with .Values.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+spec:
+  {{- if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- else }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable | default 1 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "atlantis.name" . }}
+      release: {{ .Release.Name }}
+{{- end }}

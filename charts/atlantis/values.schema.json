@@ -969,6 +969,37 @@
       "description": "Number of replicas to run for the Atlantis server.",
       "default": 1
     },
+    "podDisruptionBudget": {
+      "type": "object",
+      "description": "Pod disruption budget for the Atlantis StatefulSet.",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether to create a PodDisruptionBudget for Atlantis",
+          "default": false
+        },
+        "minAvailable": {
+          "type": ["integer", "string"],
+          "description": "Minimum number or percentage of pods that must remain available. Used when maxUnavailable is not set.",
+          "default": 1
+        },
+        "maxUnavailable": {
+          "type": ["integer", "string"],
+          "description": "Maximum number or percentage of pods that can be unavailable. Takes precedence over minAvailable when set."
+        },
+        "labels": {
+          "type": "object",
+          "description": "Additional labels to add to the PodDisruptionBudget",
+          "default": {}
+        },
+        "annotations": {
+          "type": "object",
+          "description": "Additional annotations to add to the PodDisruptionBudget",
+          "default": {}
+        }
+      }
+    },
     "test": {
       "type": "object",
       "description": "Test configuration for atlantis containers.",
