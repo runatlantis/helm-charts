@@ -85,6 +85,158 @@ extraManifests:
         name: "gcp-cloud-armor-policy-test"
 ```
 
+## High Availability and Sticky Sessions
+
+When running multiple replicas, enable sticky sessions to keep the browser session (including WebSocket upgrades) routed to the same Atlantis pod.
+
+- Service-level stickiness (ClientIP):
+
+```yaml
+service:
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+```
+
+- If using NGINX Ingress, consider cookie-based affinity and longer WS timeouts:
+
+```yaml
+ingress:
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+```
+
+- If using Gateway API, you can enable cookie persistence via an extra manifest (controller support required):
+
+```yaml
+extraManifests:
+  - apiVersion: gateway.networking.x-k8s.io/v1alpha1
+    kind: XBackendTrafficPolicy
+    metadata:
+      name: atlantis-session-persistence
+      namespace: ".Release.Namespace"
+    spec:
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: atlantis
+      sessionPersistence:
+        type: Cookie
+        sessionName: atlantis-session
+        idleTimeout: 1h
+        absoluteTimeout: 24h
+        cookieConfig:
+          lifetimeType: Session
+```
+
+Optionally, set `service.internalTrafficPolicy: Local` or `Cluster` depending on your environment and how you want internal routing handled.
+
+## Authenticating the Web UI with OIDC
+
+Atlantis itself only ships HTTP Basic Auth (`basicAuth`) for the web UI. To put the UI behind an OIDC identity provider (Okta, Google, Entra ID, Keycloak, ...) you have two common options.
+
+### Option 1: OIDC at the ingress / load balancer
+
+If your ingress controller can perform OIDC itself, this is the least moving parts. For example, the AWS Load Balancer Controller can authenticate directly on the ALB via the `alb.ingress.kubernetes.io/auth-*` annotations. A full ALB IngressGroup example (one Ingress for the VCS webhooks, one for the OIDC-protected UI) is in [#346](https://github.com/runatlantis/helm-charts/issues/346).
+
+### Option 2: An [oauth2-proxy](https://github.com/oauth2-proxy/oauth2-proxy) sidecar
+
+This is portable across ingress controllers and clouds. The proxy runs alongside Atlantis, terminates the OIDC flow, and forwards authenticated requests to Atlantis on `localhost`.
+
+The key thing to get right is that **VCS webhooks must not go through the auth proxy** — the webhook sender cannot complete an interactive login. So:
+
+- Keep the default `service` port pointed at Atlantis (`targetPort: 4141`) and send webhooks there directly.
+- Add an extra service port that targets the proxy, and route only the browser-facing UI host/path to it.
+
+Run the proxy as a native sidecar (`initContainers` with `restartPolicy: Always`, supported since the chart version that allows `restartPolicy` on containers) so it shares the Pod lifecycle, or as a plain `extraContainers` entry on older versions:
+
+```yaml
+# Expose the proxy on a second service port; webhooks keep using the default port -> 4141.
+service:
+  extraPorts:
+    - name: atlantis-ui
+      port: 8080
+      protocol: TCP
+      targetPort: oauth2-proxy
+
+# Native sidecar (requires restartPolicy support). Use extraContainers instead on older charts.
+initContainers:
+  - name: oauth2-proxy
+    # renovate: image=oauth2-proxy/oauth2-proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3-alpine
+    restartPolicy: Always
+    args:
+      - --config=/etc/oauth2-proxy/oauth2-proxy.cfg
+    env:
+      - name: OAUTH2_PROXY_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: atlantis-oidc
+            key: client-id
+      - name: OAUTH2_PROXY_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: atlantis-oidc
+            key: client-secret
+      # 32-byte cookie secret, e.g. `openssl rand -base64 32 | head -c 32 | base64`
+      - name: OAUTH2_PROXY_COOKIE_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: atlantis-oidc
+            key: cookie-secret
+    ports:
+      - name: oauth2-proxy
+        containerPort: 4180
+        protocol: TCP
+    volumeMounts:
+      - name: oauth2-proxy-config
+        mountPath: /etc/oauth2-proxy
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      capabilities:
+        drop: [ALL]
+
+extraVolumes:
+  - name: oauth2-proxy-config
+    configMap:
+      name: oauth2-proxy-config
+```
+
+Provide the proxy config via your own ConfigMap (here through `extraManifests`). The example below targets Okta; swap `oidc_issuer_url` for your provider:
+
+```yaml
+extraManifests:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: oauth2-proxy-config
+    data:
+      oauth2-proxy.cfg: |
+        provider="oidc"
+        oidc_issuer_url="https://<your-org>.okta.com"
+        # Atlantis listens on the service targetPort (4141 by default).
+        upstreams=["http://localhost:4141"]
+        http_address=":4180"
+        redirect_url="https://atlantis.example.com/oauth2/callback"
+        email_domains="*"
+        cookie_secure="true"
+        reverse_proxy="true"
+        skip_provider_button="true"
+        code_challenge_method="S256"
+        # Optionally restrict access to specific IdP groups:
+        # oidc_groups_claim="groups"
+        # allowed_groups=["atlantis-admins"]
+```
+
+Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8080`) while the webhook URL configured in your VCS continues to hit the default port. If you prefer a single port instead, route everything through the proxy and let webhooks bypass auth with `skip_auth_routes=["POST=^/events$"]`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -133,7 +285,7 @@ extraManifests:
 | gitconfigReadOnly | bool | `true` | When true gitconfig file is mounted as read only. When false, the gitconfig value will be copied to '/home/atlantis/.gitconfig' before starting the atlantis process, instead of being mounted as a file. |
 | gitconfigSecretName | string | `""` | If managing secrets outside the chart for the gitconfig, use this variable to reference the secret name |
 | gitea | object | `{}` | If using Gitea, please enter your values as follows. The 'baseUrl' key is exclusive to self-hosted Gitea installations. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
-| github | object | `{}` | If using GitHub, please enter your values as follows. The chart will perform the base64 encoding for values that are stored in secrets. The 'hostname' key is exclusive to GitHub Enterprise installations. Check values.yaml for examples. |
+| github | object | `{}` | If using GitHub, please enter your values as follows. The chart will perform the base64 encoding for values that are stored in secrets. The 'hostname' key is exclusive to GitHub Enterprise installations. The 'org' key is used to restrict which GitHub org Atlantis will respond to. Check values.yaml for examples. |
 | githubApp | object | `{}` | If using a GitHub App, please enter your values as follows. The chart will perform the base64 encoding for you for values that are stored in secrets. installationId is necessary when there are multiple installs of the Github App. Check values.yaml for examples. |
 | gitlab | object | `{}` | If using GitLab, please enter your values as follows. The 'hostname' key is exclusive to GitLab Enterprise installations. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
 | googleServiceAccountSecrets | list | `[]` | Optionally specify google service account credentials as Kubernetes secrets. If you are using the terraform google provider you can specify the credentials as "${file("/var/secrets/some-secret-name/key.json")}". Check values.yaml for examples. |
@@ -146,7 +298,6 @@ extraManifests:
 | image.tag | string | `""` | If not set appVersion field from Chart.yaml is used |
 | imagePullSecrets | list | `[]` | Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace. ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/. Check values.yaml for examples. |
 | ingress.annotations | object | `{}` | Check values.yaml for examples. |
-| ingress.apiVersion | string | `""` |  |
 | ingress.enabled | bool | `true` |  |
 | ingress.host | string | `""` |  |
 | ingress.hosts | list | `[]` | Used when several hosts are required. Check values.yaml for examples. |
@@ -200,14 +351,30 @@ extraManifests:
 | replicaCount | int | `1` | Replica count for Atlantis pods. |
 | repoConfig | string | `""` | Use Server Side Repo Config, ref: https://www.runatlantis.io/docs/server-side-repo-config.html. Check values.yaml for examples. |
 | resources | object | `{}` | Resources for Atlantis. Check values.yaml for examples. |
+| route.main.additionalRules | list | `[]` |  |
+| route.main.annotations | object | `{}` |  |
+| route.main.apiVersion | string | `"gateway.networking.k8s.io/v1"` | Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2 |
+| route.main.enabled | bool | `false` | Enables or disables the route |
+| route.main.filters | list | `[]` |  |
+| route.main.hostnames | list | `[]` |  |
+| route.main.httpsRedirect | bool | `false` |  |
+| route.main.kind | string | `"HTTPRoute"` | Set the route kind |
+| route.main.labels | object | `{}` |  |
+| route.main.matches[0].path.type | string | `"PathPrefix"` |  |
+| route.main.matches[0].path.value | string | `"/"` |  |
+| route.main.parentRefs | list | `[]` |  |
 | secret.annotations | object | `{}` | Annotations for the Secrets. Check values.yaml for examples. |
 | service.annotations | object | `{}` |  |
 | service.externalTrafficPolicy | string | `nil` |  |
+| service.extraPorts | list | `[]` | [optional] Additional ports to expose on the service, e.g. for an auth proxy sidecar. Each entry is a standard Service port object. |
+| service.internalTrafficPolicy | string | `nil` | [optional] Internal traffic policy for the Service. One of: Cluster, Local. |
 | service.loadBalancerIP | string | `nil` |  |
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.nodePort | string | `nil` |  |
 | service.port | int | `80` |  |
 | service.portName | string | `"atlantis"` |  |
+| service.sessionAffinity | string | `nil` | [optional] Kubernetes Service sessionAffinity setting. One of: ClientIP, None. |
+| service.sessionAffinityConfig | object | `nil` | [optional] Kubernetes Service sessionAffinityConfig. Only applicable when sessionAffinity=ClientIP. |
 | service.targetPort | int | `4141` | [optional] Define the port you would like atlantis to run on. Defaults to 4141. |
 | service.type | string | `"NodePort"` |  |
 | serviceAccount.annotations | object | `{}` | Annotations for the Service Account. Check values.yaml for examples. |
@@ -247,8 +414,8 @@ extraManifests:
 | volumeClaim.dataStorage | string | `"5Gi"` | Disk space available to check out repositories. |
 | volumeClaim.enabled | bool | `true` |  |
 | volumeClaim.storageClassName | string | `""` | Storage class name (if possible, use a resizable one). |
+| volumeClaim.volumeAttributesClassName | string | `""` | Volume attributes class name. |
 | webhook_ingress.annotations | object | `{}` | Check values.yaml for examples. |
-| webhook_ingress.apiVersion | string | `""` |  |
 | webhook_ingress.enabled | bool | `false` | When true creates a secondary webhook. |
 | webhook_ingress.host | string | `""` |  |
 | webhook_ingress.hosts | list | `[]` | Used when several hosts are required. Check values.yaml for examples. |

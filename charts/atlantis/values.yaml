@@ -27,6 +27,7 @@ logLevel: ""
 # -- If using GitHub, please enter your values as follows.
 # The chart will perform the base64 encoding for values that are stored in secrets.
 # The 'hostname' key is exclusive to GitHub Enterprise installations.
+# The 'org' key is used to restrict which GitHub org Atlantis will respond to.
 # Check values.yaml for examples.
 github: {}
 # github:
@@ -34,6 +35,7 @@ github: {}
 #   token: bar
 #   secret: baz
 #   hostname: github.your.org
+#   org: your-org
 
 # -- If using a GitHub App, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
@@ -90,9 +92,11 @@ bitbucket: {}
 # The recommendation is to genarate a service user on your cloud environment, but you can live on the edge using your own user :).
 # Create an APP PASSWORD to the user for the token value.
 # Base URL are not needed here, but keep in mind to provide an IP Whitelist as the Atlantis documentation.
+# For API token authentication (recommended over app passwords), specify apiUser which may differ from the user field.
 # bitbucket:
 #   user: foo
 #   token: bar
+#   apiUser: foo@example.com  # Optional: specify if using API tokens and the API user differs from user
 
 # -- If using Azure DevOps, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
@@ -307,9 +311,17 @@ service:
   nodePort: null
   # -- (int) [optional] Define the port you would like atlantis to run on. Defaults to 4141.
   targetPort: 4141
+  # -- (list) [optional] Additional ports to expose on the service, e.g. for an auth proxy sidecar. Each entry is a standard Service port object.
+  extraPorts: []
   loadBalancerIP: null
   loadBalancerSourceRanges: []
   externalTrafficPolicy: null
+  # -- (string) [optional] Internal traffic policy for the Service. One of: Cluster, Local.
+  internalTrafficPolicy: null
+  # -- (string) [optional] Kubernetes Service sessionAffinity setting. One of: ClientIP, None.
+  sessionAffinity: null
+  # -- (object) [optional] Kubernetes Service sessionAffinityConfig. Only applicable when sessionAffinity=ClientIP.
+  sessionAffinityConfig: null
 
 podTemplate:
   # -- Check values.yaml for examples.
@@ -334,7 +346,6 @@ statefulSet:
 ingress:
   enabled: true
   ingressClassName:
-  apiVersion: ""
   labels: {}
   # -- Check values.yaml for examples.
   annotations: {}
@@ -373,7 +384,6 @@ webhook_ingress:
   # -- When true creates a secondary webhook.
   enabled: false
   ingressClassName:
-  apiVersion: ""
   # -- Check values.yaml for examples.
   annotations: {}
   # annotations:
@@ -409,6 +419,38 @@ webhook_ingress:
   #      - chart-example.local
   labels: {}
 
+route:
+  main:
+    # -- Enables or disables the route
+    enabled: false
+
+    # -- Set the route apiVersion, e.g. gateway.networking.k8s.io/v1 or gateway.networking.k8s.io/v1alpha2
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Set the route kind
+    kind: HTTPRoute
+
+    annotations: {}
+    labels: {}
+
+    hostnames: []
+    # - atlantis.example.com
+    parentRefs: []
+    # - name: gateway
+
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+
+    ## Filters define the filters that are applied to requests that match this rule.
+    filters: []
+
+    ## Additional custom rules that can be added to the route
+    additionalRules: []
+
+    ## httpsRedirect adds a filter for redirecting to https (HTTP 301 Moved Permanently).
+    httpsRedirect: false
+
 # -- Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one.
 # You have to create a secret with the specified name.
 customPem: ""
@@ -433,6 +475,8 @@ volumeClaim:
   dataStorage: 5Gi
   # -- Storage class name (if possible, use a resizable one).
   storageClassName: ""
+  # -- Volume attributes class name.
+  volumeAttributesClassName: ""
   accessModes: ["ReadWriteOnce"]
 
 # -- DEPRECATED - Disk space available to check out repositories.
@@ -645,6 +689,9 @@ dnsConfig: {}
 #    - 8.8.8.8
 #  searches:
 #    - mydomain.com
+#  options:
+#    - name: ndots
+#      value: "3"
 
 hostNetwork: false
 

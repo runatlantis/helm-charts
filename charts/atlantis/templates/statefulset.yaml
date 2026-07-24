@@ -50,17 +50,8 @@ spec:
       {{- fail "dnsPolicy is set to 'None', but dnsConfig is not provided" }}
       {{- end }}
       dnsConfig:
-        nameservers:
-        {{- range .Values.dnsConfig.nameservers }}
-          - {{ . }}
-        {{- end }}
-        {{- if .Values.dnsConfig.searches }}
-        searches:
-        {{- range .Values.dnsConfig.searches }}
-          - {{ . }}
-        {{- end }}
-        {{- end }}
-        {{- end }}
+        {{- toYaml .Values.dnsConfig | nindent 8 }}
+      {{- end }}
       {{- if .Values.hostAliases }}
       hostAliases:
         {{- range .Values.hostAliases }}
@@ -369,6 +360,10 @@ spec:
           - name: ATLANTIS_GH_HOSTNAME
             value: {{ .Values.github.hostname }}
           {{- end }}
+          {{- if .Values.github.org }}
+          - name: ATLANTIS_GH_ORG
+            value: {{ .Values.github.org }}
+          {{- end }}
           {{- if .Values.githubApp }}
           {{- if .Values.githubApp.id }}
           - name: ATLANTIS_GH_APP_ID
@@ -435,6 +430,10 @@ spec:
           {{- if .Values.bitbucket }}
           - name: ATLANTIS_BITBUCKET_USER
             value: {{ required "bitbucket.user is required if bitbucket configuration is specified." .Values.bitbucket.user }}
+          {{- if .Values.bitbucket.apiUser }}
+          - name: ATLANTIS_BITBUCKET_API_USER
+            value: {{ .Values.bitbucket.apiUser }}
+          {{- end }}
           - name: ATLANTIS_BITBUCKET_TOKEN
             valueFrom:
               secretKeyRef:

@@ -258,6 +258,20 @@ tests:
       - equal:
           path: spec.template.spec.hostNetwork
           value: true
+  - it: native sidecar via initContainers restartPolicy
+    template: statefulset.yaml
+    set:
+      initContainers:
+        - name: sidecar
+          image: busybox:latest
+          restartPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: sidecar
+      - equal:
+          path: spec.template.spec.initContainers[0].restartPolicy
+          value: Always
   - it: serviceAccountName
     template: statefulset.yaml
     set:
@@ -562,6 +576,17 @@ tests:
             mountPath: /home/atlantis/.aws
             name: aws-volume
             readOnly: true
+  - it: github org
+    template: statefulset.yaml
+    set:
+      github:
+        org: my-org
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_GH_ORG
+            value: my-org
   - it: githubApp
     template: statefulset.yaml
     set:

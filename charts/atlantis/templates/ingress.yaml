@@ -1,20 +1,8 @@
 {{- if .Values.ingress.enabled }}
-{{- $apiVersion := .Values.ingress.apiVersion }}
-{{- if and $apiVersion (or (eq $apiVersion "networking.k8s.io/v1") (eq $apiVersion "networking.k8s.io/v1beta1") (eq $apiVersion "extensions/v1beta1")) -}}
-{{- else -}}
-  {{- $kubeVersion := .Capabilities.KubeVersion.GitVersion }}
-  {{- if semverCompare ">=1.19-0" $kubeVersion -}}
-    {{- $apiVersion = "networking.k8s.io/v1" -}}
-  {{- else if semverCompare ">=1.14-0" $kubeVersion -}}
-    {{- $apiVersion = "networking.k8s.io/v1beta1" -}}
-  {{- else -}}
-    {{- $apiVersion = "extensions/v1beta1" -}}
-  {{- end }}
-{{- end }}
 {{- $fullName := include "atlantis.fullname" . -}}
 {{- $svcPort := .Values.service.port -}}
 {{- $pathType := .Values.ingress.pathType -}}
-apiVersion: {{ $apiVersion }}
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -52,31 +40,21 @@ spec:
         {{- if .Values.ingress.paths }}
           {{- range .Values.ingress.paths }}
           - path: {{ .path }}
+            pathType: {{ $.Values.ingress.pathType }}
             backend:
-            {{- if eq $apiVersion "networking.k8s.io/v1" }}
               service:
                 name: {{ .service }}
                 port:
                   number: {{ .port }}
-            pathType: {{ $.Values.ingress.pathType }}
-            {{- else }}
-              serviceName: {{ .service }}
-              servicePort: {{ .port }}
-            {{- end }}
           {{- end }}
         {{ else }}
           - path: {{ .Values.ingress.path }}
+            pathType: {{ .Values.ingress.pathType }}
             backend:
-            {{- if eq $apiVersion "networking.k8s.io/v1" }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ .Values.service.port }}
-            pathType: {{ .Values.ingress.pathType }}
-            {{ else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ .Values.service.port }}
-            {{- end }}
         {{- end }}
     {{ else }}
     {{- range $k := .Values.ingress.hosts }}
@@ -88,8 +66,8 @@ spec:
         paths:
         {{- range .paths }}
           - path: {{ . }}
+            pathType: {{ $pathType }}
             backend:
-              {{- if eq $apiVersion "networking.k8s.io/v1" }}
               service:
                 {{- if $k.service }}
                 name: {{ $k.service }}
@@ -98,15 +76,6 @@ spec:
                 {{- end }}
                 port:
                   number: {{ $svcPort }}
-            pathType: {{ $pathType }}
-              {{- else -}}
-                {{- if $k.service }}
-              serviceName: {{ $k.service }}
-                {{- else }}
-              serviceName: {{ $fullName }}
-                {{- end }}
-              servicePort: {{ $svcPort }}
-              {{- end }}
         {{- end }}
     {{- end }}
     {{- end }}

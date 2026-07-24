@@ -12,6 +12,11 @@ tests:
       config: dummy
       gitconfigReadOnly: false
       gitconfig: dummy
+      azuredevops:
+        user: foo
+        token: bar
+        webhookUser: foo
+        webhookPassword: baz
       initConfig:
         enabled: true
       repoConfig: dummy
@@ -34,6 +39,9 @@ tests:
         credentials: dummy
       webhook_ingress:
         enabled: true
+      route:
+        main:
+          enabled: true
       extraManifests:
         - apiVersion: v1
           kind: Pod

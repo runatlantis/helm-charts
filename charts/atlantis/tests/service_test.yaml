@@ -103,3 +103,22 @@ tests:
       - equal:
           path: metadata.labels.team
           value: infra
+  - it: extraPorts
+    set:
+      service:
+        extraPorts:
+          - name: auth-proxy
+            port: 4180
+            protocol: TCP
+            targetPort: auth-proxy
+    asserts:
+      - equal:
+          path: spec.ports[1]
+          value:
+            name: auth-proxy
+            port: 4180
+            protocol: TCP
+            targetPort: auth-proxy
+      - lengthEqual:
+          path: spec.ports
+          count: 2
