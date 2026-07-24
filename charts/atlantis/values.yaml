@@ -488,6 +488,24 @@ storageClassName: ""
 # -- Replica count for Atlantis pods.
 replicaCount: 1
 
+# Pod disruption budget for the Atlantis StatefulSet, to keep Atlantis
+# available during voluntary disruptions such as node drains.
+# Note: Atlantis is stateful and typically runs a single replica; enabling a
+# PDB with minAvailable set to 1 will block voluntary evictions of that pod.
+podDisruptionBudget:
+  # -- Whether to create a PodDisruptionBudget for Atlantis.
+  enabled: false
+  # -- Minimum number or percentage of pods that must remain available.
+  # Used when maxUnavailable is not set. Mutually exclusive with maxUnavailable.
+  minAvailable: 1
+  # -- Maximum number or percentage of pods that can be unavailable.
+  # When set, it takes precedence over minAvailable. Mutually exclusive with minAvailable.
+  maxUnavailable: ""
+  # -- Additional labels to add to the PodDisruptionBudget.
+  labels: {}
+  # -- Additional annotations to add to the PodDisruptionBudget.
+  annotations: {}
+
 test:
   # -- Enables test container.
   enabled: true

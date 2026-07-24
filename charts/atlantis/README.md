@@ -335,6 +335,11 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | nodeSelector | object | `{}` |  |
 | orgAllowlist | string | `"<replace-me>"` | Replace this with your own repo allowlist. |
 | orgWhitelist | string | `"<deprecated>"` | Deprecated in favor of orgAllowlist. |
+| podDisruptionBudget.annotations | object | `{}` | Additional annotations to add to the PodDisruptionBudget. |
+| podDisruptionBudget.enabled | bool | `false` | Whether to create a PodDisruptionBudget for Atlantis. |
+| podDisruptionBudget.labels | object | `{}` | Additional labels to add to the PodDisruptionBudget. |
+| podDisruptionBudget.maxUnavailable | string | `""` | Maximum number or percentage of pods that can be unavailable. When set, it takes precedence over minAvailable. Mutually exclusive with minAvailable. |
+| podDisruptionBudget.minAvailable | int | `1` | Minimum number or percentage of pods that must remain available. Used when maxUnavailable is not set. Mutually exclusive with maxUnavailable. |
 | podMonitor | object | `{"enabled":false,"interval":"30s","metricRelabeling":[]}` | Enable this if you're using Google Managed Prometheus. |
 | podTemplate.annotations | object | `{}` | Check values.yaml for examples. |
 | podTemplate.labels | object | `{}` |  |

@@ -24,6 +24,8 @@ tests:
         enabled: true
       servicemonitor:
         enabled: true
+      podDisruptionBudget:
+        enabled: true
       enableKubernetesBackend: true
       api:
         secret: dummy
