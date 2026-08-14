@@ -526,7 +526,11 @@ topologySpreadConstraints: []
 #  - labelSelector:
 #      matchLabels:
 #        app.kubernetes.io/name: aws-example-cluster
+#    matchLabelKeys: []
 #    maxSkew: 1
+#    minDomains: 1
+#    nodeAffinityPolicy: Honor
+#    nodeTaintsPolicy: Ignore
 #    topologyKey: topology.kubernetes.io/zone
 #    whenUnsatisfiable: DoNotSchedule
 
