@@ -469,6 +469,9 @@ resources: {}
 # -- Path to the data directory for the volumeMount.
 atlantisDataDirectory: /atlantis-data
 
+# -- Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory.
+sharePlanDir: ""
+
 volumeClaim:
   enabled: true
   # -- Disk space available to check out repositories.

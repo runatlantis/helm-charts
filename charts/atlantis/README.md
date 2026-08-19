@@ -397,6 +397,7 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | servicemonitor.interval | string | `"30s"` |  |
 | servicemonitor.metricRelabelings | list | `[]` | Optional metric relabelings to drop or modify metrics. |
 | servicemonitor.path | string | `"/metrics"` |  |
+| sharePlanDir | string | `""` | Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory. |
 | statefulSet.annotations | object | `{}` |  |
 | statefulSet.labels | object | `{}` |  |
 | statefulSet.priorityClassName | string | `""` |  |

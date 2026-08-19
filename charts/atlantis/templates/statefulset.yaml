@@ -319,6 +319,10 @@ spec:
           {{- end }}
           - name: ATLANTIS_DATA_DIR
             value: {{ .Values.atlantisDataDirectory }}
+          {{- if .Values.sharePlanDir }}
+          - name: ATLANTIS_SHARE_PLAN_DIR
+            value: {{ .Values.sharePlanDir | quote }}
+          {{- end }}
           - name: ATLANTIS_REPO_ALLOWLIST
             {{- if .Values.orgAllowlist }}
             value: {{ .Values.orgAllowlist | quote }}

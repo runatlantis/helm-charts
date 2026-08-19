@@ -931,6 +931,11 @@
       "description": "Directory to store atlantis data.",
       "default": "/atlantis-data"
     },
+    "sharePlanDir": {
+      "type": "string",
+      "description": "Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory.",
+      "default": ""
+    },
     "volumeClaim": {
       "type": "object",
       "description": "VolumeClaim configuration for atlantis data.",

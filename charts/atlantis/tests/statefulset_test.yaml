@@ -1322,3 +1322,21 @@ tests:
       - equal:
           path: spec.template.spec.dnsConfig.nameservers[0]
           value: my-release.example
+  - it: sharePlanDir sets ATLANTIS_SHARE_PLAN_DIR
+    template: statefulset.yaml
+    set:
+      sharePlanDir: /atlantis-plans
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_SHARE_PLAN_DIR
+            value: /atlantis-plans
+  - it: sharePlanDir omitted by default
+    template: statefulset.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_SHARE_PLAN_DIR
+            value: /atlantis-plans
