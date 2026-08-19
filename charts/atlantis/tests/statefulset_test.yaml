@@ -1251,3 +1251,74 @@ tests:
                   - /bin/sh
                   - -c
                   - while pgrep -x "terraform|tofu|terragrunt" > /dev/null; do sleep 1; done
+  - it: initContainers rendered from a template string
+    template: statefulset.yaml
+    set:
+      initContainers: |
+        - name: init-{{ .Release.Name }}
+          image: busybox:latest
+          restartPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: init-my-release
+      - equal:
+          path: spec.template.spec.initContainers[0].restartPolicy
+          value: Always
+  - it: initContainers still accepts a plain list (backward compatible)
+    template: statefulset.yaml
+    set:
+      initContainers:
+        - name: plain-init
+          image: busybox:latest
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: plain-init
+  - it: extraContainers rendered from a template string
+    template: statefulset.yaml
+    set:
+      extraContainers: |
+        - name: sidecar-{{ .Release.Name }}
+          image: busybox:latest
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: sidecar-my-release
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: busybox:latest
+  - it: extraContainers still accepts a plain list (backward compatible)
+    template: statefulset.yaml
+    set:
+      extraContainers:
+        - name: plain-sidecar
+          image: busybox:latest
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].name
+          value: plain-sidecar
+  - it: extraVolumes rendered from a template string
+    template: statefulset.yaml
+    set:
+      extraVolumes: |
+        - name: vol-{{ .Release.Name }}
+          emptyDir:
+            sizeLimit: 5Mi
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: vol-my-release
+            emptyDir:
+              sizeLimit: 5Mi
+  - it: dnsConfig rendered from a template string
+    template: statefulset.yaml
+    set:
+      dnsConfig: |
+        nameservers:
+          - {{ .Release.Name }}.example
+    asserts:
+      - equal:
+          path: spec.template.spec.dnsConfig.nameservers[0]
+          value: my-release.example

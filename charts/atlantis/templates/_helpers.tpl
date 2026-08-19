@@ -7,6 +7,22 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Render a value that may be either a plain structure or a string containing
+Go template directives. Lets extension points (extraContainers, extraVolumes,
+dnsConfig, ...) pull in helpers/values from a parent or library chart while
+staying backward-compatible with plain-YAML values.
+Usage:
+  {{- include "atlantis.tplvalues.render" (dict "value" .Values.extraContainers "context" $) | nindent 8 }}
+*/}}
+{{- define "atlantis.tplvalues.render" -}}
+{{- if kindIs "string" .value }}
+{{- tpl .value .context }}
+{{- else }}
+{{- tpl (toYaml .value) .context }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.

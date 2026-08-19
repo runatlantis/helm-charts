@@ -266,7 +266,7 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | disableApply | bool | `false` | Disables running `atlantis apply` regardless of which flags are sent with it. |
 | disableApplyAll | bool | `false` | Disables running `atlantis apply` without any flags. |
 | disableRepoLocking | bool | `false` | Stops atlantis locking projects and or workspaces when running terraform. |
-| dnsConfig | object | `{}` | Optionally specify dnsConfig for the Atlantis pod. Check values.yaml for examples. |
+| dnsConfig | object | `{}` | Optionally specify dnsConfig for the Atlantis pod. May be an object, or a string with Go template directives that renders to an object (evaluated via tpl). Check values.yaml for examples. |
 | dnsPolicy | string | `"ClusterFirst"` | Optionally specify dnsPolicy parameter to specify a DNS policy for a pod Check https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy |
 | enableDiffMarkdownFormat | bool | `false` | Use Diff Markdown Format for color coding diffs. |
 | enableKubernetesBackend | bool | `false` | Optionally deploy rbac to allow for the serviceAccount to manage terraform state via the kubernetes backend. |
@@ -275,11 +275,11 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | environmentSecrets | list | `[]` | Optionally specify additional environment variables to be populated from Kubernetes secrets. Useful for passing in TF_VAR_foo or other secret environment variables from Kubernetes secrets. Check values.yaml for examples. |
 | extraAnnotations | object | `{}` | These annotations will be added to all the resources. Check values.yaml for examples. |
 | extraArgs | list | `[]` | Optionally specify extra arguments for the Atlantis pod. Check values.yaml for examples. |
-| extraContainers | list | `[]` | Optionally specify extra containers for the Atlantis pod. Check values.yaml for examples. |
+| extraContainers | list | `[]` | Optionally specify extra containers for the Atlantis pod. May be a list, or a string with Go template directives that renders to a list (evaluated via tpl). Check values.yaml for examples. |
 | extraManifests | list | `[]` | Optionally specify additional manifests to be created. Check values.yaml for examples. |
 | extraPath | string | `""` | Additional path (`:` separated) that will be appended to the system `PATH` environment variable. |
 | extraVolumeMounts | list | `[]` | Optionally specify additional volume mounts for the container. Check values.yaml for examples. |
-| extraVolumes | list | `[]` | Optionally specify additional volumes for the pod. Check values.yaml for examples. |
+| extraVolumes | list | `[]` | Optionally specify additional volumes for the pod. May be a list, or a string with Go template directives that renders to a list (evaluated via tpl). Check values.yaml for examples. |
 | fullnameOverride | string | `""` | Provide a name to substitute for the full names of resources. |
 | gitconfig | string | `""` | When referencing Terraform modules in private repositories, it may be helpful (necessary?) to use redirection in a .gitconfig. Check values.yaml for examples. |
 | gitconfigReadOnly | bool | `true` | When true gitconfig file is mounted as read only. When false, the gitconfig value will be copied to '/home/atlantis/.gitconfig' before starting the atlantis process, instead of being mounted as a file. |
@@ -316,7 +316,7 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | initConfig.sharedDirReadOnly | bool | `true` |  |
 | initConfig.sizeLimit | string | `"300Mi"` | Size for the shared volume. |
 | initConfig.workDir | string | `"/tmp"` |  |
-| initContainers | list | `[]` | Optionally specify init containers manifests to be added to the Atlantis pod. Check values.yaml for examples. |
+| initContainers | list | `[]` | Optionally specify init containers manifests to be added to the Atlantis pod. Check values.yaml for examples. May be a list, or a string with Go template directives that renders to a list (evaluated via tpl). |
 | lifecycle | object | `{}` | Set lifecycle hooks. https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/. |
 | livenessProbe.enabled | bool | `true` |  |
 | livenessProbe.failureThreshold | int | `5` |  |

@@ -615,7 +615,8 @@ googleServiceAccountSecrets: []
 #   - name: some-secret-name
 #     secretName: the_k8s_secret_name
 
-# -- Optionally specify additional volumes for the pod.
+# -- Optionally specify additional volumes for the pod. May be a list, or a
+# string with Go template directives that renders to a list (evaluated via tpl).
 # Check values.yaml for examples.
 extraVolumes: []
 # extraVolumes:
@@ -642,7 +643,8 @@ extraManifests: []
 #        name: "gcp-cloud-armor-policy-test"
 
 # -- Optionally specify init containers manifests to be added to the Atlantis pod.
-# Check values.yaml for examples.
+# Check values.yaml for examples. May be a list, or a string with Go template
+# directives that renders to a list (evaluated via tpl).
 initContainers: []
 # initContainers:
 # - name: example
@@ -703,7 +705,8 @@ hostAliases: []
 # Check https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
 dnsPolicy: "ClusterFirst"
 
-# -- Optionally specify dnsConfig for the Atlantis pod.
+# -- Optionally specify dnsConfig for the Atlantis pod. May be an object, or a
+# string with Go template directives that renders to an object (evaluated via tpl).
 # Check values.yaml for examples.
 dnsConfig: {}
 # dnsConfig:
@@ -738,7 +741,8 @@ extraArgs: []
 #   - --disable-autoplan
 #   - --disable-repo-locking
 
-# -- Optionally specify extra containers for the Atlantis pod.
+# -- Optionally specify extra containers for the Atlantis pod. May be a list, or
+# a string with Go template directives that renders to a list (evaluated via tpl).
 # Check values.yaml for examples.
 extraContainers: []
 # extraContainers:

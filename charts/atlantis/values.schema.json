@@ -1189,8 +1189,8 @@
       }
     },
     "extraVolumes": {
-      "description": "List of additional volumes available to the pod.",
-      "type": "array",
+      "description": "List of additional volumes available to the pod. May be a list, or a string containing Go template directives that renders to a list.",
+      "type": ["array", "string"],
       "default": [],
       "items": {
         "type": "object"
@@ -1224,11 +1224,11 @@
       "default": {}
     },
     "initContainers": {
-      "description": "Containers used to initialize context for Atlantis pods",
+      "description": "Containers used to initialize context for Atlantis pods. May be a list, or a string containing Go template directives that renders to a list.",
       "items": {
         "$ref": "#/definitions/io.k8s.api.core.v1.Container"
       },
-      "type": "array",
+      "type": ["array", "string"],
       "default": []
     },
     "initConfig": {
@@ -1314,11 +1314,11 @@
       ]
     },
     "dnsConfig": {
-      "description": "Specify dnsConfig for Atlantis containers.",
+      "description": "Specify dnsConfig for Atlantis containers. May be an object, or a string containing Go template directives that renders to an object.",
       "items": {
         "$ref": "#/definitions/io.k8s.api.core.v1.DnsConfig"
       },
-      "type": "object",
+      "type": ["object", "string"],
       "default": [],
       "examples": [
         {
@@ -1359,11 +1359,11 @@
       ]
     },
     "extraContainers": {
-      "description": "Additional containers to use and depends of use cases.",
+      "description": "Additional containers to use and depends of use cases. May be a list, or a string containing Go template directives that renders to a list.",
       "items": {
         "$ref": "#/definitions/io.k8s.api.core.v1.Container"
       },
-      "type": "array",
+      "type": ["array", "string"],
       "default": []
     },
     "containerSecurityContext": {

@@ -50,7 +50,7 @@ spec:
       {{- fail "dnsPolicy is set to 'None', but dnsConfig is not provided" }}
       {{- end }}
       dnsConfig:
-        {{- toYaml .Values.dnsConfig | nindent 8 }}
+        {{- include "atlantis.tplvalues.render" (dict "value" .Values.dnsConfig "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.hostAliases }}
       hostAliases:
@@ -162,7 +162,7 @@ spec:
           secretName: {{ .Values.customPem }}
       {{- end }}
       {{- if .Values.extraVolumes }}
-      {{- toYaml .Values.extraVolumes | nindent 6 }}
+      {{- include "atlantis.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 6 }}
       {{- end }}
       {{- if .Values.initConfig.enabled }}
       - name: init-config
@@ -185,7 +185,7 @@ spec:
       {{- if or .Values.initContainers .Values.initConfig.enabled }}
       initContainers:
         {{- with .Values.initContainers }}
-        {{- toYaml . | nindent 8 }}
+        {{- include "atlantis.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
         {{- if .Values.initConfig.enabled }}
         - name: init-config
@@ -650,7 +650,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.extraContainers }}
-        {{- toYaml . | nindent 8 }}
+        {{- include "atlantis.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
