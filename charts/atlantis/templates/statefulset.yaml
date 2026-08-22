@@ -79,6 +79,11 @@ spec:
         persistentVolumeClaim:
           claimName: {{ template "atlantis.fullname" . }}-data
       {{- end }}
+      {{- if .Values.sharePlanDirVolumeClaim.enabled }}
+      - name: share-plan-dir
+        persistentVolumeClaim:
+          claimName: {{ template "atlantis.fullname" . }}-share-plan-dir
+      {{- end }}
       {{- if .Values.tlsSecretName }}
       - name: tls
         secret:
@@ -319,9 +324,9 @@ spec:
           {{- end }}
           - name: ATLANTIS_DATA_DIR
             value: {{ .Values.atlantisDataDirectory }}
-          {{- if .Values.sharePlanDir }}
+          {{- with include "atlantis.sharePlanDir" . }}
           - name: ATLANTIS_SHARE_PLAN_DIR
-            value: {{ .Values.sharePlanDir | quote }}
+            value: {{ . | quote }}
           {{- end }}
           - name: ATLANTIS_REPO_ALLOWLIST
             {{- if .Values.orgAllowlist }}
@@ -559,6 +564,10 @@ spec:
           {{- if or .Values.volumeClaim.enabled .Values.dataStorage  }}
           - name: atlantis-data
             mountPath: {{ .Values.atlantisDataDirectory }}
+          {{- end }}
+          {{- if .Values.sharePlanDirVolumeClaim.enabled }}
+          - name: share-plan-dir
+            mountPath: {{ include "atlantis.sharePlanDir" . }}
           {{- end }}
           {{- range $name, $_ := .Values.serviceAccountSecrets }}
           - name: {{ $name }}-volume

@@ -469,8 +469,22 @@ resources: {}
 # -- Path to the data directory for the volumeMount.
 atlantisDataDirectory: /atlantis-data
 
-# -- Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory.
+# -- Path to a directory to store Terraform plan files, decoupled from the data directory.
+# When unset, plan files are stored in the data directory.
+# When sharePlanDirVolumeClaim.enabled is true and this is not set, defaults to /atlantis-plans.
 sharePlanDir: ""
+
+sharePlanDirVolumeClaim:
+  # -- Enable a separate PersistentVolumeClaim mounted at sharePlanDir. When true and sharePlanDir is not set, sharePlanDir defaults to /atlantis-plans.
+  enabled: false
+  # -- Disk space available for plan file storage.
+  storage: 5Gi
+  # -- Storage class name (if possible, use a resizable one).
+  storageClassName: ""
+  # -- Volume attributes class name.
+  volumeAttributesClassName: ""
+  # -- Access modes for the sharePlanDir volume. Use ReadWriteMany for multi-replica deployments.
+  accessModes: ["ReadWriteMany"]
 
 volumeClaim:
   enabled: true

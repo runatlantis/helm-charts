@@ -397,7 +397,12 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | servicemonitor.interval | string | `"30s"` |  |
 | servicemonitor.metricRelabelings | list | `[]` | Optional metric relabelings to drop or modify metrics. |
 | servicemonitor.path | string | `"/metrics"` |  |
-| sharePlanDir | string | `""` | Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory. |
+| sharePlanDir | string | `""` | Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory. When sharePlanDirVolumeClaim.enabled is true and this is not set, defaults to /atlantis-plans. |
+| sharePlanDirVolumeClaim.accessModes | list | `["ReadWriteMany"]` | Access modes for the sharePlanDir volume. Use ReadWriteMany for multi-replica deployments. |
+| sharePlanDirVolumeClaim.enabled | bool | `false` | Enable a separate PersistentVolumeClaim mounted at sharePlanDir. When true and sharePlanDir is not set, sharePlanDir defaults to /atlantis-plans. |
+| sharePlanDirVolumeClaim.storage | string | `"5Gi"` | Disk space available for plan file storage. |
+| sharePlanDirVolumeClaim.storageClassName | string | `""` | Storage class name (if possible, use a resizable one). |
+| sharePlanDirVolumeClaim.volumeAttributesClassName | string | `""` | Volume attributes class name. |
 | statefulSet.annotations | object | `{}` |  |
 | statefulSet.labels | object | `{}` |  |
 | statefulSet.priorityClassName | string | `""` |  |

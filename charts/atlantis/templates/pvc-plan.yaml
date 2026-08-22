@@ -1,0 +1,24 @@
+{{- if .Values.sharePlanDirVolumeClaim.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "atlantis.fullname" . }}-share-plan-dir
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "atlantis.labels" . | nindent 4 }}
+  {{- with .Values.extraAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes: {{ .Values.sharePlanDirVolumeClaim.accessModes | toYaml | nindent 2 }}
+  resources:
+    requests:
+      storage: {{ .Values.sharePlanDirVolumeClaim.storage }}
+  {{- if .Values.sharePlanDirVolumeClaim.storageClassName }}
+  storageClassName: {{ .Values.sharePlanDirVolumeClaim.storageClassName }}
+  {{- end }}
+  {{- if .Values.sharePlanDirVolumeClaim.volumeAttributesClassName }}
+  volumeAttributesClassName: {{ .Values.sharePlanDirVolumeClaim.volumeAttributesClassName }}
+  {{- end }}
+{{- end }}

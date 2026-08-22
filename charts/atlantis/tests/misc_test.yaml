@@ -26,6 +26,8 @@ tests:
         enabled: true
       podDisruptionBudget:
         enabled: true
+      sharePlanDirVolumeClaim:
+        enabled: true
       enableKubernetesBackend: true
       api:
         secret: dummy

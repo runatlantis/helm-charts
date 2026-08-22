@@ -933,8 +933,41 @@
     },
     "sharePlanDir": {
       "type": "string",
-      "description": "Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory.",
+      "description": "Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory. When sharePlanDirVolumeClaim.enabled is true and this is not set, defaults to /atlantis-plans.",
       "default": ""
+    },
+    "sharePlanDirVolumeClaim": {
+      "type": "object",
+      "description": "Optional PersistentVolumeClaim mounted at sharePlanDir. Disabled by default.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable a separate PersistentVolumeClaim for sharePlanDir. When true and sharePlanDir is not set, sharePlanDir defaults to /atlantis-plans.",
+          "default": false
+        },
+        "storage": {
+          "type": "string",
+          "description": "Amount of storage available for plan file storage.",
+          "default": "5Gi"
+        },
+        "storageClassName": {
+          "type": "string",
+          "description": "Storage class of the volume mounted for plan file storage."
+        },
+        "volumeAttributesClassName": {
+          "type": "string",
+          "description": "Volume attributes class name."
+        },
+        "accessModes": {
+          "type": "array",
+          "description": "Array of requested access modes for the volume. Use ReadWriteMany for multi-replica deployments.",
+          "items": {
+            "type": "string",
+            "description": "The access mode to be requested."
+          },
+          "default": ["ReadWriteMany"]
+        }
+      }
     },
     "volumeClaim": {
       "type": "object",

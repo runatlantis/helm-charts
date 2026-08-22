@@ -1,0 +1,61 @@
+suite: test sharePlanDir pvc
+templates:
+  - pvc-plan.yaml
+chart:
+  appVersion: test-appVersion
+release:
+  name: my-release
+tests:
+  - it: is not created by default
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: default values when enabled
+    set:
+      sharePlanDirVolumeClaim:
+        enabled: true
+    asserts:
+      - isKind:
+          of: PersistentVolumeClaim
+      - equal:
+          path: apiVersion
+          value: v1
+      - equal:
+          path: metadata.name
+          value: my-release-atlantis-share-plan-dir
+      - equal:
+          path: spec.accessModes
+          value:
+            - ReadWriteMany
+      - equal:
+          path: spec.resources.requests.storage
+          value: 5Gi
+  - it: accessModes
+    set:
+      sharePlanDirVolumeClaim:
+        enabled: true
+        accessModes:
+          - ReadWriteOnce
+    asserts:
+      - equal:
+          path: spec.accessModes
+          value:
+            - ReadWriteOnce
+  - it: storage requests
+    set:
+      sharePlanDirVolumeClaim:
+        enabled: true
+        storage: 10Gi
+    asserts:
+      - equal:
+          path: spec.resources.requests.storage
+          value: 10Gi
+  - it: volumeAttributesClassName
+    set:
+      sharePlanDirVolumeClaim:
+        enabled: true
+        volumeAttributesClassName: "test-volume-attributes-class"
+    asserts:
+      - equal:
+          path: spec.volumeAttributesClassName
+          value: test-volume-attributes-class
