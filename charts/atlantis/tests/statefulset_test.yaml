@@ -129,6 +129,8 @@ tests:
               value: "4141"
             - name: ATLANTIS_ATLANTIS_URL
               value: http://
+      - notExists:
+          path: spec.template.spec.containers[0].env[?(@.name == "ATLANTIS_SHARE_PLAN_DIR")]
       - equal:
           path: spec.template.spec.containers[0].livenessProbe
           value:
@@ -1339,14 +1341,42 @@ tests:
   - it: sharePlanDir omitted by default
     template: statefulset.yaml
     asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].env[?(@.name == "ATLANTIS_SHARE_PLAN_DIR")]
       - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: share-plan-dir
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: share-plan-dir
+  - it: sharePlanDirVolumeClaim defaults sharePlanDir to /atlantis-plans
+    template: statefulset.yaml
+    set:
+      sharePlanDirVolumeClaim:
+        enabled: true
+    asserts:
+      - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: ATLANTIS_SHARE_PLAN_DIR
             value: /atlantis-plans
-  - it: sharePlanDirVolumeClaim mounts PVC at default path
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: share-plan-dir
+            persistentVolumeClaim:
+              claimName: my-release-atlantis-share-plan-dir
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: share-plan-dir
+            mountPath: /atlantis-plans
+  - it: sharePlanDirVolumeClaim mounts PVC at sharePlanDir
     template: statefulset.yaml
     set:
+      sharePlanDir: /atlantis-plans
       sharePlanDirVolumeClaim:
         enabled: true
     asserts:

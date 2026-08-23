@@ -933,7 +933,7 @@
     },
     "sharePlanDir": {
       "type": "string",
-      "description": "Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files are stored in the data directory. When sharePlanDirVolumeClaim.enabled is true and this is not set, defaults to /atlantis-plans.",
+      "description": "Path to a directory to store Terraform plan files, decoupled from the data directory. When unset, plan files stay in the data directory and ATLANTIS_SHARE_PLAN_DIR is not set. When sharePlanDirVolumeClaim.enabled is true and this is unset, defaults to /atlantis-plans.",
       "default": ""
     },
     "sharePlanDirVolumeClaim": {
@@ -942,7 +942,7 @@
       "properties": {
         "enabled": {
           "type": "boolean",
-          "description": "Enable a separate PersistentVolumeClaim for sharePlanDir. When true and sharePlanDir is not set, sharePlanDir defaults to /atlantis-plans.",
+          "description": "Enable a separate PersistentVolumeClaim for sharePlanDir. When true and sharePlanDir is unset, sharePlanDir defaults to /atlantis-plans.",
           "default": false
         },
         "storage": {

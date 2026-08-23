@@ -179,8 +179,8 @@ number: {{ . }}
 {{/*
 Resolves the effective sharePlanDir path.
 If sharePlanDir is set, use it.
-If sharePlanDirVolumeClaim.enabled is true and sharePlanDir is not set, default to /atlantis-plans.
-Otherwise empty (plan files stay in the data directory).
+If sharePlanDirVolumeClaim.enabled is true and sharePlanDir is unset, default to /atlantis-plans.
+Otherwise empty so ATLANTIS_SHARE_PLAN_DIR is not rendered.
 */}}
 {{- define "atlantis.sharePlanDir" -}}
 {{- if .Values.sharePlanDir -}}

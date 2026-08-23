@@ -324,9 +324,9 @@ spec:
           {{- end }}
           - name: ATLANTIS_DATA_DIR
             value: {{ .Values.atlantisDataDirectory }}
-          {{- with include "atlantis.sharePlanDir" . }}
+          {{- if or .Values.sharePlanDir .Values.sharePlanDirVolumeClaim.enabled }}
           - name: ATLANTIS_SHARE_PLAN_DIR
-            value: {{ . | quote }}
+            value: {{ include "atlantis.sharePlanDir" . | quote }}
           {{- end }}
           - name: ATLANTIS_REPO_ALLOWLIST
             {{- if .Values.orgAllowlist }}
