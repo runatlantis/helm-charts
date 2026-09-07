@@ -455,6 +455,37 @@ route:
 # You have to create a secret with the specified name.
 customPem: ""
 
+# additionalCaCerts appends one or more custom CA certificates to the system
+# trust bundle instead of replacing it (as `customPem` does). An init container
+# concatenates the image's system CA bundle with the certificate(s) from the
+# referenced secret into a shared emptyDir, and the Atlantis container is pointed
+# at the merged bundle via the relevant env vars. This works as the default
+# non-root user and keeps the public CAs up to date with the image.
+additionalCaCerts:
+  # -- Enable appending custom CA certificate(s) to the system trust bundle.
+  enabled: false
+  # -- Name of a secret containing one or more `*.crt` PEM files to trust.
+  # The secret has to be created manually. Every key ending in `.crt` is appended.
+  secretName: ""
+  # -- Image used by the init container that builds the merged CA bundle.
+  # Defaults to the Atlantis image so the system CA set matches the app exactly
+  # and no extra image needs to be pulled/mirrored.
+  image: ""
+  # -- Path the merged CA bundle is written to (inside a shared emptyDir).
+  mountPath: /ca-certs/ca-certificates.crt
+  # -- Core env vars set on the Atlantis container, pointed at the merged bundle.
+  # Covers Go (atlantis, terraform), OpenSSL/C (curl, wget), git and Python
+  # requests-based tooling (e.g. checkov, az).
+  envVars:
+    - SSL_CERT_FILE
+    - GIT_SSL_CAINFO
+    - CURL_CA_BUNDLE
+    - REQUESTS_CA_BUNDLE
+  # -- Additional env vars to point at the merged bundle, for extra runtimes that
+  # ship in custom images (e.g. NODE_EXTRA_CA_CERTS, AWS_CA_BUNDLE,
+  # CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE). Harmless if the tool is absent.
+  extraEnvVars: []
+
 # -- Resources for Atlantis.
 # Check values.yaml for examples.
 resources: {}
