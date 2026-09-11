@@ -14,6 +14,7 @@
   - [Install Helm Chart](#install-helm-chart)
 - [Required Configuration](#required-configuration)
 - [Additional manifests](#additional-manifests)
+- [Labels](#labels)
 - [Values](#values)
 - [Upgrading](#upgrading)
   - [From `4.*` to `5.*`](#from-4-to-5)
@@ -229,6 +230,12 @@ extraManifests:
 ```
 
 Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8080`) while the webhook URL configured in your VCS continues to hit the default port. If you prefer a single port instead, route everything through the proxy and let webhooks bypass auth with `skip_auth_routes=["POST=^/events$"]`.
+
+## Labels
+
+Starting in `6.16.0`, this chart applies the [Kubernetes-recommended labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/#labels) (`app.kubernetes.io/name`, `app.kubernetes.io/instance`, `app.kubernetes.io/managed-by`, `app.kubernetes.io/version`) on all resources, in addition to the legacy labels (`app`, `chart`, `release`, `heritage`) that were already there.
+
+Both sets of labels are kept side by side for now, and selectors are left untouched, so this is a non-breaking change. The legacy labels will be removed in a future major release once users have had time to migrate any tooling that depends on them.
 
 {{ template "chart.valuesSection" . }}
 
