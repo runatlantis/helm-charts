@@ -54,8 +54,8 @@ tests:
       - equal:
           path: spec.template.metadata.annotations
           value:
-            checksum/config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-            checksum/repo-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+            checksum/config: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+            checksum/repo-config: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
       - notExists:
           path: spec.template.spec.hostAliases
       - equal:
@@ -1413,3 +1413,13 @@ tests:
           content:
             name: share-plan-dir
             mountPath: /mnt/shared/plans
+  - it: keeps the config checksums stable across chart versions
+    template: statefulset.yaml
+    chart:
+      version: 99.99.99
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations
+          value:
+            checksum/config: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+            checksum/repo-config: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
