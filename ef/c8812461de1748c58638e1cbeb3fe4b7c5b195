@@ -1,0 +1,19 @@
+charts/atlantis/Chart.yaml
+  s_6464c0fe3ad4be::t_138ad06dab6e25 3,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "efc8812461de1748c58638e1cbeb3fe4b7c5b195",
+  "prompts": {},
+  "sessions": {
+    "s_6464c0fe3ad4be": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0c46e-63b5-7f73-a9b0-28a1ffa73ceb",
+        "model": "gpt-5.6-luna"
+      },
+      "human_author": "Rui Chen <rui@chenrui.dev>"
+    }
+  }
+}
