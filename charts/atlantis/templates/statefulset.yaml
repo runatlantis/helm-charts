@@ -29,6 +29,8 @@ spec:
       labels:
         app: {{ template "atlantis.name" . }}
         release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ template "atlantis.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
         {{- if .Values.podTemplate.labels }}
         {{- toYaml .Values.podTemplate.labels | nindent 8 }}
         {{- end }}

@@ -32,6 +32,18 @@ tests:
       - equal:
           path: metadata.labels.release
           value: my-release
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: atlantis
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: my-release
+      - equal:
+          path: metadata.labels["app.kubernetes.io/managed-by"]
+          value: Helm
+      - equal:
+          path: metadata.labels["app.kubernetes.io/version"]
+          value: test-appVersion
       - notExists:
           path: metadata.annotations
       - equal:
@@ -51,6 +63,8 @@ tests:
           value:
             app: atlantis
             release: my-release
+            app.kubernetes.io/name: atlantis
+            app.kubernetes.io/instance: my-release
       - equal:
           path: spec.template.metadata.annotations
           value:
