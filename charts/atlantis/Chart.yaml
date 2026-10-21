@@ -1,9 +1,9 @@
 apiVersion: v1
 # renovate: datasource=docker depName=ghcr.io/runatlantis/atlantis
-appVersion: v0.48.1
+appVersion: v0.48.2
 description: A Helm chart for Atlantis https://www.runatlantis.io
 name: atlantis
-version: 6.16.1
+version: 6.16.2
 keywords:
   - terraform
 home: https://www.runatlantis.io
