@@ -1,0 +1,35 @@
+suite: test role
+templates:
+  - role.yaml
+tests:
+  - it: is not created unless the kubernetes backend is enabled
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: grants explicit verbs on secrets rather than a wildcard
+    set:
+      enableKubernetesBackend: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: rules[1].resources
+          value:
+            - secrets
+      - equal:
+          path: rules[1].verbs
+          value:
+            - get
+            - list
+            - watch
+            - create
+            - update
+            - patch
+            - delete
+      - notContains:
+          path: rules[1].verbs
+          content: "*"
+      - notContains:
+          path: rules[1].verbs
+          content: deletecollection
