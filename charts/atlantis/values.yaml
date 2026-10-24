@@ -338,6 +338,8 @@ statefulSet:
     # -- It is not recommended to run atlantis as root.
     runAsUser: 100
     fsGroupChangePolicy: "OnRootMismatch"
+    seccompProfile:
+      type: RuntimeDefault
   priorityClassName: ""
   updateStrategy: {}
   # -- Option to share process namespace with atlantis container.
@@ -777,11 +779,18 @@ extraContainers: []
 #     volumeMounts:
 #       - ...
 
-# -- Check values.yaml for examples.
-containerSecurityContext: {}
-# containerSecurityContext:
-#   allowPrivilegeEscalation: false
-#   readOnlyRootFilesystem: true
+# -- Security context for the atlantis container.
+# `readOnlyRootFilesystem` is left off by default because Atlantis writes to its home
+# directory at runtime (`~/.git-credentials`, `~/.gitconfig`). Setting it to true is
+# supported and the StatefulSet then mounts emptyDir volumes at /home/atlantis and
+# /tmp for you -- see "Enabling a read-only root filesystem" in the chart README.
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
 
 servicemonitor:
   # -- To enable a Prometheus servicemonitor, set enabled to true,

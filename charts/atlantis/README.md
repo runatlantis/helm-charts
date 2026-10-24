@@ -237,6 +237,37 @@ extraManifests:
 
 Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8080`) while the webhook URL configured in your VCS continues to hit the default port. If you prefer a single port instead, route everything through the proxy and let webhooks bypass auth with `skip_auth_routes=["POST=^/events$"]`.
 
+## Security context
+
+The chart defaults to a security context that satisfies most of the Kubernetes [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) `restricted` profile:
+
+- The container drops all capabilities and disallows privilege escalation. Container runtimes grant around a dozen capabilities by default and allow privilege escalation, so both are real restrictions; Atlantis is an HTTP server that shells out to Terraform and needs neither.
+- Both the pod and the container request the `RuntimeDefault` seccomp profile. Unless your kubelet runs with `--seccomp-default`, containers are otherwise `Unconfined`.
+
+The pod has pinned `runAsUser: 100` since long before this, and that is unchanged. `runAsNonRoot` is deliberately left unset: the uid is already a non-root value, so asserting it adds nothing at runtime, while it would make the rendered manifest invalid for anyone who overrides `statefulSet.securityContext.runAsUser` to `0`.
+
+If a custom `repoConfig` workflow turns out to need a capability, override `containerSecurityContext.capabilities` to add it back. Writing outside the paths Atlantis owns is the case most likely to need one, since container runtimes grant `DAC_OVERRIDE` by default and this drops it.
+
+### Enabling a read-only root filesystem
+
+`readOnlyRootFilesystem` is **not** on by default, because Atlantis writes to its home directory at runtime: `~/.git-credentials` is written on startup when `--write-git-creds` is set and rewritten by the GitHub App token rotator on every token rotation, and `git config --global` writes `~/.gitconfig`.
+
+The chart already handles this for you. Setting the flag is enough -- the StatefulSet then mounts `emptyDir` volumes at `/home/atlantis` and `/tmp` automatically, so you do not need to add any `extraVolumes` of your own:
+
+```yaml
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  seccompProfile:
+    type: RuntimeDefault
+```
+
+Test it against your own setup before rolling it out: custom workflows, Terraform providers and plugin caches may need writable paths beyond the home directory and `/tmp`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -258,7 +289,7 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | commonLabels | object | `{}` | Common Labels for all resources created by this chart. |
 | config | string | `""` | Override atlantis main configuration by config map, ref: https://www.runatlantis.io/docs/using-slack-hooks.html#configuring-atlantis. Check values.yaml for examples. |
 | containerPort | int | `0` | [optional] Define the port you would like atlantis to run on. When 0, the value of service.targetPort is used. |
-| containerSecurityContext | object | `{}` | Check values.yaml for examples. |
+| containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"seccompProfile":{"type":"RuntimeDefault"}}` | Security context for the atlantis container. `readOnlyRootFilesystem` is left off by default because Atlantis writes to its home directory at runtime (`~/.git-credentials`, `~/.gitconfig`). Setting it to true is supported and the StatefulSet then mounts emptyDir volumes at /home/atlantis and /tmp for you -- see "Enabling a read-only root filesystem" in the chart README. |
 | customPem | string | `""` | Allows to override the /etc/ssl/certs/ca-certificates.cer with your custom one. You have to create a secret with the specified name. |
 | dataStorage | string | `""` | DEPRECATED - Disk space available to check out repositories. Example: 5Gi. |
 | defaultTFDistribution | string | `"terraform"` | Sets the default terraform distribution to use. Can be set to terraform or opentofu. |
@@ -409,6 +440,7 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | statefulSet.securityContext.fsGroup | int | `1000` |  |
 | statefulSet.securityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` |  |
 | statefulSet.securityContext.runAsUser | int | `100` | It is not recommended to run atlantis as root. |
+| statefulSet.securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | statefulSet.shareProcessNamespace | bool | `false` | Option to share process namespace with atlantis container. |
 | statefulSet.updateStrategy | object | `{}` |  |
 | storageClassName | string | `""` | DEPRECATED - Storage class name for Atlantis disk. |

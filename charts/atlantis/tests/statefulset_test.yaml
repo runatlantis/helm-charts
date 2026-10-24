@@ -78,6 +78,8 @@ tests:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
             runAsUser: 100
+            seccompProfile:
+              type: RuntimeDefault
       - notExists:
           path: spec.template.spec.priorityClassName
       - equal:
@@ -99,8 +101,15 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].imagePullPolicy
           value: Always
-      - notExists:
+      - equal:
           path: spec.template.spec.containers[0].securityContext
+          value:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
       - equal:
           path: spec.template.spec.containers[0].args
           value:
@@ -1106,6 +1115,9 @@ tests:
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: Always
+            # inherited from the chart defaults, which `set` merges into
+            seccompProfile:
+              type: RuntimeDefault
   - it: priorityClassName
     template: statefulset.yaml
     set:
