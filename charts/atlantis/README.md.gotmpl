@@ -236,7 +236,10 @@ The chart defaults to a security context that satisfies most of the Kubernetes [
 
 - The container drops all capabilities and disallows privilege escalation. Container runtimes grant around a dozen capabilities by default and allow privilege escalation, so both are real restrictions; Atlantis is an HTTP server that shells out to Terraform and needs neither.
 - Both the pod and the container request the `RuntimeDefault` seccomp profile. Unless your kubelet runs with `--seccomp-default`, containers are otherwise `Unconfined`.
-- `runAsNonRoot: true` is an assertion rather than a change: the `runatlantis/atlantis` image already runs as uid 100. It makes the kubelet refuse to start the container if the image is ever overridden with one that runs as root.
+
+The pod has pinned `runAsUser: 100` since long before this, and that is unchanged. `runAsNonRoot` is deliberately left unset: the uid is already a non-root value, so asserting it adds nothing at runtime, while it would make the rendered manifest invalid for anyone who overrides `statefulSet.securityContext.runAsUser` to `0`.
+
+If a custom `repoConfig` workflow turns out to need a capability, override `containerSecurityContext.capabilities` to add it back. Writing outside the paths Atlantis owns is the case most likely to need one, since container runtimes grant `DAC_OVERRIDE` by default and this drops it.
 
 ### Enabling a read-only root filesystem
 

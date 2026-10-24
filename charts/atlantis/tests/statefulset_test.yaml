@@ -78,7 +78,6 @@ tests:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
             runAsUser: 100
-            runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
       - notExists:
@@ -109,7 +108,6 @@ tests:
             capabilities:
               drop:
                 - ALL
-            runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
       - equal:
@@ -1118,7 +1116,6 @@ tests:
             fsGroup: 1000
             fsGroupChangePolicy: Always
             # inherited from the chart defaults, which `set` merges into
-            runAsNonRoot: true
             seccompProfile:
               type: RuntimeDefault
   - it: priorityClassName

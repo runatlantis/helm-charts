@@ -337,7 +337,6 @@ statefulSet:
     fsGroup: 1000
     # -- It is not recommended to run atlantis as root.
     runAsUser: 100
-    runAsNonRoot: true
     fsGroupChangePolicy: "OnRootMismatch"
     seccompProfile:
       type: RuntimeDefault
@@ -790,7 +789,6 @@ containerSecurityContext:
   capabilities:
     drop:
       - ALL
-  runAsNonRoot: true
   seccompProfile:
     type: RuntimeDefault
 
