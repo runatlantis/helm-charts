@@ -23,6 +23,7 @@
 - [Additional manifests](#additional-manifests)
 - [Values](#values)
 - [Upgrading](#upgrading)
+  - [To `7.*`](#to-7)
   - [From `4.*` to `5.*`](#from-4-to-5)
   - [From `2.*` to `3.*`](#from-2-to-3)
   - [From `1.*` to `2.*`](#from-1-to-2)
@@ -438,6 +439,14 @@ Then point the browser-facing Ingress host at the `atlantis-ui` service port (`8
 | webhook_ingress.tls | list | `[]` | TLS configuration. Check values.yaml for examples. |
 
 ## Upgrading
+
+### To `7.*`
+
+This release bumps Atlantis to [`v0.49.0`](https://github.com/runatlantis/atlantis/releases/tag/v0.49.0), which is a breaking release. Read its notes before upgrading:
+
+- The Docker images no longer include Terraform or OpenTofu. Set `defaultTFVersion` (and `defaultTFDistribution: opentofu` if you use OpenTofu) so Atlantis downloads the binary, or mount one into the image.
+- 12 security advisories are fixed, and several of those fixes change behavior that existing setups may rely on.
+- `v0.47.1` shipped a breaking change without saying so: the shell-injection fix in [#6792](https://github.com/runatlantis/atlantis/issues/6792). It affects anyone upgrading from `v0.47.0` or earlier.
 
 ### From `4.*` to `5.*`
 
