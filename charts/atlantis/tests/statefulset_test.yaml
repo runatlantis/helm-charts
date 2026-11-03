@@ -589,6 +589,16 @@ tests:
           content:
             name: ATLANTIS_GH_ORG
             value: my-org
+  - it: defaultTFVersion keeps a numeric-looking version as a string
+    template: statefulset.yaml
+    set:
+      defaultTFVersion: "1.10"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_DEFAULT_TF_VERSION
+            value: "1.10"
   - it: githubApp
     template: statefulset.yaml
     set:
