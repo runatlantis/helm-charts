@@ -4,6 +4,8 @@ github:
   token: bar
   secret: baz
 
+defaultTFVersion: 1.5.7
+
 service:
   type: ClusterIP
 

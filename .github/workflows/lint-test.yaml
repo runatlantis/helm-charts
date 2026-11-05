@@ -27,7 +27,7 @@ jobs:
           # renovate: datasource=github-tags depName=helm packageName=helm/helm
           version: v4.3.1
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           # renovate: datasource=docker depName=python
           python-version: "3.15"
@@ -110,7 +110,7 @@ jobs:
 
       - name: Create kind cluster
         if: steps.list-changed.outputs.changed == 'true'
-        uses: helm/kind-action@1544676c07bb3570fcb70166beaa07c4528fd4aa # v1.15.1
+        uses: helm/kind-action@ea822c7bf1874f08e5a491df991c228edffc3376 # v1.15.2
 
       - name: Run chart-testing (install)
         if: steps.list-changed.outputs.changed == 'true'
