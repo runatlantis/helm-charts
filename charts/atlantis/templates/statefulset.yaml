@@ -306,7 +306,7 @@ spec:
           {{- end }}
           {{- if .Values.defaultTFVersion }}
           - name: ATLANTIS_DEFAULT_TF_VERSION
-            value: {{ .Values.defaultTFVersion }}
+            value: {{ .Values.defaultTFVersion | quote }}
           {{- end }}
           {{- if .Values.defaultTFDistribution }}
           - name: ATLANTIS_DEFAULT_TF_DISTRIBUTION
