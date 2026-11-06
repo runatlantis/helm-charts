@@ -20,9 +20,21 @@ rules:
       - create
       - update
       - delete
+  # The Terraform Kubernetes backend stores state in Secrets whose names it picks at
+  # runtime, so these rules cannot be narrowed with resourceNames. The verbs are listed
+  # explicitly instead of "*" so the role does not also grant deletecollection, or any
+  # verb added to the API in future. This is still read access to every Secret in the
+  # namespace, so give Atlantis a namespace of its own.
   - apiGroups:
       - ""
     resources:
       - secrets
-    verbs: ['*']
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
 {{- end }}
