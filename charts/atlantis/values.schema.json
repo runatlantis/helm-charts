@@ -694,6 +694,10 @@
           "description": "Leverage a PriorityClass to ensure your pods survive resource shortages.",
           "type": "string"
         },
+        "runtimeClassName": {
+          "description": "Name of the RuntimeClass used to run the pod, e.g. `sysbox-runc`.",
+          "type": "string"
+        },
         "updateStrategy": {
           "type": "object",
           "description": "Configure [updateStrategy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies) of the StatefulSet.",

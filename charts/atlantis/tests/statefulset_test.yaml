@@ -82,6 +82,8 @@ tests:
               type: RuntimeDefault
       - notExists:
           path: spec.template.spec.priorityClassName
+      - notExists:
+          path: spec.template.spec.runtimeClassName
       - equal:
           path: spec.template.spec.volumes
           value:
@@ -1136,6 +1138,14 @@ tests:
       - equal:
           path: spec.template.spec.priorityClassName
           value: high-priority
+  - it: runtimeClassName
+    template: statefulset.yaml
+    set:
+      statefulSet.runtimeClassName: sysbox-runc
+    asserts:
+      - equal:
+          path: spec.template.spec.runtimeClassName
+          value: sysbox-runc
   - it: updateStrategy
     template: statefulset.yaml
     set:

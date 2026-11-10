@@ -73,6 +73,9 @@ spec:
       {{- if .Values.statefulSet.priorityClassName }}
       priorityClassName: {{ .Values.statefulSet.priorityClassName }}
       {{- end }}
+      {{- with .Values.statefulSet.runtimeClassName }}
+      runtimeClassName: {{ . }}
+      {{- end }}
       volumes:
       {{- if and .Values.volumeClaim.enabled ( not .Values.dataStorage ) }}
       - name : atlantis-data
