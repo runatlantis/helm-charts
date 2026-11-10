@@ -1196,9 +1196,31 @@
     },
     "loadEnvFromSecrets": {
       "type": "array",
-      "description": "Array of Kubernetes secrets to set all key-value pairs as environment variables. See `values.yaml` for example.",
+      "description": "Array of Kubernetes secrets to set all key-value pairs as environment variables. Each entry is either a secret name or an object with a `name` and an `optional` flag. See `values.yaml` for example.",
       "items": {
-        "type": "string"
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the Kubernetes secret."
+              },
+              "optional": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether the pod may start even if the secret does not exist."
+              }
+            }
+          }
+        ]
       }
     },
     "loadEnvFromConfigMaps": {

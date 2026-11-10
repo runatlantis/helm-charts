@@ -249,7 +249,14 @@ spec:
           envFrom:
           {{- range .Values.loadEnvFromSecrets }}
             - secretRef:
+                {{- if kindIs "string" . }}
                 name: {{ . }}
+                {{- else }}
+                name: {{ .name }}
+                {{- if .optional }}
+                optional: true
+                {{- end }}
+                {{- end }}
           {{- end }}
           {{- range .Values.loadEnvFromConfigMaps }}
             - configMapRef:
