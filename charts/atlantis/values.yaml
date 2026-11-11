@@ -789,7 +789,7 @@ extraContainers: []
 # `readOnlyRootFilesystem` is left off by default because Atlantis writes to its home
 # directory at runtime (`~/.git-credentials`, `~/.gitconfig`). Setting it to true is
 # supported and the StatefulSet then mounts emptyDir volumes at /home/atlantis and
-# /tmp for you -- see "Enabling a read-only root filesystem" in the chart README.
+# /tmp for you -- see guides/read-only-root-filesystem.md in the chart.
 containerSecurityContext:
   allowPrivilegeEscalation: false
   capabilities:
