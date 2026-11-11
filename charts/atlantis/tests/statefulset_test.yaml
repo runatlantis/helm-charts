@@ -2,6 +2,7 @@
 suite: test statefulset
 templates:
   - configmap-config.yaml
+  - configmap-init-config.yaml
   - configmap-repo-config.yaml
   - statefulset.yaml
 chart:
@@ -1358,6 +1359,29 @@ tests:
       - equal:
           path: spec.template.spec.initContainers[0].name
           value: plain-init
+  - it: initConfig init container uses the default imagePullPolicy
+    template: statefulset.yaml
+    set:
+      initConfig.enabled: true
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: init-config
+      - equal:
+          path: spec.template.spec.initContainers[0].image
+          value: alpine:latest
+      - equal:
+          path: spec.template.spec.initContainers[0].imagePullPolicy
+          value: IfNotPresent
+  - it: initConfig init container uses the configured imagePullPolicy
+    template: statefulset.yaml
+    set:
+      initConfig.enabled: true
+      initConfig.imagePullPolicy: Always
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].imagePullPolicy
+          value: Always
   - it: extraContainers rendered from a template string
     template: statefulset.yaml
     set:
