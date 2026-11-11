@@ -138,10 +138,10 @@ tests:
               value: <replace-me>
             - name: ATLANTIS_PORT
               value: "4141"
-            - name: ATLANTIS_ATLANTIS_URL
-              value: http://
       - notExists:
           path: spec.template.spec.containers[0].env[?(@.name == "ATLANTIS_SHARE_PLAN_DIR")]
+      - notExists:
+          path: spec.template.spec.containers[0].env[?(@.name == "ATLANTIS_ATLANTIS_URL")]
       - equal:
           path: spec.template.spec.containers[0].livenessProbe
           value:
@@ -207,8 +207,6 @@ tests:
               value: <replace-me>
             - name: ATLANTIS_PORT
               value: "8888"
-            - name: ATLANTIS_ATLANTIS_URL
-              value: http://
       - equal:
           path: spec.template.spec.containers[0].livenessProbe
           value:
@@ -1194,8 +1192,72 @@ tests:
               value: <replace-me>
             - name: ATLANTIS_PORT
               value: "4141"
-            - name: ATLANTIS_ATLANTIS_URL
-              value: http://
+  - it: atlantisUrl from ingress.host
+    template: statefulset.yaml
+    set:
+      ingress.host: atlantis.example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_ATLANTIS_URL
+            value: http://atlantis.example.com
+  - it: atlantisUrl from ingress.host with tls
+    template: statefulset.yaml
+    set:
+      ingress.host: atlantis.example.com
+      ingress.tls:
+        - secretName: atlantis-tls
+          hosts:
+            - atlantis.example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_ATLANTIS_URL
+            value: https://atlantis.example.com
+  - it: atlantisUrl from the first entry of ingress.hosts
+    template: statefulset.yaml
+    set:
+      ingress.host: ignored.example.com
+      ingress.hosts:
+        - host: atlantis.example.com
+          paths: ["/"]
+        - host: atlantis2.example.com
+          paths: ["/"]
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_ATLANTIS_URL
+            value: http://atlantis.example.com
+  - it: atlantisUrl is not set when ingress.hosts has no host
+    template: statefulset.yaml
+    set:
+      ingress.hosts:
+        - paths: ["/"]
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].env[?(@.name == "ATLANTIS_ATLANTIS_URL")]
+  - it: atlantisUrl is not set when the ingress is disabled
+    template: statefulset.yaml
+    set:
+      ingress.enabled: false
+      ingress.host: atlantis.example.com
+    asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].env[?(@.name == "ATLANTIS_ATLANTIS_URL")]
+  - it: atlantisUrl takes precedence over the ingress host
+    template: statefulset.yaml
+    set:
+      atlantisUrl: https://atlantis.internal.example.com
+      ingress.host: atlantis.example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_ATLANTIS_URL
+            value: https://atlantis.internal.example.com
   - it: sharedDirPath
     template: statefulset.yaml
     set:
@@ -1214,8 +1276,6 @@ tests:
               value: <replace-me>
             - name: ATLANTIS_PORT
               value: "4141"
-            - name: ATLANTIS_ATLANTIS_URL
-              value: http://
   - it: extraPathWithSharedDirPath
     template: statefulset.yaml
     set:
@@ -1235,8 +1295,6 @@ tests:
               value: <replace-me>
             - name: ATLANTIS_PORT
               value: "4141"
-            - name: ATLANTIS_ATLANTIS_URL
-              value: http://
   - it: topology spread constraints
     template: statefulset.yaml
     set:

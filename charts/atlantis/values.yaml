@@ -10,6 +10,7 @@ nameOverride: ""
 
 # -- An option to override the atlantis url,
 # if not using an ingress, set it to the external IP.
+# When unset and the ingress is enabled, it is derived from the first entry of ingress.hosts or from ingress.host.
 # Check values.yaml for examples.
 atlantisUrl: ""
 # Example:  http://10.0.0.0

@@ -1,0 +1,38 @@
+---
+suite: test notes
+templates:
+  - NOTES.txt
+release:
+  name: my-release
+  namespace: my-namespace
+tests:
+  - it: prints the ingress host
+    set:
+      ingress.host: atlantis.example.com
+    asserts:
+      - matchRegexRaw:
+          pattern: "URL by running these commands:\n  http://atlantis.example.com\n"
+  - it: prints the first host of ingress.hosts with tls
+    set:
+      ingress.hosts:
+        - host: atlantis.example.com
+          paths: ["/"]
+      ingress.tls:
+        - secretName: atlantis-tls
+          hosts:
+            - atlantis.example.com
+    asserts:
+      - matchRegexRaw:
+          pattern: "URL by running these commands:\n  https://atlantis.example.com\n"
+      - notMatchRegexRaw:
+          pattern: "map\\["
+  - it: prints atlantisUrl when set
+    set:
+      atlantisUrl: http://10.0.0.1
+    asserts:
+      - matchRegexRaw:
+          pattern: "URL by running these commands:\n  http://10.0.0.1\n"
+  - it: falls back to the service instructions when no host is known
+    asserts:
+      - matchRegexRaw:
+          pattern: "export NODE_PORT=.* services my-release-atlantis\\)"

@@ -350,16 +350,9 @@ spec:
           - name: ATLANTIS_REPO_CONFIG
             value: /etc/atlantis/repos.yaml
           {{- end }}
-          {{- if .Values.atlantisUrl }}
+          {{- with include "atlantis.atlantisUrl" . }}
           - name: ATLANTIS_ATLANTIS_URL
-            value: {{ .Values.atlantisUrl }}
-          {{- else if .Values.ingress.enabled }}
-          - name: ATLANTIS_ATLANTIS_URL
-            {{- if .Values.ingress.tls }}
-            value: https://{{ .Values.ingress.host }}
-            {{- else }}
-            value: http://{{ .Values.ingress.host }}
-            {{- end }}
+            value: {{ . }}
           {{- end }}
           {{- if .Values.github.user }}
           - name: ATLANTIS_GH_USER
