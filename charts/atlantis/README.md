@@ -440,6 +440,7 @@ Test it against your own setup before rolling it out: custom workflows, Terrafor
 | statefulSet.annotations | object | `{}` |  |
 | statefulSet.labels | object | `{}` |  |
 | statefulSet.priorityClassName | string | `""` |  |
+| statefulSet.runtimeClassName | string | `""` | Name of the [RuntimeClass](https://kubernetes.io/docs/concepts/containers/runtime-class/) used to run the pod, e.g. `sysbox-runc`. |
 | statefulSet.securityContext.fsGroup | int | `1000` |  |
 | statefulSet.securityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` |  |
 | statefulSet.securityContext.runAsUser | int | `100` | It is not recommended to run atlantis as root. |
