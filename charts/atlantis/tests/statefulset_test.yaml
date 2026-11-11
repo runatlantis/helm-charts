@@ -1285,6 +1285,55 @@ tests:
                   - /bin/sh
                   - -c
                   - while pgrep -x "terraform|tofu|terragrunt" > /dev/null; do sleep 1; done
+  - it: loadEnvFromSecrets and loadEnvFromConfigMaps
+    template: statefulset.yaml
+    set:
+      loadEnvFromSecrets:
+        - secret-one
+        - secret-two
+      loadEnvFromConfigMaps:
+        - config-one
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom
+          value:
+            - secretRef:
+                name: secret-one
+            - secretRef:
+                name: secret-two
+            - configMapRef:
+                name: config-one
+  - it: loadEnvFromSecrets with optional secrets
+    template: statefulset.yaml
+    set:
+      loadEnvFromSecrets:
+        - secret-one
+        - name: secret-two
+          optional: true
+        - name: secret-three
+          optional: false
+        - name: secret-four
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom
+          value:
+            - secretRef:
+                name: secret-one
+            - secretRef:
+                name: secret-two
+                optional: true
+            - secretRef:
+                name: secret-three
+            - secretRef:
+                name: secret-four
+  - it: loadEnvFromSecrets entry without a name is rejected
+    template: statefulset.yaml
+    set:
+      loadEnvFromSecrets:
+        - optional: true
+    asserts:
+      - failedTemplate:
+          errorPattern: "missing property 'name'"
   - it: initContainers rendered from a template string
     template: statefulset.yaml
     set:
