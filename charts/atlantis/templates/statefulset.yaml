@@ -198,7 +198,7 @@ spec:
         {{- if .Values.initConfig.enabled }}
         - name: init-config
           image: {{ .Values.initConfig.image }}
-          imagePullPolicy: {{ .Values.initConfig.pullPolicy }}
+          imagePullPolicy: {{ .Values.initConfig.imagePullPolicy }}
           command:
             - /init-config.sh
           workingDir: {{ .Values.initConfig.workDir }}
