@@ -181,7 +181,7 @@
         },
         "secret": {
           "type": "string",
-          "description": "Webhook secret for Bitbucket repositories (Bitbucket Server only)."
+          "description": "Webhook secret for Bitbucket repositories. Required for Bitbucket Server, optional for Bitbucket Cloud."
         },
         "baseURL": {
           "type": "string",

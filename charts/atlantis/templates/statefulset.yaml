@@ -461,11 +461,16 @@ spec:
           {{- if .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
             value: {{ .Values.bitbucket.baseURL }}
+          {{- end }}
+          {{- if or .Values.bitbucket.baseURL .Values.bitbucket.secret .Values.vcsSecretName }}
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: bitbucket_secret
+                {{- if not (or .Values.bitbucket.baseURL .Values.bitbucket.secret) }}
+                optional: true
+                {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.azuredevops }}
