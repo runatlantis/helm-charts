@@ -238,6 +238,14 @@
       "type": "string",
       "description": "Name of a pre-existing Kubernetes `Secret` containing a `netrc` key. Use this instead of `netrc` (optional)"
     },
+    "terraformrc": {
+      "type": "string",
+      "description": "Contents of a file to be mounted to `~/.terraformrc`.  Use to configure the Terraform CLI, e.g. credentials for private module registries or a provider network mirror."
+    },
+    "terraformrcSecretName": {
+      "type": "string",
+      "description": "Name of a pre-existing Kubernetes `Secret` containing a `terraformrc` key. Use this instead of `terraformrc` (optional)"
+    },
     "aws": {
       "type": "object",
       "description": "AWS settings",

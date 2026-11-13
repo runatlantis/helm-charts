@@ -129,6 +129,15 @@ spec:
         secret:
           secretName: {{ .Values.netrcSecretName }}
       {{- end }}
+      {{- if .Values.terraformrc }}
+      - name: terraformrc-volume
+        secret:
+          secretName: {{ template "atlantis.fullname" . }}-terraformrc
+      {{- else if .Values.terraformrcSecretName }}
+      - name: terraformrc-volume
+        secret:
+          secretName: {{ .Values.terraformrcSecretName }}
+      {{- end }}
       {{- if or .Values.aws.credentials .Values.aws.config }}
       - name: aws-dir
         emptyDir: {}
@@ -619,6 +628,12 @@ spec:
             readOnly: true
             mountPath: /home/atlantis/.netrc
             subPath: netrc
+          {{- end }}
+          {{- if or .Values.terraformrc .Values.terraformrcSecretName }}
+          - name: terraformrc-volume
+            readOnly: true
+            mountPath: /home/atlantis/.terraformrc
+            subPath: terraformrc
           {{- end }}
           {{- if .Values.awsSecretName }}
           - name: aws-volume
