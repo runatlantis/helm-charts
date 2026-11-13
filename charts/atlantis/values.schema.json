@@ -1173,6 +1173,11 @@
               "key": {
                 "type": "string",
                 "description": "The key of the value in the Kubernetes secret that should be used to populate the environment variable."
+              },
+              "optional": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether the pod may start even if the secret or the key does not exist."
               }
             },
             "required": [
@@ -1225,9 +1230,31 @@
     },
     "loadEnvFromConfigMaps": {
       "type": "array",
-      "description": "Array of Kubernetes `ConfigMap`s to set all key-value pairs as environment variables. See `values.yaml` for example.",
+      "description": "Array of Kubernetes `ConfigMap`s to set all key-value pairs as environment variables. Each entry is either a `ConfigMap` name or an object with a `name` and an `optional` flag. See `values.yaml` for example.",
       "items": {
-        "type": "string"
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the Kubernetes `ConfigMap`."
+              },
+              "optional": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether the pod may start even if the `ConfigMap` does not exist."
+              }
+            }
+          }
+        ]
       }
     },
     "googleServiceAccountSecrets": {

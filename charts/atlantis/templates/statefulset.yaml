@@ -260,7 +260,14 @@ spec:
           {{- end }}
           {{- range .Values.loadEnvFromConfigMaps }}
             - configMapRef:
+                {{- if kindIs "string" . }}
                 name: {{ . }}
+                {{- else }}
+                name: {{ .name }}
+                {{- if .optional }}
+                optional: true
+                {{- end }}
+                {{- end }}
           {{- end }}
           {{- end }}
           env:
@@ -281,6 +288,9 @@ spec:
               secretKeyRef:
                 name: {{ .secretKeyRef.name }}
                 key: {{ .secretKeyRef.key }}
+                {{- if .secretKeyRef.optional }}
+                optional: true
+                {{- end }}
           {{- end }}
           {{- if .Values.allowForkPRs }}
           - name: ATLANTIS_ALLOW_FORK_PRS
