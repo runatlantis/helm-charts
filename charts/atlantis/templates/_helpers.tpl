@@ -77,6 +77,27 @@ Defines the internal kubernetes address to Atlantis
 {{- end -}}
 
 {{/*
+Defines the public URL of Atlantis (ATLANTIS_ATLANTIS_URL).
+Uses atlantisUrl when set. Otherwise, when the ingress is enabled, it is derived
+from the ingress host: the first entry of ingress.hosts when that list is set
+(as the Ingress template does), or ingress.host. Renders nothing when no host
+is known, so that Atlantis falls back to its own default.
+*/}}
+{{- define "atlantis.atlantisUrl" -}}
+{{- if .Values.atlantisUrl -}}
+{{- .Values.atlantisUrl -}}
+{{- else if .Values.ingress.enabled -}}
+{{- $host := .Values.ingress.host -}}
+{{- if .Values.ingress.hosts -}}
+{{- $host = (first .Values.ingress.hosts).host -}}
+{{- end -}}
+{{- if $host -}}
+{{- if .Values.ingress.tls -}}https{{- else -}}http{{- end -}}://{{ $host }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Generates secret-webhook name
 */}}
 {{- define "atlantis.vcsSecretName" -}}
