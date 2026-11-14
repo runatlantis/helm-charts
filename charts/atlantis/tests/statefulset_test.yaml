@@ -1392,6 +1392,93 @@ tests:
     asserts:
       - failedTemplate:
           errorPattern: "missing property 'name'"
+  - it: loadEnvFromConfigMaps with optional ConfigMaps
+    template: statefulset.yaml
+    set:
+      loadEnvFromConfigMaps:
+        - config-one
+        - name: config-two
+          optional: true
+        - name: config-three
+          optional: false
+        - name: config-four
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].envFrom
+          value:
+            - configMapRef:
+                name: config-one
+            - configMapRef:
+                name: config-two
+                optional: true
+            - configMapRef:
+                name: config-three
+            - configMapRef:
+                name: config-four
+  - it: loadEnvFromConfigMaps entry without a name is rejected
+    template: statefulset.yaml
+    set:
+      loadEnvFromConfigMaps:
+        - optional: true
+    asserts:
+      - failedTemplate:
+          errorPattern: "missing property 'name'"
+  - it: environmentSecrets
+    template: statefulset.yaml
+    set:
+      environmentSecrets:
+        - name: REQUIRED_VAR
+          secretKeyRef:
+            name: secret-one
+            key: key-one
+        - name: OPTIONAL_VAR
+          secretKeyRef:
+            name: secret-two
+            key: key-two
+            optional: true
+        - name: EXPLICITLY_REQUIRED_VAR
+          secretKeyRef:
+            name: secret-three
+            key: key-three
+            optional: false
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REQUIRED_VAR
+            valueFrom:
+              secretKeyRef:
+                name: secret-one
+                key: key-one
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: OPTIONAL_VAR
+            valueFrom:
+              secretKeyRef:
+                name: secret-two
+                key: key-two
+                optional: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: EXPLICITLY_REQUIRED_VAR
+            valueFrom:
+              secretKeyRef:
+                name: secret-three
+                key: key-three
+  - it: environmentSecrets with a non-boolean optional flag is rejected
+    template: statefulset.yaml
+    set:
+      environmentSecrets:
+        - name: OPTIONAL_VAR
+          secretKeyRef:
+            name: secret-two
+            key: key-two
+            optional: "yes"
+    asserts:
+      - failedTemplate:
+          errorPattern: "optional"
   - it: initContainers rendered from a template string
     template: statefulset.yaml
     set:
