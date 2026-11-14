@@ -32,7 +32,7 @@ jobs:
         uses: azure/setup-helm@2f5e7bc67f1f9972ab16657bb795f36d8f04de0e # v5
         with:
           # renovate: datasource=github-tags depName=helm packageName=helm/helm
-          version: v4.3.1
+          version: v4.3.2
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@92c6b97fa9f664492a2592e0d1d80bc6bf378957 # v1.9.0
