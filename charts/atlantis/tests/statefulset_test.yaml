@@ -519,6 +519,64 @@ tests:
             name: netrc-volume
             readOnly: true
             subPath: netrc
+  - it: terraformrc
+    template: statefulset.yaml
+    set:
+      terraformrc: |
+        credentials "app.terraform.io" {
+          token = "YOUR_TOKEN"
+        }
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[1]
+          value:
+            name: terraformrc-volume
+            secret:
+              secretName: my-release-atlantis-terraformrc
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "terraformrc-volume")]
+          value:
+            mountPath: /home/atlantis/.terraformrc
+            name: terraformrc-volume
+            readOnly: true
+            subPath: terraformrc
+  - it: terraformrcSecretName
+    template: statefulset.yaml
+    set:
+      terraformrcSecretName: atlantis-terraformrc
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[1]
+          value:
+            name: terraformrc-volume
+            secret:
+              secretName: atlantis-terraformrc
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[?(@.name == "terraformrc-volume")]
+          value:
+            mountPath: /home/atlantis/.terraformrc
+            name: terraformrc-volume
+            readOnly: true
+            subPath: terraformrc
+  - it: terraformrc takes precedence over terraformrcSecretName
+    template: statefulset.yaml
+    set:
+      terraformrc: dummy
+      terraformrcSecretName: atlantis-terraformrc
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: terraformrc-volume
+            secret:
+              secretName: my-release-atlantis-terraformrc
+          count: 1
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: terraformrc-volume
+            secret:
+              secretName: atlantis-terraformrc
   - it: aws
     template: statefulset.yaml
     set:

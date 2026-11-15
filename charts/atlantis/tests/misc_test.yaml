@@ -37,6 +37,7 @@ tests:
         username: dummy
         password: dummy
       netrc: dummy
+      terraformrc: dummy
       redis:
         password: dummy
       serviceAccountSecrets:

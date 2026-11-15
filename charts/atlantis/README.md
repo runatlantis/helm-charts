@@ -431,6 +431,8 @@ To run with `readOnlyRootFilesystem`, see the [read-only root filesystem guide](
 | statefulSet.updateStrategy | object | `{}` |  |
 | storageClassName | string | `""` | DEPRECATED - Storage class name for Atlantis disk. |
 | terminationGracePeriodSeconds | int | default depends on the kubernetes version. | Optionally customize the termination grace period in seconds. |
+| terraformrc | string | `""` | Terraform CLI configuration file mounted at `~/.terraformrc`, e.g. to authenticate with private module registries or to use a provider network mirror. OpenTofu also reads this file when `~/.tofurc` does not exist. Do not combine with `--tfe-token` (`ATLANTIS_TFE_TOKEN`): Atlantis then writes its own `~/.terraformrc` and fails to start if the file has different contents. Add a `credentials` block here instead. Check values.yaml for examples. |
+| terraformrcSecretName | string | `""` | If managing secrets outside the chart for the terraformrc file, use this variable to reference the secret name. The key containing the file contents must be called 'terraformrc'. |
 | test.annotations | object | `{}` |  |
 | test.enabled | bool | `true` | Enables test container. |
 | test.image | string | `"bats/bats"` |  |
