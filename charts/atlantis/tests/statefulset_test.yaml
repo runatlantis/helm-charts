@@ -776,6 +776,85 @@ tests:
               secretKeyRef:
                 key: bitbucket_token
                 name: my-release-atlantis-webhook
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
+          any: true
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_BASE_URL
+          any: true
+  - it: bitbucket cloud with webhook secret
+    template: statefulset.yaml
+    set:
+      bitbucket:
+        user: foo
+        token: bar
+        secret: baz
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: bitbucket_secret
+                name: my-release-atlantis-webhook
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_BASE_URL
+          any: true
+  - it: bitbucket cloud with vcsSecretName loads the webhook secret only if present
+    template: statefulset.yaml
+    set:
+      vcsSecretName: my-vcs-secret
+      bitbucket:
+        user: foo
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: bitbucket_secret
+                name: my-vcs-secret
+                optional: true
+  - it: bitbucket cloud with vcsSecretName and secret set requires the webhook secret
+    template: statefulset.yaml
+    set:
+      vcsSecretName: my-vcs-secret
+      bitbucket:
+        user: foo
+        secret: baz
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: bitbucket_secret
+                name: my-vcs-secret
+  - it: bitbucket server with vcsSecretName requires the webhook secret
+    template: statefulset.yaml
+    set:
+      vcsSecretName: my-vcs-secret
+      bitbucket:
+        user: foo
+        baseURL: https://bitbucket.yourorganization.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: bitbucket_secret
+                name: my-vcs-secret
   - it: bitbucket server
     template: statefulset.yaml
     set:

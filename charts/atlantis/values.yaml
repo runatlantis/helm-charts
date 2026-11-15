@@ -93,10 +93,13 @@ bitbucket: {}
 # Create an APP PASSWORD to the user for the token value.
 # Base URL are not needed here, but keep in mind to provide an IP Whitelist as the Atlantis documentation.
 # For API token authentication (recommended over app passwords), specify apiUser which may differ from the user field.
+# Set secret to the webhook secret configured on the Bitbucket Cloud webhook so Atlantis can validate incoming requests.
+# When using vcsSecretName, add the webhook secret under the bitbucket_secret key; it is loaded only if present.
 # bitbucket:
 #   user: foo
 #   token: bar
 #   apiUser: foo@example.com  # Optional: specify if using API tokens and the API user differs from user
+#   secret: baz  # Optional: webhook secret
 
 # -- If using Azure DevOps, please enter your values as follows.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
