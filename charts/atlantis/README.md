@@ -263,7 +263,7 @@ To run with `readOnlyRootFilesystem`, see the [read-only root filesystem guide](
 | api | object | `{}` | Optionally specify an API secret to enable the API. Check values.yaml for examples. |
 | apiSecretName | string | `""` | If managing secrets outside the chart for the API secret, use this variable to reference the secret name. The key containing the secret must be called 'apisecret'. |
 | atlantisDataDirectory | string | `"/atlantis-data"` | Path to the data directory for the volumeMount. |
-| atlantisUrl | string | `""` | An option to override the atlantis url, if not using an ingress, set it to the external IP. Check values.yaml for examples. |
+| atlantisUrl | string | `""` | An option to override the atlantis url, if not using an ingress, set it to the external IP. When unset and the ingress is enabled, it is derived from the first entry of ingress.hosts or from ingress.host. Check values.yaml for examples. |
 | aws | object | `{}` | To specify AWS credentials to be mapped to ~/.aws or to aws.directory. Check values.yaml for examples. |
 | awsSecretName | string | `""` | To reference an already existing Secret object with AWS credentials |
 | azuredevops | object | `{}` | If using Azure DevOps, please enter your values as follows. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
