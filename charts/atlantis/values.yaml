@@ -711,7 +711,7 @@ initConfig:
   # -- Install providers/plugins into a path shared with the Atlantis pod.
   enabled: false
   image: alpine:latest
-  imagePullPolicy: IfNotPresent
+  pullPolicy: IfNotPresent
   # -- SharedDir is set as env var INIT_SHARED_DIR.
   sharedDir: /plugins
   sharedDirReadOnly: true

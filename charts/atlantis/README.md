@@ -326,7 +326,7 @@ To run with `readOnlyRootFilesystem`, see the [read-only root filesystem guide](
 | initConfig.containerSecurityContext | object | `{}` | Security context for the container. |
 | initConfig.enabled | bool | `false` | Install providers/plugins into a path shared with the Atlantis pod. |
 | initConfig.image | string | `"alpine:latest"` |  |
-| initConfig.imagePullPolicy | string | `"IfNotPresent"` |  |
+| initConfig.pullPolicy | string | `"IfNotPresent"` |  |
 | initConfig.script | string | Check values.yaml. | Script to run on the init container. |
 | initConfig.sharedDir | string | `"/plugins"` | SharedDir is set as env var INIT_SHARED_DIR. |
 | initConfig.sharedDirReadOnly | bool | `true` |  |
