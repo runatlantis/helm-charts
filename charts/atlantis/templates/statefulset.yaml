@@ -369,16 +369,9 @@ spec:
           - name: ATLANTIS_REPO_CONFIG
             value: /etc/atlantis/repos.yaml
           {{- end }}
-          {{- if .Values.atlantisUrl }}
+          {{- with include "atlantis.atlantisUrl" . }}
           - name: ATLANTIS_ATLANTIS_URL
-            value: {{ .Values.atlantisUrl }}
-          {{- else if .Values.ingress.enabled }}
-          - name: ATLANTIS_ATLANTIS_URL
-            {{- if .Values.ingress.tls }}
-            value: https://{{ .Values.ingress.host }}
-            {{- else }}
-            value: http://{{ .Values.ingress.host }}
-            {{- end }}
+            value: {{ . }}
           {{- end }}
           {{- if .Values.github.user }}
           - name: ATLANTIS_GH_USER
@@ -480,11 +473,16 @@ spec:
           {{- if .Values.bitbucket.baseURL }}
           - name: ATLANTIS_BITBUCKET_BASE_URL
             value: {{ .Values.bitbucket.baseURL }}
+          {{- end }}
+          {{- if or .Values.bitbucket.baseURL .Values.bitbucket.secret .Values.vcsSecretName }}
           - name: ATLANTIS_BITBUCKET_WEBHOOK_SECRET
             valueFrom:
               secretKeyRef:
                 name: {{ template "atlantis.vcsSecretName" . }}
                 key: bitbucket_secret
+                {{- if not (or .Values.bitbucket.baseURL .Values.bitbucket.secret) }}
+                optional: true
+                {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.azuredevops }}
