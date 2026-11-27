@@ -557,25 +557,14 @@ tests:
             name: terraformrc-volume
             readOnly: true
             subPath: terraformrc
-  - it: terraformrc takes precedence over terraformrcSecretName
+  - it: terraformrc and terraformrcSecretName are mutually exclusive
     template: statefulset.yaml
     set:
       terraformrc: dummy
       terraformrcSecretName: atlantis-terraformrc
     asserts:
-      - contains:
-          path: spec.template.spec.volumes
-          content:
-            name: terraformrc-volume
-            secret:
-              secretName: my-release-atlantis-terraformrc
-          count: 1
-      - notContains:
-          path: spec.template.spec.volumes
-          content:
-            name: terraformrc-volume
-            secret:
-              secretName: atlantis-terraformrc
+      - failedTemplate:
+          errorMessage: terraformrc and terraformrcSecretName are mutually exclusive, set only one of them
   - it: aws
     template: statefulset.yaml
     set:

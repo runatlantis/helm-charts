@@ -167,6 +167,7 @@ terraformrc: ""
 #   }
 
 # -- If managing secrets outside the chart for the terraformrc file, use this variable to reference the secret name.
+# Mutually exclusive with `terraformrc`.
 # The key containing the file contents must be called 'terraformrc'.
 terraformrcSecretName: ""
 

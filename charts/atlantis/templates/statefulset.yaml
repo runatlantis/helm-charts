@@ -129,6 +129,9 @@ spec:
         secret:
           secretName: {{ .Values.netrcSecretName }}
       {{- end }}
+      {{- if and .Values.terraformrc .Values.terraformrcSecretName }}
+      {{- fail "terraformrc and terraformrcSecretName are mutually exclusive, set only one of them" }}
+      {{- end }}
       {{- if .Values.terraformrc }}
       - name: terraformrc-volume
         secret:
