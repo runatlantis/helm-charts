@@ -103,6 +103,7 @@ bitbucket: {}
 #   secret: baz  # Optional: webhook secret
 
 # -- If using Azure DevOps, please enter your values as follows.
+# The 'hostname' key is exclusive to self-hosted Azure DevOps Server installations.
 # The chart will perform the base64 encoding for you for values that are stored in secrets.
 # Check values.yaml for examples.
 azuredevops: {}
@@ -111,6 +112,7 @@ azuredevops: {}
 #   token: bar
 #   webhookUser: foo
 #   webhookPassword: baz
+#   hostname: devops.your.org
 
 # -- If managing secrets outside the chart for the webhook, use this variable to reference the secret name
 vcsSecretName: ""

@@ -266,7 +266,7 @@ To run with `readOnlyRootFilesystem`, see the [read-only root filesystem guide](
 | atlantisUrl | string | `""` | An option to override the atlantis url, if not using an ingress, set it to the external IP. When unset and the ingress is enabled, it is derived from the first entry of ingress.hosts or from ingress.host. Check values.yaml for examples. |
 | aws | object | `{}` | To specify AWS credentials to be mapped to ~/.aws or to aws.directory. Check values.yaml for examples. |
 | awsSecretName | string | `""` | To reference an already existing Secret object with AWS credentials |
-| azuredevops | object | `{}` | If using Azure DevOps, please enter your values as follows. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
+| azuredevops | object | `{}` | If using Azure DevOps, please enter your values as follows. The 'hostname' key is exclusive to self-hosted Azure DevOps Server installations. The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
 | basicAuth | object | `{"password":"","username":""}` | Optionally specify an username and a password for basic authentication. |
 | basicAuthSecretName | string | `""` | If managing secrets outside the chart for the Basic Auth secret, use this variable to reference the secret name. |
 | bitbucket | object | `{}` | If using Bitbucket, there are two approaches: Bitbucket Server, deployed in your own infrastructure and Cloud available at (https://Bitbucket.org). The chart will perform the base64 encoding for you for values that are stored in secrets. Check values.yaml for examples. |
