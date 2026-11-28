@@ -958,6 +958,26 @@ tests:
               secretKeyRef:
                 key: azuredevops_webhook_password
                 name: my-release-atlantis-webhook
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_AZUREDEVOPS_HOSTNAME
+          any: true
+  - it: azuredevops server
+    template: statefulset.yaml
+    set:
+      azuredevops:
+        user: foo
+        token: bar
+        webhookUser: bobby
+        webhookPassword: bacala
+        hostname: devops.yourorganization.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ATLANTIS_AZUREDEVOPS_HOSTNAME
+            value: devops.yourorganization.com
   - it: basicAuth
     template: statefulset.yaml
     set:

@@ -209,6 +209,10 @@
         "webhookPassword": {
           "type": "string",
           "description": "Webhook password for the Atlantis Azure DevOps integration. All repositories in Azure DevOps that are to be integrated with Atlantis must share the same value."
+        },
+        "hostname": {
+          "type": "string",
+          "description": "Hostname of your self-hosted Azure DevOps Server installation, without the scheme. Defaults to dev.azure.com."
         }
       },
       "additionalProperties": false
